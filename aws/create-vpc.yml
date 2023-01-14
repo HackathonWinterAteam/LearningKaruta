@@ -1,0 +1,142 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 
+  VPC and Subnet Create
+
+Metadata: 
+  "AWS::CloudFormation::Interface": 
+    ParameterGroups: 
+      - Label: 
+          default: "Network Configuration"
+        Parameters: 
+          - VPCCIDRBlock
+          - VPCName
+          - AZ
+          - PublicSubnetCIDRBlock
+          - PublicSubnetName
+          - InternetGwName
+          - RouteTableName
+
+Parameters:
+  # VPC
+  VPCCIDRBlock:
+    Description: Input a VPC IPv4 CidrBlock. ex) 192.168.2.0/24
+    Type: String
+    Default: "10.0.0.0/16"
+  VPCName:
+    Description: Input a VPC name. This Parameter will be a Name tag.
+    Type: String
+    Default: ""
+  # Public Subnet
+  AZ:
+    Description: You can Select AZ
+    Type: AWS::EC2::AvailabilityZone::Name
+  PublicSubnetCIDRBlock:
+    Description: Input a Public Subnet IPv4 CidrBlock.  ex) 192.168.2.0/25
+    Type: String
+    Default: "10.0.0.0/24"
+  PublicSubnetName:
+    Description: Input a Public Subnet name. This Parameter will be a Name tag.
+    Type: String
+    Default: ""
+  # Internet GW
+  InternetGwName:
+    Description: Input a IntenetGW name. This Parameter will be a Name tag.
+    Type: String
+    Default: ""
+  # RouteTable for Public Subnet
+  RouteTableName:
+    Description: Input a RouteTable name. This Parameter will be a Name tag.
+    Type: String
+    Default: ""
+
+Resources:
+  #=================================
+  # VPC
+  #=================================
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VPCCIDRBlock
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: !Ref VPCName
+
+  #=================================
+  # PublicSubnet
+  #=================================
+  MyPublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Ref AZ
+      CidrBlock: !Ref PublicSubnetCIDRBlock
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Ref PublicSubnetName
+      VpcId: !Ref MyVPC
+
+  #=================================
+  # InternetGW
+  #=================================
+  MyInternetGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref InternetGwName
+  MyVPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref MyInternetGW
+      VpcId: !Ref MyVPC
+
+  #=================================
+  # RouteTable for Public Subnet
+  #=================================
+  MyRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref RouteTableName
+      VpcId: !Ref MyVPC
+  MyPublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref MyInternetGW
+      RouteTableId: !Ref MyRouteTable
+  MySubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref MyRouteTable
+      SubnetId: !Ref MyPublicSubnet
+
+  #=================================
+  # Outputs
+  #=================================
+Outputs:
+  MyVPC:
+    Value: !Ref MyVPC
+    Export:
+      Name: !Sub myvpc
+  VPCCIDRBlock:
+    Value: !Ref VPCCIDRBlock
+    Export:
+      Name: !Sub myvpcCIDR
+  MyPublicSubnet:
+    Value: !Ref MyPublicSubnet
+    Export:
+      Name: !Sub mysubnet
+  PublicSubnetCIDRBlock:
+    Value: !Ref PublicSubnetCIDRBlock
+    Export:
+      Name: !Sub mysubnetDIDR
+  MyRouteTable:
+    Value: !Ref MyRouteTable
+    Export:
+      Name: !Sub myroutetable
+
