@@ -1,10 +1,15 @@
 FROM python:3.10-buster
+ENV PATH=/app/.venv/bin:$PATH
 
 WORKDIR /app
 
-COPY ./app/requirements.txt .
-COPY ./app/src ./app
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt\
-		&& ls
+RUN pip install poetry
 
-CMD ["uvicorn", "app:app", "--reload", "--host", "0.0.0.0", "--port", "8080"]
+COPY ./app/poetry.lock /app
+COPY ./app/pyproject.toml /app
+
+RUN poetry install --no-root
+
+COPY ./app/src /app
+
+CMD ["poetry", "run", "uvicorn", "app:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
