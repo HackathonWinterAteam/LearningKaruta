@@ -13,3 +13,6 @@ def login():
     pass
 
 #サインアウト
+@router.get("/")
+def signout():
+    pass

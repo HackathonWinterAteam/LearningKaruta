@@ -10,17 +10,22 @@ def root():
 
 
 # ゲーム選択
-@router.get("/karutas")
+@router.get("/karuta")
 def game_select():
-    pass
+    return {"test":"game"}
 
 # ゲームスタート
-@router.get("/karutas/{box_id}")
+@router.get("/karuta/{box_id}")
 def game():
     pass
 
-#ゲーム終了（結果記録）
-@router.post("/karutas/result")
+# ゲーム終了（ログインなし）
+@router.get("/karuta/result")
+def game_result():
+    pass
+
+#ゲーム終了（ログインあり・結果記録）
+@router.post("/karuta/result/{played_id}")
 def game_result():
     pass
 
