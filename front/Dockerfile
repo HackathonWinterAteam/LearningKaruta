@@ -1,6 +1,6 @@
 FROM node:19.4.0-buster
 
-WORKDIR /app
+WORKDIR /app/front
 
 COPY ./front/package.json ./
 COPY ./front/package-lock.json ./
