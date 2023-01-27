@@ -32,7 +32,18 @@ services:
     environment:
       TZ: Asia/Tokyo
 
+  react:
+    build:
+      context: .
+      dockerfile: ./front/Dockerfile
+    container_name: "front"
+    volumes:
+      - ./front/src:/app/src
+      - ./front/public:/app/public
+    ports:
+      - 3000:3000
+    tty: true
+    stdin_open: true
+
 volumes:
   db-data: #コンテナのvolumeを使って永続化
-
-
