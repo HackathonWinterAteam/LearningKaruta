@@ -3,11 +3,11 @@ version: "3"
 services:
   mysql:
     image: mysql:8.0
+    container_name: "mysql"
     platform: linux/amd64
     build:
       context: .
       dockerfile: ./mysql/Dockerfile
-    container_name: "mysql"
     ports:
       - "3306:3306"
     environment:
@@ -25,21 +25,21 @@ services:
     build: 
       context: .
       dockerfile: ./app/Dockerfile
-        #volumes:
-        #  - ./app/src:/file #localで永続化する場合はこっち使う
+    volumes:
+      - ./app/src:/app/fastapi/src
     ports:
       - 8000:8000
     environment:
       TZ: Asia/Tokyo
 
   react:
+    container_name: "front"
     build:
       context: .
       dockerfile: ./front/Dockerfile
-    container_name: "front"
     volumes:
-      - ./front/src:/app/src
-      - ./front/public:/app/public
+      - ./front/src:/app/front/src
+      - ./front/public:/app/front/public
     ports:
       - 3000:3000
     tty: true
