@@ -1,5 +1,4 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 
-class User(BaseModel):
-    
+# JSONで受け渡しするデータ型の定義を行う
