@@ -2,9 +2,16 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, scoped_session
+from env import DB_USER, DB_PASSWORD, DB_HOST, DB_NAME
 
-path = ''
- 
+DATABASE = 'mysql://%s:%s@%s/%s?charset=utf8' % (
+    DB_USER,
+    DB_PASSWORD,
+    DB_HOST,
+    DB_NAME,
+)
+
 # Engine の作成 echoは要確認
 engine = create_engine(
     DATABASE,
