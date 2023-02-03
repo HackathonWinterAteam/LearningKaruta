@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      //ゲームスタート //ローディング画面 //ゲーム画面に移る
+      //データ（カルタオブジェクト）の取得 //データのランダム選択（問題数分）
+      //絵札のシャッフル //絵札の配置 //3秒待つ
+      //場に対応した読み札を表示（一文字ずつ表示）
+      //ユーザーがクリックした札に対する正誤判定 //スコアの更新
+      //正誤判定に対応したモーダルの表示
+      //右下に取得した絵札の画像を配置（随時上書きしていき、最新の一枚のみ表示）
+      //取得した（された）絵札を非表示にする //モーダルは2秒後に消える
+      //次の問題へ移る //次の読み札を表示する //最終問題までループする
+      //勝敗とスコア、ホーム画面へ飛ぶボタンが表示してあるのモーダル表示
     </div>
   );
 }
