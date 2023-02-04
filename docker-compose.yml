@@ -1,49 +1,71 @@
 version: "3"
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: "mysql"
-    platform: linux/amd64
+
+  api:
+    container_name: "fastapi_starter"
+    depends_on:
+      - db
     build:
-      context: .
-      dockerfile: ./mysql/Dockerfile
+      context: ./docker/api
+      dockerfile: Dockerfile
     ports:
-      - "3306:3306"
-    environment:
-      MYSQL_USER: user
-      MYSQL_PASSWORD: 789uiojkl
-      MYSQL_ROOT_PASSWORD: root_pass
-      TZ: Asia/Tokyo
+      - "8000:8000"
     volumes:
-      - ./mysql/DB:/docker-entrypoint-initdb.d #起動時のテストデータ
-      - db-data:/var/lib/mysql #data永続
-
-  fastapi:
-    container_name: "fastapi"
-    tty: true
-    build: 
-      context: .
-      dockerfile: ./app/Dockerfile
-    volumes:
-      - ./app/src:/app/fastapi/src
-    ports:
-      - 8000:8000
+      - ./app:/usr/src/app/app
+      - ./db:/usr/src/app/db
+      - ./scripts:/usr/src/app/scripts
+    working_dir: /usr/src/app/scripts
+    command: bash -c "./run.sh"
+    networks:
+      - fastapi_network
     environment:
-      TZ: Asia/Tokyo
+      APP_ENV: "development"
+      TZ: "Asia/Tokyo"
+    env_file:
+      - .env.development
 
-  react:
-    container_name: "front"
+  db:
+    container_name: "fastapi_starter_db"
     build:
-      context: .
-      dockerfile: ./front/Dockerfile
-    volumes:
-      - ./front/src:/app/front/src
-      - ./front/public:/app/front/public
-    ports:
-      - 3000:3000
+      context: ./docker/db
+      dockerfile: Dockerfile
+    restart: always
     tty: true
-    stdin_open: true
+    expose:
+      - "3306"
+    volumes:
+      - ./docker/db/conf.d:/etc/mysql/conf.d
+    networks:
+      - fastapi_network
+    environment:
+      APP_ENV: "development"
+      TZ: "Asia/Tokyo"
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - .env.development
 
-volumes:
-  db-data: #コンテナのvolumeを使って永続化
+        #  react:
+        #    container_name: "front"
+        #    build:
+        #      context: ./docker/front
+        #      dockerfile: Dockerfile
+        #    volumes:
+        #      - ./front/src:/app/front/src
+        #      - ./front/public:/app/front/public
+        #    ports:
+        #      - 3000:3000
+        #    tty: true
+        #    stdin_open: true
+
+networks:
+  default:
+    external:
+      name: bridge
+  fastapi_network:
+    name: fastapi_network
+    driver: bridge
+    external: true
+
+      #volumes:
+      #  db-data: #コンテナのvolumeを使って永続化
