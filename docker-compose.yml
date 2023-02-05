@@ -27,6 +27,7 @@ services:
 
   db:
     container_name: "fastapi_starter_db"
+    platform: linux/arm64/v8
     build:
       context: ./docker/db
       dockerfile: Dockerfile
@@ -38,6 +39,8 @@ services:
       - ./docker/db/conf.d:/etc/mysql/conf.d
     networks:
       - fastapi_network
+    ports:
+      - 3306:3306
     environment:
       APP_ENV: "development"
       TZ: "Asia/Tokyo"
