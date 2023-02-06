@@ -7,6 +7,10 @@ from pydantic import BaseModel, Field
 class Boxes(BaseModel):
     box_id: int
     box_name: str # = Field(None, example="Git”)
+    box_category: str
+
+    class Config:
+        orm_mode = True
 
 class Cards(BaseModel):
     card_id: int
@@ -14,5 +18,8 @@ class Cards(BaseModel):
     question_text: str #(None, example="ブランチ確認”)
     answer_id:int
     answer_text: str #(None, example="git branch”)
+
+    class Config:
+        orm_mode = True
 
 #リクエストスキーマ
