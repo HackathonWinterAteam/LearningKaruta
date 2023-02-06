@@ -1,6 +1,6 @@
 # コマンド学習カルタ
 
-```./run.sh``
-で環境が作成される
-run.shに実行権限がない場合は
+コンテナを立ち上げる前に
+```docker network create fastapi_network```
+run.shに実行権限がないと言われた場合は
 ```chmod +x run.sh```
