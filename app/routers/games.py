@@ -2,6 +2,9 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
+import schemas.games as games_schema
+from typing import List
+
 # トップページ
 @router.get("/")
 def root():
@@ -10,14 +13,14 @@ def root():
 
 
 # ゲーム選択
-@router.get("/karuta")
+@router.get("/karuta", response_model=List[games_schema.Boxes])
 def game_select():
-    return {"test":"game"}
+    return [games_schema.Boxes(box_id=1, box_name="Git")]
 
 # ゲームスタート
-@router.get("/karuta/{box_id}")
+@router.get("/karuta/{box_id}", response_model=List[games_schema.Cards])
 def game():
-    pass
+    return [games_schema.Cards(card_id=1, question_id=1, question_text="", answer_id="", answer_text="")]
 
 # ゲーム終了（ログインなし）
 @router.get("/karuta/result")
