@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Text, String, Enum, ForeignKey, Boolean #他使用するものすべて
-from database import engine, Base
+from database import Base
 from models.users import users
 from sqlalchemy.dialects.mysql import TIMESTAMP as Timestamp
 from sqlalchemy.sql.functions import current_timestamp
