@@ -1,8 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from database import get_db
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
 import schemas.games as games_schema
+import cruds.games as games_cruds
+
 from typing import List
 
 # トップページ
@@ -14,8 +18,8 @@ def root():
 
 # ゲーム選択
 @router.get("/karuta", response_model=List[games_schema.Boxes])
-def game_select():
-    return [games_schema.Boxes(box_id=1, box_name="Git")]
+def game_select(db: Session = Depends(get_db)):
+    return games_cruds.read_boxes(db=db)
 
 # ゲームスタート
 @router.get("/karuta/{box_id}", response_model=List[games_schema.Cards])
