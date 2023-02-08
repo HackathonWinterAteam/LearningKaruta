@@ -1,9 +1,9 @@
-version: "3"
+version: "3.9"
 
 services:
 
   api:
-    container_name: "fastapi_starter"
+    container_name: "fastapi"
     depends_on:
       - db
     build:
@@ -15,10 +15,8 @@ services:
       - ./app:/usr/src/app/app
       - ./db:/usr/src/app/db
       - ./scripts:/usr/src/app/scripts
-    working_dir: /usr/src/app/scripts
-    command: bash -c "./run.sh"
-    networks:
-      - fastapi_network
+        #working_dir: /usr/src/app/scripts
+        #command: bash -c "./run.sh" #alembicでコンテナ立ち上げ時にmigrationするなら使う
     environment:
       APP_ENV: "development"
       TZ: "Asia/Tokyo"
@@ -26,28 +24,21 @@ services:
       - .env.development
 
   db:
-    container_name: "fastapi_starter_db"
-    platform: linux/arm64/v8
+    container_name: "mysql"
     build:
-      context: ./docker/db
-      dockerfile: Dockerfile
-    restart: always
-    tty: true
-    expose:
-      - "3306"
+      context: .
+      dockerfile: docker/db/Dockerfile
+    platform: linux/x86_64
     volumes:
-      - ./docker/db/conf.d:/etc/mysql/conf.d
-    networks:
-      - fastapi_network
+      - db-data:/var/lib/mysql
     ports:
       - 3306:3306
-    environment:
-      APP_ENV: "development"
-      TZ: "Asia/Tokyo"
-    command: --default-authentication-plugin=mysql_native_password
     env_file:
       - .env.development
 
+volumes:
+  db-data: #コンテナのvolumeを使って永続化
+      
         #  react:
         #    container_name: "front"
         #    build:
@@ -60,15 +51,3 @@ services:
         #      - 3000:3000
         #    tty: true
         #    stdin_open: true
-
-networks:
-  default:
-    external:
-      name: bridge
-  fastapi_network:
-    name: fastapi_network
-    driver: bridge
-    external: true
-
-      #volumes:
-      #  db-data: #コンテナのvolumeを使って永続化

@@ -1,5 +1,5 @@
-FROM mysql/mysql-server:8.0.32
+FROM mysql:8.0
 
-ENV LANG ja_JP.UTF-8
+COPY docker/db/conf.d/my.cnf /etc/mysql/conf.d/my.cnf
 
-CMD ["mysqld", "--character-set-server=utf8", "--collation-server=utf8_unicode_ci"]
+#COPY db/init.sql(←ここはinit.sqlのpath)) /docker-entrypoint-initdb.d
