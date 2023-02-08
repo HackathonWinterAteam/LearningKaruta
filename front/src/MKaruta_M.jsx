@@ -60,13 +60,17 @@ const MKaruta = () => {
   //   transform: "translate(-50%, -50%)",
   // };
 
+  // ゲーム画面全体のエリア
   const gameArea = {
-    backgroundColor: "white",
     position: "relative",
+    margin: "0 auto",
+    padding: "0 auto",
     width: "100%",
     minHeight: "100vh",
+    backgroundColor: "#F5F4F5",
   };
 
+  // プライヤーの持ち札を表示するエリア
   const playerOwnEfudaAera = {
     margin: "0 auto",
     position: "absolute",
@@ -83,6 +87,7 @@ const MKaruta = () => {
     lineHeight: "70px",
   };
 
+  // cpuの持ち札を表示するエリア
   const cpuOwnEfudaAera = {
     margin: "0 auto",
     position: "absolute",
@@ -99,7 +104,32 @@ const MKaruta = () => {
     lineHeight: "60px",
   };
 
-  const efudaArea = {};
+  const efuda = {
+    width: "40px",
+    height: "40px",
+    backgroundColor: "green",
+  };
+
+  // 上段の絵札
+  const upperRowEfuda = {
+    display: "flex",
+    justifyContent: "space-around",
+    padding: "90px",
+  };
+
+  // 中段の絵札
+  const middleRowEfuda = {
+    display: "flex",
+    justifyContent: "space-around",
+    padding: "90px",
+  };
+
+  // 下段の絵札
+  const lowerRowEfuda = {
+    display: "flex",
+    justifyContent: "space-around",
+    padding: "90px",
+  };
 
   const yomifudaArea = {};
 
@@ -190,7 +220,46 @@ const MKaruta = () => {
         <div style={playerOwnEfudaAera}>1</div>
         <div style={cpuOwnEfudaAera}>1</div>
         {/* 絵札の表示エリア */}
-        <div style={efudaArea}></div>
+
+        {/* <div style={upperRowEfuda}>
+          <div style={efuda}>1</div>
+          <div style={efuda}>2</div>
+          <div style={efuda}>3</div>
+        </div>
+
+        <div style={middleRowEfuda}>
+          <div style={efuda}>4</div>
+          <div style={efuda}>5</div>
+          <div style={efuda}>6</div>
+        </div>
+
+        <div style={lowerRowEfuda}>
+          <div style={efuda}>7</div>
+          <div style={efuda}>8</div>
+          <div style={efuda}>9</div>
+        </div> */}
+
+        <div style={upperRowEfuda}>
+          <div style={efuda}>1</div>
+          <div style={efuda}>2</div>
+          <div style={efuda}>3</div>
+          <div style={efuda}>4</div>
+          <div style={efuda}>5</div>
+        </div>
+
+        <div style={middleRowEfuda}>
+          <div style={efuda}>6</div>
+          <div style={efuda}>7</div>
+        </div>
+
+        <div style={lowerRowEfuda}>
+          <div style={efuda}>8</div>
+          <div style={efuda}>9</div>
+          <div style={efuda}>10</div>
+          <div style={efuda}>11</div>
+          <div style={efuda}>12</div>
+        </div>
+
         {/* 読み札の表示エリア */}
         <div style={yomifudaArea}></div>
       </div>
