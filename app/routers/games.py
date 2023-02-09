@@ -24,8 +24,8 @@ def game_select(db: Session = Depends(get_db)):
 
 # ゲームスタート（札を渡す）
 @router.get("/karuta/{box_id}", response_model=List[games_schema.Cards])
-def game():
-    return [games_schema.Cards(card_id=1, question_id=1, question_text="", answer_id="", answer_text="")]
+def game(box_id: int, db: Session = Depends(get_db)):
+    return games_cruds.read_playing_cards(db=db, box_id=box_id)
 
 # ゲーム終了（ログインなし）
 @router.get("/karuta/result")

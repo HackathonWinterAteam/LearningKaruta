@@ -23,3 +23,9 @@ class Cards(BaseModel):
         orm_mode = True
 
 #リクエストスキーマ
+
+class SelectedBox(BaseModel):
+    box_id: int
+
+    class Config:
+        orm_mode = True
