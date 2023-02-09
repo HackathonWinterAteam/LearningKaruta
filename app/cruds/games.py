@@ -13,23 +13,19 @@ def read_boxes(db: Session, skip: int = 0):
     return BoxList
 
 
-# 札取得JOINの定義
-'''
-boxes_cards = games_model.boxes_cards
-q_a_cards = games_model.question_answer_cards
-q_texts = games_model.question_texts
-a_texts = games_model.answer_texts
-a_images = games_model.answer_images
-'''
-
-'''
-def read_playing_cards(db: Session):
-    t = text('SELECT card_id, question_id, answer_id, question_text, answer_text, answer_file_pass 
-            FROM (question_answer_cards AS qac
-            INNER JOIN question_texts AS qt
-            ON (qac.question_id = qt.question_id AND ))') #結合抽出処理
-    t = t.bindparams(bindparam("",type=))
-    PlayCardsList = db.execute(t, {"": })
+def read_playing_cards(db: Session, box_id: int):
+    t = text('SELECT card_id, question_id, answer_id, question_text, answer_text, answer_file_pass \
+            FROM ((boxes_cards AS bc \
+            INNER JOIN question_answer_cards AS qac \
+            ON bc.card_id = qac.card_id AND bc.box_id = :box_id \
+            INNNER JOIN question_texts AS qt \
+            ON qac.question_id = qt.question_id) \
+            INNER JOIN answer_texts AS at \
+            ON qac.answer_id = at.answer_id \
+            LEFT JOIN answer_images AS aimg \
+            ON at.answer_id = aimg.answer_id)') #結合抽出処理
+    t = t.bindparams(bindparam('box_id',type_=int))
+    PlayCardsList = db.execute(t, box_id=box_id)
     return PlayCardsList
 
-    '''
+
