@@ -21,7 +21,8 @@ def root():
 def game_select(db: Session = Depends(get_db)):
     return games_cruds.read_boxes(db=db)
 
-# ゲームスタート
+
+# ゲームスタート（札を渡す）
 @router.get("/karuta/{box_id}", response_model=List[games_schema.Cards])
 def game():
     return [games_schema.Cards(card_id=1, question_id=1, question_text="", answer_id="", answer_text="")]
@@ -32,7 +33,7 @@ def game_result():
     pass
 
 #ゲーム終了（ログインあり・結果記録）
-@router.post("/karuta/result/{played_id}")
+@router.post("/karuta/result/{played_id}") # パスパラメータではないかも　played_idは自動で割り振られる？
 def game_result():
     pass
 
