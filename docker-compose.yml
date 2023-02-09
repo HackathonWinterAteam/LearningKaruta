@@ -36,18 +36,19 @@ services:
     env_file:
       - .env.development
 
+  react:
+    container_name: "front"
+    build:
+      context: .
+      dockerfile: docker/front/Dockerfile
+    volumes:
+      - ./front/src:/usr/src/front/src
+      - ./front/public:/usr/src/front/public
+    ports:
+      - 3000:3000
+    stdin_open: true
+    tty: true
+
 volumes:
   db-data: #コンテナのvolumeを使って永続化
       
-        #  react:
-        #    container_name: "front"
-        #    build:
-        #      context: ./docker/front
-        #      dockerfile: Dockerfile
-        #    volumes:
-        #      - ./front/src:/app/front/src
-        #      - ./front/public:/app/front/public
-        #    ports:
-        #      - 3000:3000
-        #    tty: true
-        #    stdin_open: true
