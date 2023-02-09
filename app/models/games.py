@@ -37,6 +37,15 @@ class answer_texts(Base):
     answer_id = Column('answer_id', Integer, primary_key=True, autoincrement=True)
     answer_text = Column('answer_text', Text, nullable=False)
 
+class answer_images(Base):
+    __tablename__ = 'answer_images'
+    __table_args__ = {
+        'comment': '取り札画像パス格納テーブル'
+    }
+
+    answer_image_id = Column('answer_image_id', Integer, primary_key=True, autoincrement=True)
+    answer_id = Column('answer_id', Integer, ForeignKey(answer_texts.answer_id))
+    answer_file_pass = Column('answer_file_pass', Text, nullable=True)
 
 # 札レベルで使用するENUM型の定義
 '''
