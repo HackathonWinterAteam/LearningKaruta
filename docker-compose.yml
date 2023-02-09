@@ -36,6 +36,19 @@ services:
     env_file:
       - .env.development
 
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    env_file:
+      - .env.development
+    links:
+      - db
+    ports:
+      - 4000:80
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
+
 volumes:
   db-data: #コンテナのvolumeを使って永続化
       
