@@ -44,21 +44,21 @@ const Karuta = () => {
         </div>
 
         <div className="flex flex-row mt-36 justify-around">
-          <div className="w-20 h-20 bg-green-300 border">1</div>
-          <div className="w-20 h-20 bg-green-300 border">2</div>
-          <div className="w-20 h-20 bg-green-300 border">3</div>
+          <div className="efuda">1</div>
+          <div className="dfuda">2</div>
+          <div className="efuda">3</div>
         </div>
 
         <div className="flex flex-row mt-24 justify-around">
-          <div className="w-20 h-20 bg-green-300 border">4</div>
-          <div className="w-20 h-20 bg-green-300 border">5</div>
-          <div className="w-20 h-20 bg-green-300 border">6</div>
+          <div className="efuda">4</div>
+          <div className="efuda">5</div>
+          <div className="efuda">6</div>
         </div>
 
         <div className="flex flex-row mt-24 justify-around">
-          <div className="w-20 h-20 bg-green-300 border">7</div>
-          <div className="w-20 h-20 bg-green-300 border">8</div>
-          <div className="w-20 h-20 bg-green-300 border">9</div>
+          <div className="efuda">7</div>
+          <div className="efuda">8</div>
+          <div className="efuda">9</div>
         </div>
 
         {/* <div>
