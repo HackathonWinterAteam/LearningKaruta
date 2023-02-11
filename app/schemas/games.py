@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 # JSONで受け渡しするデータ型の定義を行う
 
@@ -13,14 +14,18 @@ class Boxes(BaseModel):
         orm_mode = True
 
 class Cards(BaseModel):
-    card_id: int
+    card_id: int #JS：str 要型変換？
     question_id: int
-    question_text: str #(None, example="ブランチ確認”)
     answer_id:int
+    question_text: str #(None, example="ブランチ確認”)
+    # "ブランチ確認　 git branch"：これがほしい ★★
     answer_text: str #(None, example="git branch”)
+    answer_file_pass: Optional[str]
 
     class Config:
         orm_mode = True
+
+
 
 #リクエストスキーマ
 
