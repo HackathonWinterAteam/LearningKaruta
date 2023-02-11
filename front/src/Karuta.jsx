@@ -45,7 +45,7 @@ const Karuta = () => {
 
         <div className="flex flex-row mt-36 justify-around">
           <div className="efuda">1</div>
-          <div className="dfuda">2</div>
+          <div className="efuda">2</div>
           <div className="efuda">3</div>
         </div>
 
