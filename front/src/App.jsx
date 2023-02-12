@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useInterval } from "./useInterval";
 
 
 const CommandKaruta = () => {
@@ -55,14 +56,15 @@ const CommandKaruta = () => {
   //useState
   const [yomiLists, setYomiLists] = useState(karutaLists); //読み札管理
   const [efudaLists, setEfudaLists] = useState(yomiLists); //絵札管理
-  // const [getEfuda, setGetEfuda] = useState(0); //取得した絵札を画面右下にセットするための管理
   const [userScore, setUserScore] = useState(0); //ユーザーのスコア管理
   const [cpuScore, setCpuScore] = useState(0); //CPUのスコア管理
-  const [showModal, setShowModal] = useState(false); //正誤判定後のモーダル管理
+  const [isModalOpen, setModalOpen] = useState(false); //正誤判定後のモーダル管理
   const [isStarted, setIsStarted] = useState(false); //ゲーム開始ボタンの管理
   const [isKaruta, setIsKaruta] = useState(false); //絵札一覧の表示・非表示の管理
+  const [isRunning,setIsRunning] = useState(false);
   const [isAnswered, setIsAnswered] = useState([]); //既に終了している絵札を管理
-  const [oneCharactor, setOneCharactor] = useState(""); //読み札の表示管理（1文字ずつ）
+  const [showQuestion, setShowQuestion] = useState(""); //読み札の表示管理
+  const [oneCharactorQuestion, setOneCharactorQuestion] = useState("");
   const [currentTurn, setCurrentTurn] = useState(0); //ターンカウント
   const [userAcquiredCards, setUserAcquiredCards] = useState([]); //ユーザーが取得した絵札の管理
   const [cpuAcquiredCards, setCpuAcquiredCards] = useState([]); //CPUが取得した絵札の管理
@@ -71,8 +73,7 @@ const CommandKaruta = () => {
   const startGame = () => {
     setCards();
     setIsStarted(true);
-    setIsKaruta(true);
-    readYomifuda(currentTurn);
+    setIsRunning(true);
   }
   //ローディング画面
   //ゲーム画面に移る
@@ -85,18 +86,37 @@ const CommandKaruta = () => {
     const result = shuffle([...yomiLists]);
     setEfudaLists(result)
   };
-  //絵札の配置
 
   //3秒待つ
+  useEffect(() => {
+    if (!isStarted || currentTurn >= 9) return;
+    setTimeout(() => {
+      setIsKaruta(true);
+      setOneCharactorQuestion(yomiLists[currentTurn].question);
+      setIsRunning(true);
+    }, 1000);
+    // eslint-disable-next-line
+  }, [isStarted, currentTurn]);
+
   //場に対応した読み札を表示（一文字ずつ表示）
-  //とりあえず一問ずつ取得する
-
-
-  // // find関数で最初のyomiListsの最初の要素だけを取得する
-  const showYomifuda = yomiLists[currentTurn];
-  const readYomifuda = () => {
-    console.log(showYomifuda);
+  const updateQuestion = () => {
+    if (oneCharactorQuestion === "" || isModalOpen) {
+      setIsRunning(false);
+    } else {
+      const letter = oneCharactorQuestion.charAt(0);
+      const newQuestion = oneCharactorQuestion.slice(1);
+      setOneCharactorQuestion(newQuestion);
+      setShowQuestion(showQuestion + letter);
+    }
   };
+
+  useInterval(() => {
+      if (!isKaruta) return;
+      updateQuestion();
+    },
+    isRunning ? 100 : null
+  );
+
   //ユーザーがクリックした札に対する正誤判定
 
   //スコアの更新
@@ -156,7 +176,6 @@ const CommandKaruta = () => {
     judge(e.target);
     //次の問題へ
     setCurrentTurn(currentTurn+1);
-
   }
 
   //問題文の表示
@@ -165,26 +184,22 @@ const CommandKaruta = () => {
   return (
     <div>
       <div>
-        {isStarted ?
-          <button>ゲーム中</button>
-          :
-          <button  onClick={()=> startGame()}>ゲーム開始</button>
-        }
+      {!isStarted && (
+        <div className="start-screen">
+          <button onClick={() => startGame()}>ゲーム開始</button>
         </div>
-
+      )}
+      </div>
+      <div>
+        {isKaruta && (
         <div>
-        {isKaruta &&
           <div>
-            <p>{showYomifuda.question}</p>
+            {/* 読み札の表示 */}
           </div>
-        }
-      </div>
-      <div>
-        {cpuScore}
-        {cpuAcquiredCards}
-      </div>
-      <div>
-        {isKaruta &&
+          <div>
+            <p>CPUスコア：{cpuScore}</p>
+            <p>取得した札：{cpuAcquiredCards}</p>
+          </div>
           <ul className="flex wrap field">
             {currentTurn < 9 &&
               efudaLists
@@ -197,11 +212,12 @@ const CommandKaruta = () => {
                   </div>
                 ))}
           </ul>
-        }
-      </div>
-      <div>
-        {userScore}
-        {userAcquiredCards}
+          <div>
+            <p>ユーザースコア：{userScore}</p>
+            <p>取得した札：{userAcquiredCards}</p>
+          </div>
+        </div>
+        )}
       </div>
     </div>
   );
