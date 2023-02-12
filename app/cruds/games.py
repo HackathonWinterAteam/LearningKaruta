@@ -1,9 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
-from sqlalchemy import bindparam, Integer
 from models import games as games_model
 from schemas import games as games_schema
+
+def read_boxes(db: Session):
+    BoxList = db.query(games_model.boxes).all()
+    return BoxList
 
 
 # お題一覧取得
