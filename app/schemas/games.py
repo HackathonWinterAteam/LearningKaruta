@@ -10,9 +10,6 @@ class Boxes(BaseModel):
     box_name: str # = Field(None, example="Git”)
     box_category: str
 
-    class Config:
-        orm_mode = True
-
 class Cards(BaseModel):
     card_id: int #JS：str 要型変換？
     question_id: int

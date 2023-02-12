@@ -11,8 +11,8 @@ from typing import List
 
 # フロントに渡したときの実行状態　：テスト検討
 
-
 # root
+
 @router.get("/")
 def root():
     #ユーザー分岐予定？
