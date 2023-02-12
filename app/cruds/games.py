@@ -32,6 +32,7 @@ def read_playing_cards(db: Session, box_id: int) -> games_model.boxes_cards :
             ON qac.answer_id = at.answer_id \
             LEFT JOIN answer_images AS aimg \
             ON at.answer_id = aimg.answer_id' \
+            ORDER BY RAND() LIMIT 10
             ) #結合抽出処理
     # t = t.bindparams(bindparam('box_id', value='bid', type_=Integer))
     PlayCardsList = db.execute(t).fetchall()
