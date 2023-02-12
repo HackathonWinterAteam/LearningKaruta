@@ -14,9 +14,9 @@ class Boxes(BaseModel):
         orm_mode = True
 
 class Cards(BaseModel):
-    card_id: int #JS：str 要型変換？
-    question_id: int
-    answer_id:int
+    card_id: str 
+    question_id: str
+    answer_id:str
     question_text: str #(None, example="ブランチ確認”)
     # "ブランチ確認　 git branch"：これがほしい ★★
     answer_text: str #(None, example="git branch”)
