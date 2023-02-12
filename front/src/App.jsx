@@ -10,48 +10,48 @@ const CommandKaruta = () => {
   [
     {
       id: "1",
-      question:"問題1",
-      answer:"../1.png"
+      question:"問題1 git init",
+      answer:"../imgs/1.jpg"
     },
     {
       id: "2",
-      question:"問題2",
-      answer:"../2.png"
+      question:"問題2 git init",
+      answer:"../imgs/2.jpg"
     },
     {
       id: "3",
-      question:"問題3",
-      answer:"../3.png"
+      question:"問題3 git init",
+      answer:"../imgs/3.jpg"
     },
     {
       id: "4",
-      question:"問題4",
-      answer:"../4.png"
+      question:"問題4 git init",
+      answer:"../imgs/4.jpg"
     },
     {
       id: "5",
-      question:"問題5",
-      answer:"../5.png"
+      question:"問題5 git init",
+      answer:"../imgs/5.jpg"
     },
     {
       id: "6",
-      question:"問題6",
-      answer:"../6.png"
+      question:"問題6 git init",
+      answer:"../imgs/6.jpg"
     },
     {
       id: "7",
-      question:"問題7",
-      answer:"../7.png"
+      question:"問題7 git init",
+      answer:"../imgs/7.jpg"
     },
     {
       id: "8",
-      question:"問題8",
-      answer:"../8.png"
+      question:"問題8 git init",
+      answer:"../imgs/8.ipg"
     },
     {
       id: "9",
-      question:"問題9",
-      answer:"../9.png"
+      question:"問題9 git init",
+      answer:"../imgs/9.ipg"
     },
   ]
 
