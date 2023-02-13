@@ -6,6 +6,13 @@ import Contact from "./routes/contact";
 import Posts from "./routes/posts";
 import Post from "./routes/post";
 import NoMatch from "./routes/nomatch";
+import PostIndex from "./routes/postindex";
+
+const Layout = ({ children }) => {
+  return (
+    <div style={{ display: "flex", justifyContent: "center" }}>{children}</div>
+  );
+};
 
 function Main() {
   return (
@@ -47,10 +54,18 @@ function Main() {
         </li>
       </ul>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Home />
+            </Layout>
+          }
+        />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/posts" element={<Posts />}>
+          <Route index element={<PostIndex />} />
           <Route path=":postId" element={<Post />} />
         </Route>
         <Route path="*" element={<NoMatch />} />
