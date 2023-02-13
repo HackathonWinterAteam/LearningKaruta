@@ -22,7 +22,7 @@ import Home from "./routes/home";
 import About from "./routes/about";
 import Contact from "./routes/contact";
 import ErrorPage from "./routes/error-page";
-import Posts from "./routes/posts";
+import Posts, { loader, loader as postsLoader } from "./routes/posts";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +45,7 @@ const router = createBrowserRouter([
       {
         path: "posts",
         element: <Posts />,
+        loader: postsLoader,
       },
     ],
   },
