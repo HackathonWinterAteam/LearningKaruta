@@ -17,7 +17,7 @@ function PostIndex() {
     <ul>
       {posts.map((post) => (
         <li key={post.id}>
-          <Link to={`/posts/${post.id}`}>
+          <Link to={`${post.id}`}>
             {post.id}:{post.title}
           </Link>
         </li>
