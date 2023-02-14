@@ -22,6 +22,7 @@ def read_playing_cards(db: Session, box_id: int) -> games_model.boxes_cards :
     # bid = games_model.boxes_cards.box_id
     t = text('SELECT CAST(qac.card_id AS CHAR) AS card_id, CAST(qt.question_id AS CHAR) AS question_id, \
             CAST(at.answer_id AS CHAR) AS answer_id, qt.question_text AS question_text, \
+            CONCAT(qt.question_text, "  ", at.answer_text) AS card_text,\
             at.answer_text AS answer_text, aimg.answer_file_pass AS answer_file_pass \
             FROM (box_card AS bc \
             INNER JOIN question_answer_cards AS qac \
@@ -31,8 +32,8 @@ def read_playing_cards(db: Session, box_id: int) -> games_model.boxes_cards :
             INNER JOIN answer_texts AS at \
             ON qac.answer_id = at.answer_id \
             LEFT JOIN answer_images AS aimg \
-            ON at.answer_id = aimg.answer_id' \
-            ORDER BY RAND() LIMIT 10
+            ON at.answer_id = aimg.answer_id \
+            ORDER BY RAND() LIMIT 10' \
             ) #結合抽出処理
     # t = t.bindparams(bindparam('box_id', value='bid', type_=Integer))
     PlayCardsList = db.execute(t).fetchall()

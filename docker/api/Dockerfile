@@ -8,6 +8,7 @@ RUN apt update \
 WORKDIR /usr/src/app
 ADD requirements.txt .
 RUN pip install -U pip \
-    && pip install --trusted-host pypi.python.org -r requirements.txt
+    && pip install --trusted-host pypi.python.org -r requirements.txt \
+    && pip install passlib[bcrypt]
 
 CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]

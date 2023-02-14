@@ -2,5 +2,5 @@
 
 from database import Base  
 
-from .users import users
+from .users import Users
 from .games import boxes

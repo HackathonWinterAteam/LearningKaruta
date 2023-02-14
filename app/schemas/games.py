@@ -18,7 +18,7 @@ class Cards(BaseModel):
     question_id: str
     answer_id:str
     question_text: str #(None, example="ブランチ確認”)
-    # "ブランチ確認　 git branch"：これがほしい ★★
+    card_text: str# "ブランチ確認　 git branch"：これがほしい ★★
     answer_text: str #(None, example="git branch”)
     answer_file_pass: Optional[str]
 
