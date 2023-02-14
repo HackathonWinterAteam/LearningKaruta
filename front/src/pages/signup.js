@@ -6,7 +6,7 @@ function Signup() {
   return (
     <>
       <h2>Signup</h2>
-      <button onClick={() => navigate("/contact")}>Contact</button>
+      <button onClick={() => navigate("/login")}>Login</button>
     </>
   );
 }
