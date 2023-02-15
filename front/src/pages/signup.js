@@ -1,8 +1,9 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/axios";
+import useAuth from "../hooks/useAuth";
 
 function Signup() {
+  const { signup } = useAuth();
   // 認証用の記述
   const nameRef = useRef(null);
   const emailRef = useRef(null);
@@ -11,17 +12,11 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("/auth/signup", {
-        name: nameRef.current.value,
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      });
-      console.log(response.data);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
+    signup({
+      name: nameRef.current.value,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+    });
   };
 
   // スタイルの定義
