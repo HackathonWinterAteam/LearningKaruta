@@ -55,7 +55,7 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
 # カレントユーザーの検証
 @router.get("/users/me")
 async def current_user(current_user: users_schema.User = Depends(users_cruds.get_current_user)):
-    return await current_user
+    return current_user
 
 '''
 # リフレッシュトークン→アクセストークン再取得

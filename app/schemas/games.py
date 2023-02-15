@@ -1,3 +1,4 @@
+import datetime
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -25,7 +26,16 @@ class Cards(BaseModel):
     class Config:
         orm_mode = True
 
+
 #リクエストスキーマ
+class Results(BaseModel):
+    user_id: int
+    number_of_questions: int
+    number_of_correct: int
+    played_at: datetime.datetime
+    play_type: str
+    box_id: int
+    record_result: dict[int, bool]
 
 class SelectedBox(BaseModel):
     box_id: int
