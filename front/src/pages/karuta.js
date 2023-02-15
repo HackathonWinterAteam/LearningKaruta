@@ -1,4 +1,4 @@
-const Karuta = () => {
+const MKaruta = () => {
   // --- JSX ---
 
   // const efuda = {
@@ -111,4 +111,4 @@ const Karuta = () => {
   );
 };
 
-export default Karuta;
+export default MKaruta;
