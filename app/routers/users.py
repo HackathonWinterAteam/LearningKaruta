@@ -12,15 +12,11 @@ from typing import List
 
 router = APIRouter()
 
+
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/signin") # フロントがユーザー名とパスワードを送信するURI
-#ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-
-# Read
-
-@router.get("/users/")
-async def user(token: str = Depends(oauth2_scheme)):
-    return {"token": token}
 
 
 # Crate
@@ -30,9 +26,9 @@ async def user(token: str = Depends(oauth2_scheme)):
 def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
     return users_cruds.create_user(db = db, user=user)
 
-# 認証
+# 認可
 @router.post("/users/signin")
-async def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = users_cruds.authenticate_user(db,form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -46,17 +42,25 @@ async def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSess
         "user_id": user.user_id,
         "user_name": user.user_name,
         "email": user.email,
-        "created_at": str(user.created_at),
+        "created_at": str(user.created_at)
     }
     access_token = users_cruds.create_access_token(
         user_data, expires_delta=access_token_expires
     )
     token = {"token": access_token}
     response_data = user_data | token
-    return await response_data
+    return response_data
 
 
 # カレントユーザーの検証
 @router.get("/users/me")
 async def current_user(current_user: users_schema.User = Depends(users_cruds.get_current_user)):
     return await current_user
+
+'''
+# リフレッシュトークン→アクセストークン再取得
+@router.post("/reflesh")
+
+# トークンを返却
+
+'''

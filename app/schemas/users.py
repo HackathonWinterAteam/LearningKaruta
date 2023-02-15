@@ -21,13 +21,13 @@ class User(CreateUser):
     class Config:
         orm_mode = True
 
-
+# レスポンス
 class Token(BaseModel):
     access_token: str
     token_type: str
 
 
 class TokenData(BaseModel):
-    user_name: Union[str, None] = None
+    username: Union[str, None] = None
 
 

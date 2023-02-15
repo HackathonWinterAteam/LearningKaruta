@@ -9,8 +9,13 @@ from datetime import datetime, timedelta
 
 from jose import JWTError, jwt
 
+from database import get_db
 from models import users as users_model
 from schemas import users as users_schema
+
+
+# to get a string like this run:
+# openssl rand -hex 32
 
 
 SECRET_KEY = "1c3ecd2b186ee78127750ff41b28c8093ce52fd10c49426f873a2d652eb69257"
@@ -48,18 +53,19 @@ def create_user(db: Session, user: users_schema.User):
 
 
 
-# ユーザーデータをDBから取得()
-def get_user(db, user_name: str, passrord: str) -> users_schema.User:
-    return db.query(users_model.Users).filter(users_model.Users.email == user_name).first()
+# ユーザーデータをDBから取得() #usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
+def get_user(db, username: str):
+    return db.query(users_model.Users).filter(users_model.Users.email == username).first()
 
-# ユーザー認証
-async def authenticate_user(db: AsyncSession, user: users_schema.User):
-    user = get_user(db, user_name)
+# OAuth2による認可(DBにユーザーがいるかチェック、パスワードチェック)
+# usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
+def authenticate_user(db: Session, username: str, password: str):
+    user = get_user(db, username)
     if not user:
         return False
     if not verify_password(password, user.password):
         return False
-    return await user
+    return user
 
 # JWTの作成（トークン発行）
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -67,13 +73,13 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(minutes=30)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# 依存関係の更新
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+# 依存関係の更新　/ トークンチェック
+async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession= Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -81,20 +87,14 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        user_email: str = payload.get("email")
+        if user_email is None:
             raise credentials_exception
-        token_data = users_schema.TokenData(username=username)
+        token_data = users_schema.TokenData(username=user_email)
     except JWTError:
         raise credentials_exception
     user = get_user(db, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
-
-
-async def get_current_active_user(current_user: users_schema.User = Depends(get_current_user)):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
 
