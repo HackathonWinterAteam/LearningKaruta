@@ -1,22 +1,28 @@
 import { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "../utils/axios";
 import "../index.css";
 
 function Signup() {
-  // 画面遷移用の記述
-  const navigate = useNavigate();
-
   // 認証用の記述
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(
-      nameRef.current.value,
-      emailRef.current.value,
-      passwordRef.current.value
-    );
+    try {
+      const response = await axios.post("/auth/signup", {
+        name: nameRef.current.value,
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      });
+      console.log(response.data);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // スタイルの定義
