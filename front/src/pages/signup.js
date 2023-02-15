@@ -1,7 +1,6 @@
 import { useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
-import "../index.css";
 
 function Signup() {
   // 認証用の記述
