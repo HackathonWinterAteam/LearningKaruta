@@ -7,7 +7,6 @@ from sqlalchemy import Column, String, Text, Integer
 # from sqlalchemy_utils import UUIDType
 # from uuid import uuid4
 from .mixins import TimestampMixin
-from sqlalchemy.orm import relationship
 
 
 class Users(Base, TimestampMixin):
