@@ -18,6 +18,7 @@ class users(Base, TimestampMixin):
 
     user_id = Column('user_id', Integer, primary_key=True, nullable=False, autoincrement=True)
     user_name = Column('user_name', String(255), nullable=False)
+    email = Column('email', String(255), nullable=False)
     password = Column('password', String(255), nullable=False)
     user_intro = Column('user_intro', Text, nullable=True)
 

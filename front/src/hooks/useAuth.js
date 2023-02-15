@@ -8,7 +8,7 @@ const useAuth = () => {
 
   const signup = async (data) => {
     try {
-      const response = await axios.post("/auth/signup", data);
+      const response = await axios.post("/users/register", data);
       console.log(response.data);
       navigate("/");
     } catch (error) {
@@ -18,7 +18,7 @@ const useAuth = () => {
 
   const login = async (data) => {
     try {
-      await axios.post("/auth/login", data);
+      await axios.post("/users/signin", data);
       await getUser();
       navigate("/");
     } catch (error) {
@@ -28,7 +28,7 @@ const useAuth = () => {
 
   const getUser = async () => {
     try {
-      const response = await axios.get("/auth/user");
+      const response = await axios.get("/users/me");
       const user = response.data.user;
       setUser(user);
     } catch (error) {
