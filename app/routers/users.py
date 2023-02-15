@@ -15,7 +15,8 @@ router = APIRouter()
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/signin") # フロントがユーザー名とパスワードを送信するURI
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 
 

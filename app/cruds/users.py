@@ -18,9 +18,14 @@ from schemas import users as users_schema
 # openssl rand -hex 32
 
 
+
+SECRET_KEY = os.environ.get("SECRET_KEY")
+ALGORITHM = os.environ.get("ALGORITHM")
+'''
 SECRET_KEY = "1c3ecd2b186ee78127750ff41b28c8093ce52fd10c49426f873a2d652eb69257"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+'''
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
