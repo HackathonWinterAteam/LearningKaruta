@@ -10,15 +10,16 @@ import { BrowserRouter } from "react-router-dom";
 // root.render(
 //   <React.StrictMode>
 //     {/* <App /> */}
-//     <Main />
 //   </React.StrictMode>
 // );
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Root />
+      {/* <Karuta /> */}
     </BrowserRouter>
   </React.StrictMode>
 );

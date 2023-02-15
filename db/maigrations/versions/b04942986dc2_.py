@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: d9489014ad16
+Revision ID: b04942986dc2
 Revises: 
-Create Date: 2023-02-06 17:31:39.131896
+Create Date: 2023-02-08 00:35:21.701394
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision = 'd9489014ad16'
+revision = 'b04942986dc2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -46,6 +46,14 @@ def upgrade() -> None:
     sa.Column('updated_at', mysql.TIMESTAMP(), server_default=sa.text('current_timestamp on update current_timestamp'), nullable=False),
     sa.PrimaryKeyConstraint('user_id'),
     comment='ユーザーマスタ'
+    )
+    op.create_table('answer_images',
+    sa.Column('answer_image_id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('answer_id', sa.Integer(), nullable=True),
+    sa.Column('answer_file_pass', sa.Text(), nullable=True),
+    sa.ForeignKeyConstraint(['answer_id'], ['answer_texts.answer_id'], ),
+    sa.PrimaryKeyConstraint('answer_image_id'),
+    comment='取り札画像パス格納テーブル'
     )
     op.create_table('play_records',
     sa.Column('played_id', sa.Integer(), nullable=False),
@@ -107,6 +115,7 @@ def downgrade() -> None:
     op.drop_table('question_answer_cards')
     op.drop_index(op.f('ix_play_records_played_id'), table_name='play_records')
     op.drop_table('play_records')
+    op.drop_table('answer_images')
     op.drop_table('users')
     op.drop_table('question_texts')
     op.drop_table('boxes')

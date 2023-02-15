@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .efuda {
+    @apply w-20 h-20 bg-green-300 border;
+  }
+}
