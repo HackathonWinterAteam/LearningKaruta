@@ -1,12 +1,24 @@
-import React, { useRef } from "react";
-import { Link } from "react-router-dom";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "../utils/axios";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(emailRef.current.value, passwordRef.current.value);
+    try {
+      const response = await axios.post("/auth/login", {
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      });
+      console.log(response.data);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // スタイルの定義
@@ -29,7 +41,7 @@ const Login = () => {
   return (
     <div className={styleRoot}>
       <header className={styleHeader}>
-        <h1 className="text-center">ログイン画面</h1>
+        <h1 className="text-center">ログイン</h1>
       </header>
       <main className={styleMain}>
         <form onSubmit={handleSubmit}>
@@ -69,12 +81,12 @@ const Login = () => {
           </div>
         </form>
       </main>
-      {/* <>
-        <h2>アカウントをお持ちですか？</h2>
-        <button className={smallBtn} onClick={() => navigate("/login")}>
-          ログイン
+      <>
+        <h2>アカウントをお持ちでないですか？</h2>
+        <button className={smallBtn} onClick={() => navigate("/signup")}>
+          ユーザー登録
         </button>
-      </> */}
+      </>
     </div>
   );
 };
