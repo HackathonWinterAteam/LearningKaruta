@@ -11,47 +11,47 @@ const CommandKaruta = () => {
     {
       id: "1",
       question:"問題1 git init",
-      answer:"../imgs/1.jpg"
+      answer:"1.jpg"
     },
     {
       id: "2",
       question:"問題2 git init",
-      answer:"../imgs/2.jpg"
+      answer:"2.jpg"
     },
     {
       id: "3",
       question:"問題3 git init",
-      answer:"../imgs/3.jpg"
+      answer:"3.jpg"
     },
     {
       id: "4",
       question:"問題4 git init",
-      answer:"../imgs/4.jpg"
+      answer:"4.jpg"
     },
     {
       id: "5",
       question:"問題5 git init",
-      answer:"../imgs/5.jpg"
+      answer:"5.jpg"
     },
     {
       id: "6",
       question:"問題6 git init",
-      answer:"../imgs/6.jpg"
+      answer:"6.jpg"
     },
     {
       id: "7",
       question:"問題7 git init",
-      answer:"../imgs/7.jpg"
+      answer:"7.jpg"
     },
     {
       id: "8",
       question:"問題8 git init",
-      answer:"../imgs/8.ipg"
+      answer:"8.jpg"
     },
     {
       id: "9",
       question:"問題9 git init",
-      answer:"../imgs/9.ipg"
+      answer:"9.jpg"
     },
   ]
 
@@ -228,9 +228,7 @@ const CommandKaruta = () => {
                 .filter((answeredElm) => !isAnswered.includes(answeredElm.id))
                 .map((efuda) => (
                   <div key={efuda.id}>
-                    <button onClick={(e) => efudaClick(e)} id={efuda.id}>
-                      {efuda.answer}
-                    </button>
+                    <img alt="画像" src={`${process.env.PUBLIC_URL}/imgs/${efuda.answer}`} onClick={(e) => efudaClick(e)} id={efuda.id} />
                   </div>
                 ))}
           </ul>
