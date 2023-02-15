@@ -1,24 +1,20 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/axios";
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
+  const { login } = useAuth();
+
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("/auth/login", {
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      });
-      console.log(response.data);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
+    login({
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+    });
   };
 
   // スタイルの定義
