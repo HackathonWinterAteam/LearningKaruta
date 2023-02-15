@@ -1,9 +1,25 @@
+import { useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../index.css";
-import { useNavigate } from "react-router-dom";
 
 function Signup() {
+  // 画面遷移用の記述
   const navigate = useNavigate();
 
+  // 認証用の記述
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(
+      nameRef.current.value,
+      emailRef.current.value,
+      passwordRef.current.value
+    );
+  };
+
+  // スタイルの定義
   const styleRoot = "Login container md:3/5 lg:w-3/6 xl:w-2/5 ";
   const styleHeader = "h-20 flex justify-center items-center text-3xl";
   const styleMain = "border border-emerald-400 p-5 rounded-md";
@@ -19,40 +35,53 @@ function Signup() {
     "m-2 p-1 w-32 rounded-lg bg-emerald-400 hover:opacity-80 " +
     "text-teal-50 text-lg hover:border-emerald-500 hover:ring-2 font-black";
 
+  // JSX
   return (
     <div className={styleRoot}>
       <header className={styleHeader}>
-        <h1 className="text-center">サインアップ画面</h1>
+        <h1 className="text-center">ユーザー登録</h1>
       </header>
       <main className={styleMain}>
-        <form action="#" method="POST">
+        <form onSubmit={handleSubmit}>
+          <div className={styleRow}>
+            <label htmlFor="name" className={styleInputLabel}></label>
+            <input
+              id="name"
+              name="name"
+              ref={nameRef}
+              className={styleInput}
+              placeholder="お名前"
+            />
+          </div>
           <div className={styleRow}>
             <label htmlFor="email" className={styleInputLabel}></label>
             <input
-              id="email"
-              placeholder="メールアドレス"
-              className={styleInput}
-              name="email"
               type="email"
+              id="email"
+              name="email"
+              ref={emailRef}
               autoComplete="email"
               required
+              className={styleInput}
+              placeholder="メールアドレス"
             />
           </div>
           <div className={styleRow}>
             <label htmlFor="password" className={styleInputLabel}></label>
             <input
+              type="password"
               id="password"
+              name="password"
+              ref={passwordRef}
               placeholder="パスワード"
               className={styleInput}
-              name="password"
-              type="password"
               autoComplete="current-password"
               required
             />
           </div>
           <div className={styleRow}>
             <button type="submit" className={styleBtn}>
-              サインアップ
+              ユーザー登録
             </button>
           </div>
         </form>
