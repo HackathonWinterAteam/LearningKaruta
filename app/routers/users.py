@@ -4,6 +4,7 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 from database import get_db
+import models.users as users_model
 import schemas.users as users_schema
 import cruds.users as users_cruds
 from datetime import timedelta
@@ -25,13 +26,24 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
 #ユーザー登録
 @router.post("/users/register",response_model=users_schema.User)
 def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
-    return users_cruds.create_user(db = db, user=user)
+    get_email = user.email
+    get_user_email = db.query(users_model.Users.email).filter(users_model.Users.email == get_email).first()
+    if get_user_email != None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="既に登録されているメールアドレスです"
+        )
+    else:
+        create_user = users_cruds.create_user(db = db, user=user)
+        return create_user
 
-# 認可
+
+# 認可、トークン発行
 @router.post("/users/signin")
 def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = users_cruds.authenticate_user(db,form_data.username, form_data.password)
     if not user:
+        # メッセージ書き直す
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",

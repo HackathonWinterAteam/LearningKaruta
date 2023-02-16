@@ -31,8 +31,6 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/signin")
 
-#テスト用クラス
-
 # パスワードのハッシュ化
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
