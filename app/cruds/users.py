@@ -13,28 +13,16 @@ from database import get_db
 from models import users as users_model
 from schemas import users as users_schema
 
-
-# to get a string like this run:
-# openssl rand -hex 32
-
-
-
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
-'''
-SECRET_KEY = "1c3ecd2b186ee78127750ff41b28c8093ce52fd10c49426f873a2d652eb69257"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-'''
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/signin")
 
 # パスワードのハッシュ化
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
-
 
 # パスワードを検証
 def verify_password(plain_password, hashed_password):
@@ -102,15 +90,35 @@ def create_reflesh_token(db: Session, data: dict, user_id: int, expires_delta: O
     return reflesh_jwt
 
 
-# 依存関係の更新　/ トークンチェック
-async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession= Depends(get_db)):
+# アクセストークンからカレントユーザー取得
+async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession=Depends(get_db)):
+    return await get_current_user_from_token('access_token', token, db=db)
+
+# リフレッシュトークンからカレントユーザー取得
+async def get_current_user_with_refresh_token(token: str = Depends(oauth2_scheme), db: AsyncSession=Depends(get_db)):
+    return await get_current_user_from_token('reflesh_token', token, db=db)
+
+# カレントユーザー取得
+async def get_current_user_from_token(token_type: str, token: str, db:AsyncSession):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    #デコード実施
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+    #token_typeが一致しているか確認、していなかったらエラーを返す
+    if payload.get("token_type") != token_type:
+        raise HTTPException(status_code=401, detail='トークンタイプ不一致')
+
+    # リフレッシュトークンの場合、受け取ったものとDBに保存されているものが一致するか確認
+    user_id = payload.get("user_id")
+    db_user = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
+
+    if token_type == 'reflesh_token' and db_user.reflesh_token != token:
+        raise HTTPException(status_code=401, detail='リフレッシュトークン不一致')
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_email: str = payload.get("email")
         if user_email is None:
             raise credentials_exception
@@ -120,4 +128,5 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
     user = get_user(db, username=token_data.username)
     if user is None:
         raise credentials_exception
+
     return user

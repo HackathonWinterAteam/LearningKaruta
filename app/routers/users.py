@@ -68,7 +68,7 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
         db, user_data, user_id=user_id, expires_delta=reflesh_token_expires
     )
     a_token = {"access_token": access_token}
-    r_token = {"refleesh_token": reflesh_token}
+    r_token = {"reflesh_token": reflesh_token}
     response_data = user_data | a_token | r_token
     return response_data
 
@@ -78,10 +78,27 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
 async def current_user(current_user: users_schema.User = Depends(users_cruds.get_current_user)):
     return current_user
 
-'''
-# リフレッシュトークン→アクセストークン再取得
-@router.post("/reflesh")
+# リフレッシュトークンでトークンを再取得
+@router.get("/refresh_token")
+async def refresh_token(current_user: users_schema.User = Depends(users_cruds.get_current_user_with_refresh_token), db: AsyncSession = Depends(get_db)):
 
-# トークンを返却
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    reflesh_token_expires = timedelta(minutes=REFLESH_TOKEN_EXPIRE_DAYS)
 
-'''
+    user_data = {
+        "user_id": current_user.user_id,
+        "user_name": current_user.user_name,
+        "email": current_user.email,
+        "created_at": str(current_user.created_at)
+    }
+    user_id = current_user.user_id
+    access_token = users_cruds.create_access_token(
+        user_data, expires_delta=access_token_expires
+    )
+    reflesh_token = users_cruds.create_reflesh_token(
+        db, user_data, user_id=user_id, expires_delta=reflesh_token_expires
+    )
+    a_token = {"access_token": access_token}
+    r_token = {"reflesh_token": reflesh_token}
+    response_data = user_data | a_token | r_token
+    return response_data
