@@ -35,8 +35,7 @@ def create_user(db: Session, user: users_schema.User):
     db_user = users_model.Users(
         user_name=user.user_name,
         email=user.email,
-        password=get_password_hash(user.password),
-        created_at=user.created_at
+        password=get_password_hash(user.password)
     )
     db.add(db_user)
     db.commit()
@@ -78,23 +77,22 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return access_jwt
 
 # JWTの作成（リフレッシュトークン発行）
-def create_reflesh_token(db: Session, data: dict, user_id: int, expires_delta: Optional[timedelta] = None):
+def create_refresh_token(db: Session, data: dict, user_id: int, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(days=60)
     to_encode.update({"exp": expire})
-    to_encode.update({"token_type": "reflesh_token"})
-    reflesh_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    to_encode.update({"token_type": "refresh_token"})
+    refresh_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-    db_reflesh = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
-    db_reflesh.reflesh_token = reflesh_jwt
-    # db.update(users_model.Users).where(users_model.Users.user_id == user_id).values(users_model.Users.reflesh_token ==)
+    db_refresh = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
+    db_refresh.refresh_token = refresh_jwt
     db.commit()
-    db.refresh(db_reflesh)
+    db.refresh(db_refresh)
 
-    return reflesh_jwt
+    return refresh_jwt
 
 
 # アクセストークンからカレントユーザー取得
@@ -103,7 +101,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
 
 # リフレッシュトークンからカレントユーザー取得
 async def get_current_user_with_refresh_token(token: str = Depends(oauth2_scheme), db: AsyncSession=Depends(get_db)):
-    return await get_current_user_from_token('reflesh_token', token, db=db)
+    return await get_current_user_from_token('resh_token', token, db=db)
 
 # カレントユーザー取得
 async def get_current_user_from_token(token_type: str, token: str, db:AsyncSession):
@@ -123,7 +121,7 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
     user_id = payload.get("user_id")
     db_user = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
 
-    if token_type == 'reflesh_token' and db_user.reflesh_token != token:
+    if token_type == 'refresh_token' and db_user.refresh_token != token:
         raise HTTPException(status_code=401, detail='リフレッシュトークン不一致')
     try:
         user_email: str = payload.get("email")
