@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from database import get_db
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
 
@@ -37,7 +38,6 @@ def game_result():
     pass
 
 #ゲーム終了（ログインあり・結果記録）
-@router.post("/karuta/result/{played_id}") # パスパラメータではないかも　played_idは自動で割り振られる？　GETとPOSTでメソッドが違うから/karuta/resultで良い？
-def game_result():
-    pass
-
+@router.post("/karuta/result/")
+def game_result(result: games_schema.Results, db: AsyncSession = Depends(get_db)):
+    return games_cruds.play_records(db=db, result=result)
