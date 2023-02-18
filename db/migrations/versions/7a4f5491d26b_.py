@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: b04942986dc2
+Revision ID: 7a4f5491d26b
 Revises: 
-Create Date: 2023-02-08 00:35:21.701394
+Create Date: 2023-02-18 21:04:50.031866
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision = 'b04942986dc2'
+revision = '7a4f5491d26b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -40,10 +40,12 @@ def upgrade() -> None:
     op.create_table('users',
     sa.Column('user_id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_name', sa.String(length=255), nullable=False),
+    sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('password', sa.String(length=255), nullable=False),
     sa.Column('user_intro', sa.Text(), nullable=True),
+    sa.Column('reflesh_token', sa.String(length=65535), nullable=True),
     sa.Column('created_at', mysql.TIMESTAMP(), server_default=sa.text('current_timestamp'), nullable=False),
-    sa.Column('updated_at', mysql.TIMESTAMP(), server_default=sa.text('current_timestamp on update current_timestamp'), nullable=False),
+    sa.Column('updated_at', mysql.TIMESTAMP(), server_default=sa.text('current_timestamp on update current_timestamp'), nullable=True),
     sa.PrimaryKeyConstraint('user_id'),
     comment='ユーザーマスタ'
     )
