@@ -44,6 +44,8 @@ services:
     volumes:
       - ./front/src:/usr/src/front/src
       - ./front/public:/usr/src/front/public
+    environment:
+      - NODE_OPTIONS=--openssl-legacy-provider
     ports:
       - 3000:3000
     stdin_open: true
