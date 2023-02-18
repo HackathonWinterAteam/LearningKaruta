@@ -70,7 +70,7 @@ def authenticate_user(db: Session, username: str, password: str):
         return False
     return user
 
-# JWTの作成（トークン発行）
+# JWTの作成（アクセストークン発行）
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -78,8 +78,29 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=30)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    to_encode.update({"token_type": "access_token"})
+    access_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return access_jwt
+
+# JWTの作成（リフレッシュトークン発行）
+def create_reflesh_token(db: Session, data: dict, user_id: int, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(days=60)
+    to_encode.update({"exp": expire})
+    to_encode.update({"token_type": "reflesh_token"})
+    reflesh_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    db_reflesh = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
+    db_reflesh.reflesh_token = reflesh_jwt
+    # db.update(users_model.Users).where(users_model.Users.user_id == user_id).values(users_model.Users.reflesh_token ==)
+    db.commit()
+    db.refresh(db_reflesh)
+
+    return reflesh_jwt
+
 
 # 依存関係の更新　/ トークンチェック
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession= Depends(get_db)):

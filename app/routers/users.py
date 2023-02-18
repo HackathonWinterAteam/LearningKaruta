@@ -18,6 +18,7 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/signin") # フロントがユーザー名とパスワードを送信するURI
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
+REFLESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFLESH_TOKEN_EXPIRE_DAYS"))
 
 
 
@@ -51,17 +52,24 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
         )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    reflesh_token_expires = timedelta(minutes=REFLESH_TOKEN_EXPIRE_DAYS)
+
     user_data = {
         "user_id": user.user_id,
         "user_name": user.user_name,
         "email": user.email,
         "created_at": str(user.created_at)
     }
+    user_id = user.user_id
     access_token = users_cruds.create_access_token(
         user_data, expires_delta=access_token_expires
     )
-    token = {"token": access_token}
-    response_data = user_data | token
+    reflesh_token = users_cruds.create_reflesh_token(
+        db, user_data, user_id=user_id, expires_delta=reflesh_token_expires
+    )
+    a_token = {"access_token": access_token}
+    r_token = {"refleesh_token": reflesh_token}
+    response_data = user_data | a_token | r_token
     return response_data
 
 

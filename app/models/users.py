@@ -20,3 +20,4 @@ class Users(Base, TimestampMixin):
     email = Column('email', String(255), nullable=False)
     password = Column('password', String(255), nullable=False)
     user_intro = Column('user_intro', Text, nullable=True)
+    reflesh_token = Column('reflesh_token', String(255), nullable=True)
