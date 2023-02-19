@@ -36,19 +36,19 @@ def read_playing_cards(db: Session, box_id: int) -> games_model.boxes_cards :
 
     return PlayCardsList
 
-#　プレイ結果記録
-async def play_records(db: AsyncSession, result: games_schema.Results):
+#　プレイ結果記録 非同期にする！！
+def play_records(db: Session, result: games_schema.Results):
     #プレイ記録親テーブルに記録
     db_result = games_model.play_records(
         user_id = result.user_id,
-        number_of_questions = result.number_of_question,
-        number_of_correct = result.number_of_correct,
+        number_of_question = result.number_of_question,
+        number_of_corrected = result.number_of_corrected,
         played_at = result.played_at,
         play_type = result.play_type
     )
     db.add(db_result)
     db.commit
-    db.refresh(db_result)
+    #db.refresh(db_result)
 
     #↑で発行されたplayed_idを取得
     played_id = db.query(games_model.play_records.played_id).\
@@ -62,13 +62,21 @@ async def play_records(db: AsyncSession, result: games_schema.Results):
     )
     db.add(db_box)
     db.commit
-    db.refresh(db_box)
+    #db.refresh(db_box)
 
-    '''
-    db_detail = games_model.record_details(
-        played_id = played_id
+    record_result = result.record_result
+    
+    for card_id, judgement in record_result.items():
+        
+        db_detail = games_model.record_details(
+            played_id = played_id,
+            card_id = card_id,
+            judgement = judgement,
+            user_id = result.user_id
+        )
 
-    )
-    '''
+        db.add(db_detail)
+        db.commit
+        #db.refresh(db_detail)
 
     return "Input Game Result!"

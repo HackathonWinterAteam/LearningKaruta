@@ -21,3 +21,6 @@
 /front/npm-debug.log*
 /front/yarn-debug.log*
 /front/yarn-error.log*
+
+# backend
+__pycache__/
