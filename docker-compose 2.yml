@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: "mysql"
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./mysql/Dockerfile
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 789uiojkl
+      MYSQL_ROOT_PASSWORD: root_pass
+      TZ: Asia/Tokyo
+    volumes:
+      - ./mysql/DB:/docker-entrypoint-initdb.d #起動時のテストデータ
+      - db-data:/var/lib/mysql #data永続
+
+  fastapi:
+    container_name: "fastapi"
+    tty: true
+    build: 
+      context: .
+      dockerfile: ./app/Dockerfile
+    volumes:
+      - ./app/src:/app/fastapi/src
+    ports:
+      - 8000:8000
+    environment:
+      TZ: Asia/Tokyo
+
+  react:
+    container_name: "front"
+    build:
+      context: .
+      dockerfile: ./front/Dockerfile
+    volumes:
+      - ./front/src:/app/front/src
+      - ./front/public:/app/front/public
+    ports:
+      - 3000:3000
+    tty: true
+    stdin_open: true
+
+volumes:
+  db-data: #コンテナのvolumeを使って永続化
