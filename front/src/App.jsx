@@ -3,7 +3,6 @@ import { Modal } from "./compornents/Modal";
 import { useInterval } from "./useInterval";
 import "./App.css";
 
-
 const CommandKaruta = () => {
   //まずはカルタを用意
   const karutaLists =
