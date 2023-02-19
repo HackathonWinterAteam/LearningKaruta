@@ -38,6 +38,7 @@ def read_playing_cards(db: Session, box_id: int) -> games_model.boxes_cards :
 
 #　プレイ結果記録 非同期にする！！
 def play_records(db: Session, result: games_schema.Results):
+
     #プレイ記録親テーブルに記録
     db_result = games_model.play_records(
         user_id = result.user_id,
@@ -47,13 +48,15 @@ def play_records(db: Session, result: games_schema.Results):
         play_type = result.play_type
     )
     db.add(db_result)
-    db.commit
-    #db.refresh(db_result)
+    db.commit()
+    db.refresh(db_result)
 
     #↑で発行されたplayed_idを取得
-    played_id = db.query(games_model.play_records.played_id).\
-        filter(games_model.play_records.played_at == result.played_at).\
-            filter(games_model.play_records.user_id == result.user_id).first()
+    played_db = db.query(games_model.play_records).\
+        filter(games_model.play_records.played_at == db_result.played_at).\
+            filter(games_model.play_records.user_id == db_result.user_id).first()
+    print(played_db)
+    played_id = played_db.played_id
 
     # プレイしたお題の記録
     db_box = games_model.play_type_boxes(
@@ -61,8 +64,8 @@ def play_records(db: Session, result: games_schema.Results):
         box_id = result.box_id
     )
     db.add(db_box)
-    db.commit
-    #db.refresh(db_box)
+    db.commit()
+    db.refresh(db_box)
 
     record_result = result.record_result
     
@@ -76,7 +79,7 @@ def play_records(db: Session, result: games_schema.Results):
         )
 
         db.add(db_detail)
-        db.commit
-        #db.refresh(db_detail)
+        db.commit()
+        db.refresh(db_detail)
 
     return "Input Game Result!"
