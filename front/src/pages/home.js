@@ -54,6 +54,14 @@ function Home() {
           Login
         </NavLink>
       </li>
+      <li>
+        <NavLink
+          style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
+          to="/karuta"
+        >
+          Karuta
+        </NavLink>
+      </li>
     </>
   );
 }
