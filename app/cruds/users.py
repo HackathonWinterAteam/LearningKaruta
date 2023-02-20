@@ -46,13 +46,13 @@ def create_user(db: Session, user: users_schema.User):
 
 # ユーザーデータをDBから取得() #usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def get_user(db, username: str):
-    return db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    #user.refresh_token = ''
+    #user.password = ''
+    delattr(user,"refresh_token")
+    delattr(user,"password")
+    return user
 
-'''
-def access_get_user(db, username: str):
-    access_user = db.execute(select(users_model.Users.user_id,users_model.Users.email,users_model.Users.created_at).filter(users_model.Users.email == username))
-    return access_user.first()
-'''
 
 # OAuth2による認可(DBにユーザーがいるかチェック、パスワードチェック)
 # usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
@@ -133,5 +133,6 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
     user = get_user(db, username=token_data.username)
     if user is None:
         raise credentials_exception
+    
 
     return user

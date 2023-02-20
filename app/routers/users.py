@@ -22,7 +22,7 @@ REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS"))
 
 
 
-# Crate
+# Create
 
 #ユーザー登録
 @router.post("/users/register",response_model=users_schema.User)

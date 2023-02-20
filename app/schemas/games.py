@@ -19,7 +19,7 @@ class Cards(BaseModel):
     question_id: str
     answer_id:str
     question_text: str #(None, example="ブランチ確認”)
-    card_text: str# "ブランチ確認　 git branch"：これがほしい ★★
+    card_text: str # "ブランチ確認　 git branch"：これがほしい ★★
     answer_text: str #(None, example="git branch”)
     answer_file_pass: Optional[str]
 
@@ -30,8 +30,8 @@ class Cards(BaseModel):
 #リクエストスキーマ
 class Results(BaseModel):
     user_id: int
-    number_of_questions: int
-    number_of_correct: int
+    number_of_question: int
+    number_of_corrected: int
     played_at: datetime.datetime
     play_type: str
     box_id: int
