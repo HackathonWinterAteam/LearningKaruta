@@ -83,3 +83,7 @@ def play_records(db: Session, result: games_schema.Results):
         db.refresh(db_detail)
 
     return "Input Game Result!"
+
+# 苦手札の札IDを取得
+def weak_point_cards(db: Session):
+    weak_card = db.query()

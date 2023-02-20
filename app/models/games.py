@@ -117,3 +117,4 @@ class play_type_boxes(Base):
     }
     played_id = Column('played_id', Integer, ForeignKey(play_records.played_id), primary_key=True)
     box_id = Column('box_id', Integer, ForeignKey(boxes.box_id), nullable=False)
+
