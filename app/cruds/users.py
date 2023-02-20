@@ -54,10 +54,15 @@ def get_user(db, username: str):
     return user
 
 
+def all_get_user(db, username: str):
+    user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    return user
+
+
 # OAuth2による認可(DBにユーザーがいるかチェック、パスワードチェック)
 # usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def authenticate_user(db: Session, username: str, password: str):
-    user = get_user(db, username)
+    user = all_get_user(db, username)
     if not user:
         return False
     if not verify_password(password, user.password):
