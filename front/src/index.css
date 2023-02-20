@@ -1,5 +1,14 @@
 @tailwind base;
 @tailwind components;
+.btn_01{
+  @apply py-4 px-14 pr-14 border-4 border-darkBlue bg-darkWhite ;
+}
+.span_Shadow{
+   @apply absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-darkBlue group-hover:-translate-x-0 group-hover:-translate-y-0;
+}
+.span_Shadow_2{
+  @apply absolute inset-0 w-full h-full bg-darkWhite border-2 border-darkBlue group-hover:bg-darkBlue;
+}
 @tailwind utilities;
 
 @layer components {
