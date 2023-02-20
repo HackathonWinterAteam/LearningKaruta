@@ -53,13 +53,6 @@ def get_user(db, username: str):
     delattr(user,"password")
     return user
 
-'''
-# カラム指定してユーザーデータ取得
-def access_get_user(db, username: str):
-    access_user = db.query(users_model.Users.user_id,users_model.Users.email,users_model.Users.created_at).filter(users_model.Users.email == username).first()
-    #access_user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
-    return access_user
-'''
 
 # OAuth2による認可(DBにユーザーがいるかチェック、パスワードチェック)
 # usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
