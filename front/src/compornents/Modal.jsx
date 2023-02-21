@@ -11,7 +11,7 @@ export const Modal = ({ modalClose, children }) => {
             <p>{children}</p>
           </div>
           <div className="closeModal" onClick={modalClose}>
-            ×
+            閉じる
           </div>
         </div>
       </section>
