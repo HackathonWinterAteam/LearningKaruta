@@ -1,0 +1,21 @@
+取り札ID,取り札
+1,git log
+2,git init
+3,git commit
+4,git diff
+5,git clone
+6,git status
+7,git pull
+8,git log
+9,git push
+10,git branch
+11,git branch -a
+12,git checkout
+13,git status
+14,git merge
+15,git stash
+16,git show
+17,git config
+18,git commit
+19,git checkout -b
+20,git pull origin main
