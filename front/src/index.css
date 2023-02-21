@@ -3,7 +3,19 @@
 @tailwind utilities;
 
 @layer components {
-  .efuda {
-    @apply w-20 h-20 bg-green-300 border;
+  .start-screen {
+    @apply h-screen w-full flex justify-center items-center;
+  }
+  .modalArea {
+    @apply z-10 w-full h-full;
+  }
+  .modalBg {
+    @apply fixed inset-0 bg-gray-700 bg-opacity-30;
+  }
+  .modalWrapper {
+    @apply fixed -ml-40 text-2xl text-center top-1/2 inset-x-1/2   w-1/4  h-1/6 max-w-lg py-2.5 px-7 bg-gray-200;
+  }
+  .closeModal {
+    @apply pl-52 -mt-20 text-3xl cursor-pointer;
   }
 }
