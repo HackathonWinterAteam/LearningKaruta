@@ -70,7 +70,7 @@ class question_answer_cards(Base):
 class boxes_cards(Base):
     __tablename__ = 'box_card'
     __table_args__ = {
-        'comment': 'お題と札を紐づける中間テーブル'
+        'comment': 'お題と札を紐づけるテーブル'
     }
 
     box_id = Column('box_id',Integer, ForeignKey(boxes.box_id), primary_key=True)
@@ -90,13 +90,7 @@ class play_records(Base):
     played_at = Column('played_at', Timestamp, server_default=current_timestamp(), nullable=False) #TIMESTAMPを定義
     play_type = Column('play_type', String(255), nullable=False)
 
-'''
-    users = relationship(
-        'users',
-        back_populates='play_records'
-    )
 
-'''
 
 class record_details(Base):
     __tablename__ = 'record_details'
