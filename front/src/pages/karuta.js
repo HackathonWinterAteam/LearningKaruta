@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import { Modal } from "../compornents/Modal";
 import { useInterval } from "../compornents/useInterval";
 
+import "../index.css";
+
 const MKaruta = () => {
   //まずはカルタを用意
   const karutaLists = [
@@ -205,38 +207,45 @@ const MKaruta = () => {
 
   return (
     <div>
-      <li>
-        <NavLink
-          style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-          to="/"
-        >
-          Home
-        </NavLink>
-      </li>
+      <ul>
+        <li className="flex justify-end">
+          <NavLink
+            style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
+            to="/"
+          >
+            Home
+          </NavLink>
+        </li>
+      </ul>
 
       <div>
         {!isStarted && (
           <div className="start-screen">
-            <button onClick={() => startGame()}>ゲーム開始</button>
+            <button
+              className="bg-gray-300 text-3xl"
+              onClick={() => startGame()}
+            >
+              ゲーム開始
+            </button>
           </div>
         )}
       </div>
       <div>
         {isKaruta && (
           <div>
-            <div>
+            <div className="text-3xl text-center mb-3 bg-gray-300 ">
               <p>{showQuestion}</p>
             </div>
             <div className="fixed left-0 top-0 w-20 h-20 rounded-lg bg-blue-500 text-yellow-300 text-5xl text-center leading-normal outline-none">
               <p>{cpuScore}</p>
-              <p>取得した札：{cpuAcquiredCards}</p>
+              <p className="text-2xl mt-2">{cpuAcquiredCards}</p>
             </div>
-            <ul className="flex wrap field">
+            <ul className="flex flex-wrap mt-20 ml-32 ">
               {currentTurn < 9 &&
                 efudaLists
                   .filter((answeredElm) => !isAnswered.includes(answeredElm.id))
                   .map((efuda) => (
-                    <div key={efuda.id}>
+                    <div className=" mx-24 mb-10 w-40" key={efuda.id}>
                       <img
                         alt="画像"
                         src={`${process.env.PUBLIC_URL}/imgs/${efuda.answer}`}
@@ -248,7 +257,7 @@ const MKaruta = () => {
             </ul>
             <div className="fixed right-0 bottom-0 w-20 h-20 rounded-lg bg-yellow-300 text-blue-500 text-5xl text-center leading-normal outline-none">
               <p>{userScore}</p>
-              <p>取得した札：{userAcquiredCards}</p>
+              <p className="text-2xl">{userAcquiredCards}</p>
             </div>
           </div>
         )}
