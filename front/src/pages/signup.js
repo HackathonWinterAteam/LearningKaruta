@@ -13,7 +13,7 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     signup({
-      name: nameRef.current.value,
+      user_name: nameRef.current.value,
       email: emailRef.current.value,
       password: passwordRef.current.value,
     });
@@ -47,7 +47,7 @@ function Signup() {
             <label htmlFor="name" className={styleInputLabel}></label>
             <input
               id="name"
-              name="name"
+              name="user_name"
               ref={nameRef}
               className={styleInput}
               placeholder="お名前"
