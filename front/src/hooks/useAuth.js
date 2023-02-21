@@ -8,7 +8,10 @@ const useAuth = () => {
 
   const signup = async (data) => {
     try {
-      const response = await axios.post("/users/register", data);
+      const response = await axios.post(
+        "http://localhost:8000/users/register",
+        data
+      );
       console.log(response.data);
       navigate("/");
     } catch (error) {
