@@ -1,1 +1,0 @@
-LOAD DATA LOCAL INFILE '/usr/src/app/app/csv/box.csv' INTO TABLE boxes FIELDS TERMINATED BY ',' IGNORE 1 LINES;
