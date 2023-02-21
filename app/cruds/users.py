@@ -8,7 +8,7 @@ from sqlalchemy import select
 from typing import Optional
 from datetime import datetime, timedelta
 
-from jose import JWTError, jwt
+from jose import JWTError, jwt, ExpiredSignatureError
 
 from database import get_db
 from models import users as users_model
@@ -54,10 +54,15 @@ def get_user(db, username: str):
     return user
 
 
+def all_get_user(db, username: str):
+    user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    return user
+
+
 # OAuth2による認可(DBにユーザーがいるかチェック、パスワードチェック)
 # usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def authenticate_user(db: Session, username: str, password: str):
-    user = get_user(db, username)
+    user = all_get_user(db, username)
     if not user:
         return False
     if not verify_password(password, user.password):
@@ -101,7 +106,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
 
 # リフレッシュトークンからカレントユーザー取得
 async def get_current_user_with_refresh_token(token: str = Depends(oauth2_scheme), db: AsyncSession=Depends(get_db)):
-    return await get_current_user_from_token('resh_token', token, db=db)
+    return await get_current_user_from_token('refresh_token', token, db=db)
 
 # カレントユーザー取得
 async def get_current_user_from_token(token_type: str, token: str, db:AsyncSession):
@@ -111,7 +116,10 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
         headers={"WWW-Authenticate": "Bearer"},
     )
     #デコード実施
-    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail='トークン有効期限切れ')
 
     #token_typeが一致しているか確認、していなかったらエラーを返す
     if payload.get("token_type") != token_type:

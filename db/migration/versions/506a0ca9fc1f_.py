@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 7a4f5491d26b
-Revises: 
-Create Date: 2023-02-18 21:04:50.031866
+Revision ID: 506a0ca9fc1f
+Revises: a650c944b5aa
+Create Date: 2023-02-21 10:07:51.416644
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision = '7a4f5491d26b'
-down_revision = None
+revision = '506a0ca9fc1f'
+down_revision = 'a650c944b5aa'
 branch_labels = None
 depends_on = None
 
@@ -43,7 +43,7 @@ def upgrade() -> None:
     sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('password', sa.String(length=255), nullable=False),
     sa.Column('user_intro', sa.Text(), nullable=True),
-    sa.Column('reflesh_token', sa.String(length=65535), nullable=True),
+    sa.Column('refresh_token', sa.String(length=65535), nullable=True),
     sa.Column('created_at', mysql.TIMESTAMP(), server_default=sa.text('current_timestamp'), nullable=False),
     sa.Column('updated_at', mysql.TIMESTAMP(), server_default=sa.text('current_timestamp on update current_timestamp'), nullable=True),
     sa.PrimaryKeyConstraint('user_id'),
@@ -85,7 +85,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['box_id'], ['boxes.box_id'], ),
     sa.ForeignKeyConstraint(['card_id'], ['question_answer_cards.card_id'], ),
     sa.PrimaryKeyConstraint('box_id', 'card_id'),
-    comment='お題と札を紐づける中間テーブル'
+    comment='お題と札を紐づけるテーブル'
     )
     op.create_table('play_type_boxes',
     sa.Column('played_id', sa.Integer(), nullable=False),
@@ -106,6 +106,9 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('card_id', 'played_id'),
     comment='プレイ記録詳細'
     )
+
+    
+
     # ### end Alembic commands ###
 
 

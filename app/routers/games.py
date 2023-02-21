@@ -20,7 +20,6 @@ def root():
     return {"test": "HelloWorld"}
 '''
 
-
 # ゲーム選択
 @router.get("/karuta", response_model=List[games_schema.Boxes])
 def game_select(db: Session = Depends(get_db)):
@@ -32,12 +31,14 @@ def game_select(db: Session = Depends(get_db)):
 def game(box_id: int, db: Session = Depends(get_db)): #パスパラメータbox_idがgame関数に引数として渡される
     return games_cruds.read_playing_cards(db=db, box_id=box_id)
 
+'''
 # ゲーム終了（ログインなし）
 @router.get("/karuta/result")
 def game_result():
     pass
+'''
 
 #ゲーム終了（ログインあり・結果記録）
 @router.post("/karuta/result/")
-def game_result(result: games_schema.Results, db: AsyncSession = Depends(get_db)):
+async def game_result(result: games_schema.Results, db: AsyncSession = Depends(get_db)):
     return games_cruds.play_records(db=db, result=result)
