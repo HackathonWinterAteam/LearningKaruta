@@ -40,7 +40,7 @@ def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
 
 
 # 認可、トークン発行
-@router.post("/users/signin")
+@router.post("/users/signin", response_model=users_schema.Token)
 def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = users_cruds.authenticate_user(db,form_data.username, form_data.password)
     if not user:
@@ -67,6 +67,11 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
     refresh_token = users_cruds.create_refresh_token(
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
+    # a_token = {"access_token": access_token}
+    # r_token = {"refresh_token": refresh_token}
+    # response = Response()
+    # a_token = response.set_cookie(key="access_token", value=access_token)
+    # r_token = response.set_cookie(key="refresh_token", value=refresh_token)
     a_token = {"access_token": access_token}
     r_token = {"refresh_token": refresh_token}
     response_data = user_data | a_token | r_token

@@ -39,10 +39,10 @@ def read_playing_cards(db: Session, box_id: int) -> games_model.boxes_cards :
     return PlayCardsList
 
 # 苦手札セット取得
-def weak_point_cards(db: Session, user_id: int) -> users_model.Users:
-    t = f"SELECT card_id FROM answer_rate_view WHERE answer_rate <= 0.8 AND user_id = {user_id}"
+def weak_point_cards(db: Session, user_id: str) -> users_model.Users :
+    t = f"SELECT card_id FROM answer_rate_view WHERE answer_rate <= 0.8 AND user_id = :user_id"
     select_text = text(t)
-    cid = db.execute(select_text).fetchall()
+    cid = db.execute(select_text,{"user_id": user_id}).fetchall()
     card_id_list = [item[0] for item in cid]
     weak_card_id = ', '.join(map(str, card_id_list))
     print(weak_card_id)

@@ -33,7 +33,7 @@ def game(box_id: int, db: Session = Depends(get_db)): #パスパラメータbox_
 
 # 苦手札
 @router.get("/karuta/weak/{user_id}", response_model=List[games_schema.Cards])
-def weak_game(user_id: int, db: Session = Depends(get_db)):
+def weak_game(user_id: str, db: Session = Depends(get_db)):
     return games_cruds.weak_point_cards(db=db, user_id=user_id)
 
 

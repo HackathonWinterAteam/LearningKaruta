@@ -29,7 +29,7 @@ class Cards(BaseModel):
 
 #リクエストスキーマ
 class Results(BaseModel):
-    user_id: int
+    user_id: str
     number_of_question: int
     number_of_corrected: int
     played_at: datetime.datetime

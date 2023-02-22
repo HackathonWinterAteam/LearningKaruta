@@ -13,7 +13,7 @@ class Users(Base, TimestampMixin):
         'comment': 'ユーザーマスタ'
     }
 
-    user_id = Column('user_id', CHAR(36), primary_key=True, default=str(uuid.uuid4()), nullable=False, unique=True)
+    user_id = Column('user_id', String(36), primary_key=True, default=str(uuid.uuid4()), nullable=False, unique=True)
     user_name = Column('user_name', String(255), nullable=False)
     email = Column('email', String(255), nullable=False)
     password = Column('password', String(255), nullable=False)

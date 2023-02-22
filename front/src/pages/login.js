@@ -1,8 +1,11 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import useAuth from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import axios   from "../utils/axios";
 import qs from "qs";
+
+import { useCookies } from "react-cookie";
+
 
 const FormData = () => {
   // const [formValues, setFormValues] = useState({
@@ -17,6 +20,8 @@ const FormData = () => {
 
 // const Login = () => {
   // const { login } = useAuth();
+
+  // const [accessToken, login] = useAuth();
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -37,6 +42,7 @@ const FormData = () => {
   //   console.log(emailRef.current.value, passwordRef.current.value)
   
   // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = {
@@ -58,13 +64,25 @@ const FormData = () => {
         qs.stringify(data),
         config
       );
+      
+      
       console.log(response.data);
+      console.log(response.data.access_token);
+      // login(response.data.access_token);
+
+
+      if (response.data.access_token) {
+        return console.log('ログイン済み')
+        ;
+      }
+    
     } catch (error) {
       console.error(error);
     }
   };
 
 
+  
 
   // スタイルの定義
   const styleRoot = "Login container md:3/5 lg:w-3/6 xl:w-2/5 ";
@@ -120,9 +138,6 @@ const FormData = () => {
               required
             />
           </div>
-          {/* <div className={styleRow}>
-            <div><a href="#">パスワードを忘れた方</a></div>
-          </div> */}
           <div className={styleRow}>
             <button type="submit" className={styleBtn}>
               ログイン
@@ -137,6 +152,7 @@ const FormData = () => {
         </button>
       </>
     </div>
+    
   );
 
 };

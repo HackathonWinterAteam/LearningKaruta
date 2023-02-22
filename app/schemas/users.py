@@ -22,8 +22,13 @@ class User(CreateUser):
 
 # レスポンス
 class Token(BaseModel):
+    user_name: str
+    email: str
+    user_id: str
+    created_at: str
     access_token: str
-    token_type: str
+    refresh_token: str
+    #token_type: str
 
 
 class TokenData(BaseModel):
