@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
+import FormData from "../pages/login";
 
 const useAuth = () => {
   const [user, setUser] = useState();
@@ -19,15 +20,25 @@ const useAuth = () => {
     }
   };
 
-  const login = async (data) => {
-    try {
-      await axios.post("/users/signin", data);
-      await getUser();
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const login = async (data) => {
+  //   try {
+  //     await axios.post("http://localhost:8000/users/signin", data,
+  //     { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+  //     // {
+  //     //   grant_type: '',
+  //     //   username: emailRef,
+  //     //   password: passwordRef,
+  //     //   scope: '',
+  //     //   client_id: '',
+  //     //   client_secret: '',
+  //     // }
+  //     );
+  //     await getUser();
+  //     navigate("/");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const getUser = async () => {
     try {
@@ -39,7 +50,7 @@ const useAuth = () => {
     }
   };
 
-  return { user, signup, login };
+  return { user, signup };
 };
 
 export default useAuth;
