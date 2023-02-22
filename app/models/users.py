@@ -1,12 +1,10 @@
-# SQLAlchemy関連のインポート文を記述
-# 設計したテーブルをここに落とし込む
-
-# テスト用テーブル
+import uuid
 from database import Base
-from sqlalchemy import Column, String, Text, Integer
+from sqlalchemy import Column, String, Text, CHAR
 # from sqlalchemy_utils import UUIDType
 # from uuid import uuid4
 from .mixins import TimestampMixin
+
 
 
 class Users(Base, TimestampMixin):
@@ -15,7 +13,7 @@ class Users(Base, TimestampMixin):
         'comment': 'ユーザーマスタ'
     }
 
-    user_id = Column('user_id', Integer, primary_key=True, nullable=False, autoincrement=True)
+    user_id = Column('user_id', CHAR(36), primary_key=True, default=str(uuid.uuid4()), nullable=False, unique=True)
     user_name = Column('user_name', String(255), nullable=False)
     email = Column('email', String(255), nullable=False)
     password = Column('password', String(255), nullable=False)

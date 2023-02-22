@@ -15,7 +15,7 @@ class CreateUser(BaseModel):
 
 #レスポンス
 class User(CreateUser):
-    user_id: int
+    user_id: str
     
     class Config:
         orm_mode = True
