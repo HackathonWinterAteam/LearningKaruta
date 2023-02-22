@@ -7,6 +7,7 @@ Create Date: 2023-02-21 10:10:37.851675
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.sql import text
 
 
 # revision identifiers, used by Alembic.
@@ -17,10 +18,9 @@ depends_on = None
 
 
 def upgrade() -> None:
-    pass
-    #conn = op.get_bind()
-    #view_query = "CREATE VIEW answer_rate_view AS SELECT card_id, user_id, AVG(judgement) AS answer_rate FROM record_details GROUP BY card_id, user_id"
-    #conn.execute(view_query)
+    conn = op.get_bind()
+    view_query = "CREATE VIEW answer_rate_view AS SELECT card_id, user_id, AVG(judgement) AS answer_rate FROM record_details GROUP BY card_id, user_id"
+    conn.execute(text(view_query))
 
 
 def downgrade() -> None:
