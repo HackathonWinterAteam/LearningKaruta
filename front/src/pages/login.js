@@ -21,7 +21,7 @@ const FormData = () => {
   // const Login = () => {
   // const { login } = useAuth();
 
-  const [accessToken, login_set] = useAuth();
+  const [accessToken, refreshToken, login_set] = useAuth();
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -55,7 +55,8 @@ const FormData = () => {
     const config = {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
-      }
+      },
+      credentials: "include"
     };
 
     try {
@@ -68,7 +69,7 @@ const FormData = () => {
       
       console.log(response.data);
       console.log(response.data.access_token);
-      login_set(response.data.access_token);
+      login_set(response.data.access_token, response.data.refresh_token);
 
 
       if (response.data.access_token) {

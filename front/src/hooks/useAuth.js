@@ -3,6 +3,8 @@ import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie"
 
+axios.defaults.withCredentials = true;
+
 const useAuth = () => {
   const [user, setUser] = useState();
   const navigate = useNavigate();
@@ -50,22 +52,37 @@ const useAuth = () => {
     }
   };
 
-  const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["access_token", "refresh_token"]);
 
   const [accessToken, setAccessToken] = useState(cookies.access_token || null);
 
-  const login_set = (accessToken) => {
-    setCookie("access_token", accessToken, { path: undefined });
+  const [refreshToken, setRefreshToken] = useState(cookies.access_token || null);
+
+
+
+  const login_set = (accessToken,refreshToken) => {
+    setCookie("access_token", accessToken /*, { httpOnly: true }*/);
     setAccessToken(accessToken);
+    setCookie("refresh_token", refreshToken /*, { httpOnly: true }*/);
+    setRefreshToken(refreshToken);
   };
+
+  // const login_r_set = (refreshToken) => {
+  //   setCookie("refresh_token", refreshToken, { path: undefined });
+  //   setRefreshToken(refreshToken);
+  // };
+
+
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });
+    removeCookie("refresh_token", { path: "/" });
     setAccessToken(null);
+    setRefreshToken(null);
   };
 
 
-  return [ accessToken, login_set, user, signup, logout ];
+  return [ accessToken, refreshToken, login_set, user, signup, logout ];
 };
 
 export default useAuth;

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -67,15 +67,18 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
     refresh_token = users_cruds.create_refresh_token(
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
+
+    
     # a_token = {"access_token": access_token}
     # r_token = {"refresh_token": refresh_token}
-    # response = Response()
-    # a_token = response.set_cookie(key="access_token", value=access_token)
-    # r_token = response.set_cookie(key="refresh_token", value=refresh_token)
-    a_token = {"access_token": access_token}
-    r_token = {"refresh_token": refresh_token}
-    response_data = user_data | a_token | r_token
-    return response_data
+    response = Response()
+    response.set_cookie(key="access_token", value=access_token, httponly=True)
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
+    # a_token = {"access_token": access_token}
+    # r_token = {"refresh_token": refresh_token}
+    # response_data = user_data | a_token | r_token
+    # return response_data
+    return user_data | {"access_token": access_token} | {"refresh_token": refresh_token}
 
 
 # カレントユーザーの検証
