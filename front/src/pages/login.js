@@ -18,10 +18,10 @@ const FormData = () => {
   //   setFormValues({ ...formValues, [name]: value });
   // };
 
-// const Login = () => {
+  // const Login = () => {
   // const { login } = useAuth();
 
-  // const [accessToken, login] = useAuth();
+  const [accessToken, login_set] = useAuth();
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -68,7 +68,7 @@ const FormData = () => {
       
       console.log(response.data);
       console.log(response.data.access_token);
-      // login(response.data.access_token);
+      login_set(response.data.access_token);
 
 
       if (response.data.access_token) {
