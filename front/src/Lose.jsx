@@ -28,8 +28,8 @@ const Victory = () => {
                 </div>
 
                 <div className="absolute container h-auto m-52 flex">
-                <div className="w-1/4 h-auto">
-                    <img src={`${process.env.PUBLIC_URL}/imgs/win.jpg`} className="object-contain" alt=""/>
+                <div className="w-2/6 h-auto">
+                    <img src={`${process.env.PUBLIC_URL}/imgs/lose.jpg`} className="object-contain" alt=""/>
                 </div>
                 <div className="">
                     <div className="ml-20">
