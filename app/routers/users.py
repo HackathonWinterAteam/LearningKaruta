@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
+from typing import Dict, Any
 from database import get_db
 import models.users as users_model
 import schemas.users as users_schema
@@ -35,7 +37,7 @@ def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
 
 
 # 認可、トークン発行
-@router.post("/users/signin", response_model=users_schema.Token)
+@router.post("/users/signin", response_model=Dict[str, Any])
 def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = users_cruds.authenticate_user(db,form_data.username, form_data.password)
     if not user:
@@ -62,10 +64,16 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
 
-    response = Response()
+
+    response = JSONResponse(content=user_data | {"access_token": access_token} | {"refresh_token": refresh_token})
     response.set_cookie(key="access_token", value=access_token, httponly=True)
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
-    return user_data | {"access_token": access_token} | {"refresh_token": refresh_token}
+    return response
+
+    # response = Response()
+    # response.set_cookie(key="access_token", value=access_token, httponly=True)
+    # response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
+    # return user_data | {"access_token": access_token} | {"refresh_token": refresh_token}
 
 
 # 認証
