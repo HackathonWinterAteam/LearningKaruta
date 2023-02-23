@@ -42,8 +42,7 @@ const MKaruta = () => {
     setIsStarted(true);
     setIsRunning(true);
   };
-  //ローディング画面
-  //ゲーム画面に移る
+
   //データ（カルタオブジェクト）の取得
   const initialURL = "http://localhost:8000/karuta/1";
   useEffect(() => {
@@ -62,16 +61,7 @@ const MKaruta = () => {
     setEfudaLists(result);
   };
 
-  //3秒待つ
-  // useEffect(() => {
-  //   if (!isStarted || currentTurn >= 9) return;
-  //   setTimeout(() => {
-  //     setIsKaruta(true);
-  //     setOneCharactorQuestion(yomiLists[currentTurn].question);
-  //     setIsRunning(true);
-  //   }, 1000);
-  //   // eslint-disable-next-line
-  // }, [isStarted, currentTurn]);
+  //n秒待つ
   useEffect(() => {
     const delay = currentTurn === 0 ? 1500 : 500;
     if (!isStarted || currentTurn >= 9) return;
@@ -96,12 +86,19 @@ const MKaruta = () => {
     }
   };
 
+  // useInterval(
+  //   () => {
+  //     if (!isKaruta) return;
+  //     updateQuestion();
+  //   },
+  //   isRunning ? 100 : null
+  // );
   useInterval(
     () => {
       if (!isKaruta) return;
       updateQuestion();
     },
-    isRunning ? 100 : null
+    isRunning && currentTurn < 9 ? 100 : null
   );
 
   //シャッフル関数
@@ -159,7 +156,7 @@ const MKaruta = () => {
     }
   };
 
-  //勝敗とスコア、ホーム画面へ飛ぶボタンが表示してあるのモーダル表示
+  //勝敗とスコア、ホーム画面へ飛ぶボタンが表示してあるモーダルの表示
   const finishGame = () => {
     setCurrentTurn(currentTurn + 1);
     setIsModalOpen(true);
