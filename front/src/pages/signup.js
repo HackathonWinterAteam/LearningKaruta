@@ -1,9 +1,10 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+// import useAuth from "../hooks/useAuth";
+import { useAuthContext } from "../context/AuthContext";
 
 function Signup() {
-  const { signup } = useAuth();
+  const { signup } = useAuthContext();
   // 認証用の記述
   const nameRef = useRef(null);
   const emailRef = useRef(null);

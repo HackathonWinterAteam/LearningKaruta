@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie"
+import Cookies from "js-cookie";
 
 axios.defaults.withCredentials = true;
 
@@ -22,29 +23,21 @@ const useAuth = () => {
     }
   };
 
-  // const login = async (data) => {
-  //   try {
-  //     await axios.post("http://localhost:8000/users/signin", data,
-  //     { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-  //     // {
-  //     //   grant_type: '',
-  //     //   username: emailRef,
-  //     //   password: passwordRef,
-  //     //   scope: '',
-  //     //   client_id: '',
-  //     //   client_secret: '',
-  //     // }
-  //     );
-  //     await getUser();
-  //     navigate("/");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const getTokenFromCookie = () => {
+    const a_token = Cookies.get('access_token');
+    const r_token = Cookies.get('refresh_token');
+    return { a_token, r_token };
+  };
+
+  const { a_token, r_token } = getTokenFromCookie();
 
   const getUser = async () => {
     try {
-      const response = await axios.get("/users/me");
+      const response = await axios.get("/users/me",{
+        headers: {
+          'Authorization': `Bearer ${a_token}`
+        }
+      });
       const user = response.data.user;
       setUser(user);
     } catch (error) {
@@ -53,12 +46,8 @@ const useAuth = () => {
   };
 
   const [cookies, setCookie, removeCookie] = useCookies(["access_token", "refresh_token"]);
-
   const [accessToken, setAccessToken] = useState(cookies.access_token || null);
-
   const [refreshToken, setRefreshToken] = useState(cookies.access_token || null);
-
-
 
   const login_set = (accessToken,refreshToken) => {
     setCookie("access_token", accessToken /*, { httpOnly: true }*/);
@@ -66,13 +55,6 @@ const useAuth = () => {
     setCookie("refresh_token", refreshToken /*, { httpOnly: true }*/);
     setRefreshToken(refreshToken);
   };
-
-  // const login_r_set = (refreshToken) => {
-  //   setCookie("refresh_token", refreshToken, { path: undefined });
-  //   setRefreshToken(refreshToken);
-  // };
-
-
 
   const logout = () => {
     removeCookie("access_token", { path: "/" });

@@ -48,7 +48,7 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
         )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_DAYS)
+    refresh_token_expires = timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
 
     user_data = {
         "user_id": user.user_id,
