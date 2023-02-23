@@ -2,61 +2,13 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Modal } from "../compornents/Modal";
 import { useInterval } from "../compornents/useInterval";
+import { getAllKaruta } from "../compornents/getKaruta";
 
 import "../index.css";
 
 const MKaruta = () => {
-  //まずはカルタを用意
-  const karutaLists = [
-    {
-      id: "1",
-      question: "問題1 git init",
-      answer: "1.jpg",
-    },
-    {
-      id: "2",
-      question: "問題2 git init",
-      answer: "2.jpg",
-    },
-    {
-      id: "3",
-      question: "問題3 git init",
-      answer: "3.jpg",
-    },
-    {
-      id: "4",
-      question: "問題4 git init",
-      answer: "4.jpg",
-    },
-    {
-      id: "5",
-      question: "問題5 git init",
-      answer: "5.jpg",
-    },
-    {
-      id: "6",
-      question: "問題6 git init",
-      answer: "6.jpg",
-    },
-    {
-      id: "7",
-      question: "問題7 git init",
-      answer: "7.jpg",
-    },
-    {
-      id: "8",
-      question: "問題8 git init",
-      answer: "8.jpg",
-    },
-    {
-      id: "9",
-      question: "問題9 git init",
-      answer: "9.jpg",
-    },
-  ];
-
   //useState
-  const [yomiLists, setYomiLists] = useState(karutaLists); //読み札管理
+  const [yomiLists, setYomiLists] = useState([]); //読み札管理
   const [efudaLists, setEfudaLists] = useState(yomiLists); //絵札管理
   const [userScore, setUserScore] = useState(0); //ユーザーのスコア管理
   const [cpuScore, setCpuScore] = useState(0); //CPUのスコア管理
@@ -93,7 +45,15 @@ const MKaruta = () => {
   //ローディング画面
   //ゲーム画面に移る
   //データ（カルタオブジェクト）の取得
-  //データのランダム選択（問題数分）
+  const initialURL = "http://localhost:8000/karuta/1";
+  useEffect(() => {
+    const fetchKarutaData = async () => {
+      let res = await getAllKaruta(initialURL);
+      setYomiLists(res);
+      console.log(res);
+    };
+    fetchKarutaData();
+  },[])
 
   //絵札のシャッフル
   const setCards = () => {
@@ -117,7 +77,7 @@ const MKaruta = () => {
     if (!isStarted || currentTurn >= 9) return;
     setTimeout(() => {
       setShowQuestion("");
-      setOneCharactorQuestion(yomiLists[currentTurn].question);
+      setOneCharactorQuestion(yomiLists[currentTurn].card_text);
       setIsRunning(true);
       setIsKaruta(true);
     }, delay);
@@ -156,22 +116,22 @@ const MKaruta = () => {
   const judge = (clickTarget) => {
     console.log(clickTarget);
     const index = efudaLists.findIndex(
-      (efuda) => efuda.id === yomiLists[currentTurn].id
+      (efuda) => efuda.card_id === yomiLists[currentTurn].card_id
     );
     const newIsAnswerd = isAnswered.slice();
-    newIsAnswerd.push(efudaLists[index].id);
+    newIsAnswerd.push(efudaLists[index].card_id);
     setIsAnswered(newIsAnswerd);
-    if (clickTarget.id === yomiLists[currentTurn].id) {
+    if (clickTarget.card_id == yomiLists[currentTurn].card_id) {
       setUserScore(userScore + 1);
 
-      const tempStorage = efudaLists[index].answer;
+      const tempStorage = efudaLists[index].answer_file_pass;
       const newAcquiredCard = [...userAcquiredCards];
       newAcquiredCard.push(tempStorage);
       setUserAcquiredCards(newAcquiredCard);
     } else {
       setCpuScore(cpuScore + 1);
 
-      const tempCpuStorage = efudaLists[index].answer;
+      const tempCpuStorage = efudaLists[index].answer_file_pass;
       const newCpuAcquiredCard = [...cpuAcquiredCards];
       newCpuAcquiredCard.push(tempCpuStorage);
       setCpuAcquiredCards(newCpuAcquiredCard);
@@ -243,12 +203,12 @@ const MKaruta = () => {
             <ul className="flex flex-wrap mt-20 ml-32 ">
               {currentTurn < 9 &&
                 efudaLists
-                  .filter((answeredElm) => !isAnswered.includes(answeredElm.id))
+                  .filter((answeredElm) => !isAnswered.includes(answeredElm.card_id))
                   .map((efuda) => (
-                    <div className=" mx-24 mb-10 w-40" key={efuda.id}>
+                    <div className=" mx-24 mb-10 w-40" key={efuda.card_id}>
                       <img
                         alt="画像"
-                        src={`${process.env.PUBLIC_URL}/imgs/${efuda.answer}`}
+                        src={`${process.env.PUBLIC_URL}/imgs/${efuda.answer_file_pass}`}
                         onClick={(e) => efudaClick(e)}
                         id={efuda.id}
                       />
@@ -273,117 +233,6 @@ const MKaruta = () => {
       </div>
     </div>
   );
-
-  // // --- JSX ---
-
-  // // const efuda = {
-  // //   width: "40px",
-  // //   height: "40px",
-  // //   backgroundColor: "green",
-  // // };
-
-  // // // 上段の絵札
-  // // const upperRowEfuda = {
-  // //   display: "flex",
-  // //   justifyContent: "space-around",
-  // //   padding: "90px",
-  // // };
-
-  // // // 中段の絵札
-  // // const middleRowEfuda = {
-  // //   display: "flex",
-  // //   justifyContent: "space-around",
-  // //   padding: "90px",
-  // // };
-
-  // // // 下段の絵札
-  // // const lowerRowEfuda = {
-  // //   display: "flex",
-  // //   justifyContent: "space-around",
-  // //   padding: "90px",
-  // // };
-
-  // return (
-  //   <div>
-  //     {/* ゲーム画面のエリア */}
-  //     <div>
-  //       {/* 持っている札の表示エリア */}
-  //       <div className=" fixed right-0 bottom-0 w-20 h-20 rounded-lg bg-yellow-300 text-blue-500 text-5xl text-center leading-normal outline-none  ">
-  //         1
-  //       </div>
-  //       <div className=" fixed left-0 top-0 w-20 h-20 rounded-lg bg-blue-500 text-yellow-300 text-5xl text-center leading-normal outline-none ">
-  //         1
-  //       </div>
-
-  //       <div className="flex flex-row mt-36 justify-around">
-  //         <div className="w-20 h-20 bg-green-300 border">1</div>
-  //         <div className="w-20 h-20 bg-green-300 border">2</div>
-  //         <div className="w-20 h-20 bg-green-300 border">3</div>
-  //       </div>
-
-  //       <div className="flex flex-row mt-24 justify-around">
-  //         <div className="w-20 h-20 bg-green-300 border">4</div>
-  //         <div className="w-20 h-20 bg-green-300 border">5</div>
-  //         <div className="w-20 h-20 bg-green-300 border">6</div>
-  //       </div>
-
-  //       <div className="flex flex-row mt-24 justify-around">
-  //         <div className="w-20 h-20 bg-green-300 border">7</div>
-  //         <div className="w-20 h-20 bg-green-300 border">8</div>
-  //         <div className="w-20 h-20 bg-green-300 border">9</div>
-  //       </div>
-
-  //       {/* <div>
-  //         <div>1</div>
-  //         <div>2</div>
-  //         <div>3</div>
-  //         <div>4</div>
-  //         <div>5</div>
-  //       </div>
-
-  //       <div>
-  //         <div>6</div>
-  //         <div>7</div>
-  //       </div>
-
-  //       <div>
-  //         <div>8</div>
-  //         <div>9</div>
-  //         <div>10</div>
-  //         <div>11</div>
-  //         <div>12</div>
-  //       </div> */}
-
-  //       {/* 読み札の表示エリア */}
-  //       <div></div>
-  //     </div>
-  //     {/* 勝敗画面のエリア
-  //   <div >
-  //   {/* 合計枚数のエリア
-  //   <div >
-  //       <button >you"の合計枚数"</button>
-  //       <button >CPU"の合計枚数"</button>
-  //   </div>
-  //   {/* ユーザーの次のアクションを促すエリア
-  //   <div >
-  //       <button className="">次のページへ</button>
-  //       <button className="">マイページへ</button>
-  //   </div>
-  //   <div className="">
-  //       <big>
-  //       You
-  //       <br />
-  //       win
-  //       </big>
-  //       <big>
-  //       You <br />
-  //       loss
-  //       </big>
-  //       <big>ひきわけ</big>
-  //   </div>
-  //   </div> */}
-  //   </div>
-  // );
 };
 
 export default MKaruta;
