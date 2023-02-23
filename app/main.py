@@ -15,8 +15,10 @@ origins = [
     'http://localhost:3001',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001'
-    'http://www.cmd-karuta.xyz/*'
-    'https://www.cmd-karuta.xyz/*'
+    'http://www.cmd-karuta.xyz'
+    'https://www.cmd-karuta.xyz'
+    'http://www.cmd-karuta.xyz/api/'
+    'https://www.cmd-karuta.xyz/api/'
 ]
 
 app.add_middleware(
