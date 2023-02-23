@@ -2,9 +2,9 @@ import datetime
 from typing import Optional, Union
 from pydantic import BaseModel, Field
 
-# JSONで受け渡しするデータ型の定義を行う
 
-# リクエストスキーマ
+# リクエスト
+
 class CreateUser(BaseModel):
     user_name: str
     email: str
@@ -13,14 +13,15 @@ class CreateUser(BaseModel):
     class Config:
         orm_mode = True
 
+
 #レスポンス
+
 class User(CreateUser):
     user_id: str
     
     class Config:
         orm_mode = True
 
-# レスポンス
 class Token(BaseModel):
     user_name: str
     email: str

@@ -1,11 +1,8 @@
-from sqlalchemy import Column, Integer, Text, String, Enum, ForeignKey, Boolean, CHAR #他使用するものすべて
+from sqlalchemy import Column, Integer, Text, String, Enum, ForeignKey, Boolean
 from database import Base
 from models.users import Users
 from sqlalchemy.dialects.mysql import TIMESTAMP as Timestamp
 from sqlalchemy.sql.functions import current_timestamp
-from sqlalchemy.orm import relationship
-
-#テーブル作成
 
 class boxes(Base):
     __tablename__ = 'boxes'
@@ -89,7 +86,6 @@ class play_records(Base):
     number_of_corrected = Column('number_of_corrected', Integer, nullable=False)
     played_at = Column('played_at', Timestamp, server_default=current_timestamp(), nullable=False) #TIMESTAMPを定義
     play_type = Column('play_type', String(255), nullable=False)
-
 
 
 class record_details(Base):

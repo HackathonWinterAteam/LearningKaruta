@@ -1,8 +1,6 @@
 import uuid
 from database import Base
 from sqlalchemy import Column, String, Text, CHAR
-# from sqlalchemy_utils import UUIDType
-# from uuid import uuid4
 from .mixins import TimestampMixin
 
 

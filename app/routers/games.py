@@ -2,21 +2,18 @@ from fastapi import APIRouter, Depends
 from database import get_db
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
+import schemas.games as games_schema
+import cruds.games as games_cruds
+from typing import List
+
 
 router = APIRouter()
 
-import schemas.games as games_schema
-import cruds.games as games_cruds
-
-from typing import List
-
-# フロントに渡したときの実行状態　：テスト検討
 
 # root
 '''
 @router.get("/")
 def root():
-    #ユーザー分岐予定？
     return {"test": "HelloWorld"}
 '''
 
@@ -37,8 +34,7 @@ def weak_game(user_id: str, db: Session = Depends(get_db)):
     return games_cruds.weak_point_cards(db=db, user_id=user_id)
 
 
-
 #ゲーム終了（ログインあり・結果記録）
 @router.post("/karuta/result/")
 async def game_result(result: games_schema.Results, db: AsyncSession = Depends(get_db)):
-    return games_cruds.play_records(db=db, result=result)
+    return await games_cruds.play_records(db=db, result=result)

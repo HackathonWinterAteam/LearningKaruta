@@ -69,7 +69,7 @@ def weak_point_cards(db: Session, user_id: str) -> users_model.Users :
 
 
 #　プレイ結果記録 非同期にする！！
-def play_records(db: Session, result: games_schema.Results):
+async def play_records(db: AsyncSession, result: games_schema.Results):
 
     #プレイ記録親テーブルに記録
     db_result = games_model.play_records(
