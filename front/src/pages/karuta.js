@@ -73,7 +73,7 @@ const MKaruta = () => {
   //   // eslint-disable-next-line
   // }, [isStarted, currentTurn]);
   useEffect(() => {
-    const delay = currentTurn === 0 ? 3000 : 500;
+    const delay = currentTurn === 0 ? 1500 : 500;
     if (!isStarted || currentTurn >= 9) return;
     setTimeout(() => {
       setShowQuestion("");
@@ -151,10 +151,10 @@ const MKaruta = () => {
 
   //モーダルを閉じる
   const modalClose = () => {
-    if (currentTurn < 8) {
+    if (currentTurn < 9) {
       setIsModalOpen(false);
       setCurrentTurn((prev) => prev + 1);
-    } else if (currentTurn === 8) {
+    } else if (currentTurn === 9) {
       finishGame();
     }
   };
@@ -167,17 +167,6 @@ const MKaruta = () => {
 
   return (
     <div>
-      <ul>
-        <li className="flex justify-end">
-          <NavLink
-            style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-            to="/"
-          >
-            Home
-          </NavLink>
-        </li>
-      </ul>
-
       <div>
         {!isStarted && (
           <div className="start-screen">
@@ -194,12 +183,23 @@ const MKaruta = () => {
         {isKaruta && (
           <div>
             <div className="text-center bg-gray-100 h-[52px]">
-              <p className="text-3xl py-2 ">{showQuestion}</p>
+              <p className="text-3xl py-2">{showQuestion}</p>
             </div>
             <div className="w-full h-[calc(100vh-100px)] text-center m-auto relative">
-              <div className="absolute left-0 top-0 w-20 h-20 rounded-lg bg-blue-500 text-yellow text-5xl text-center leading-normal outline-none">
-                <p>{cpuScore}</p>
-                {/* <p className="text-2xl mt-2">{cpuAcquiredCards}</p> */}
+              <div className="flex absolute left-0 top-0">
+                <div className="w-20 h-20 rounded-lg bg-blue-500 text-yellow text-5xl text-center leading-normal outline-none">
+                  {cpuScore}
+                </div>
+                <div className="flex gap-4 flex-grow">
+                  {cpuAcquiredCards.map((card) => (
+                    <img
+                      key={card.id}
+                      src={`${process.env.PUBLIC_URL}/imgs/${card}`}
+                      alt="画像"
+                      className="w-20 object-contain"
+                    />
+                  ))}
+                </div>
               </div>
               <ul className="w-[95%] h-3/5 absolute left-[3%] top-[16%] box-border grid grid-cols-5 grid-rows-2 gap-y-7">
                 {currentTurn < 9 &&
@@ -209,19 +209,30 @@ const MKaruta = () => {
                         <img
                           alt="画像"
                           className="object-contain w-4/5"
-                          src={`${process.env.PUBLIC_URL}/imgs/${efuda.answer}`}
+                          src={`${process.env.PUBLIC_URL}/imgs/${efuda.answer_file_pass}`}
                           onClick={(e) => efudaClick(e)}
                           id={efuda.id}
                         />
                       </div>
                     ) : (
-                      <div></div>
+                      <div>{console.log("this")}</div>
                     )
                   )}
               </ul>
-              <div className="absolute right-0 bottom-0 w-20 h-20 rounded-lg bg-yellow text-blue-500 text-5xl text-center leading-normal outline-none">
-                <p>{userScore}</p>
-                {/* <p className="text-2xl">{userAcquiredCards}</p> */}
+              <div className="flex absolute right-0 bottom-0">
+                <div className="flex gap-4 flex-grow">
+                  {userAcquiredCards.map((card) => (
+                    <img
+                      key={card.id}
+                      src={`${process.env.PUBLIC_URL}/imgs/${card}`}
+                      alt="画像"
+                      className="w-20 object-contain"
+                    />
+                  ))}
+                </div>
+                <div className="w-20 h-20 rounded-lg bg-yellow text-blue-500 text-5xl text-center leading-normal outline-none">
+                  {userScore}
+                </div>
               </div>
             </div>
           </div>
@@ -237,7 +248,6 @@ const MKaruta = () => {
         )}
       </div>
     </div>
-  );
-};
+  );};
 
 export default MKaruta;
