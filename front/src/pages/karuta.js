@@ -203,7 +203,7 @@ const MKaruta = () => {
                 {currentTurn < yomiLists.length &&
                   efudaLists.map((efuda) =>
                     !isAnswered.includes(efuda.id) ? (
-                      <div key={efuda.id} className="flex justify-center">
+                      <div key={efuda.card_id} className="flex justify-center">
                         <img
                           alt="画像"
                           className="object-contain w-4/5"
