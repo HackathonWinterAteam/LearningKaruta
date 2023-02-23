@@ -5,6 +5,9 @@ import NoMatch from "../pages/nomatch";
 import Signup from "../pages/signup";
 import Login from "../pages/login";
 import Karuta from "../pages/karuta";
+import Victory from "../Victory";
+import Lose from "../Lose";
+import Drow from "../Drow";
 
 function Root() {
   return (
@@ -50,6 +53,9 @@ function Root() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/karuta" element={<Karuta />} />
+        <Route path="/victory" element={<Victory />} />
+        <Route path="/lose" element={<Lose />} />
+        <Route path="/Drow" element={<Drow />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </div>
