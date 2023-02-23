@@ -52,13 +52,13 @@ def create_user(db: Session, user: users_schema.User):
 
 
 # ユーザーデータをDBから取得() #usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
-async def get_user(db, username: str):
+def get_user(db, username: str):
     user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
     #user.refresh_token = ''
     #user.password = ''
     delattr(user,"refresh_token")
     delattr(user,"password")
-    return await user
+    return user
 
 
 def all_get_user(db, username: str):
@@ -89,7 +89,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return access_jwt
 
 # JWTの作成（リフレッシュトークン発行）
-def create_refresh_token(db: Session, data: dict, user_id: int, expires_delta: Optional[timedelta] = None):
+def create_refresh_token(db: Session, data: dict, user_id: str, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -145,7 +145,10 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
         token_data = users_schema.TokenData(username=user_email)
     except JWTError:
         raise credentials_exception
-    user = get_user(db, username=token_data.username)
+    if token_type == 'access_token':
+        user = get_user(db, username=token_data.username)
+    elif token_type == 'refresh_token':
+        user = all_get_user(db, username=token_data.username)
     if user is None:
         raise credentials_exception
     
