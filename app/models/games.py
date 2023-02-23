@@ -1,11 +1,8 @@
-from sqlalchemy import Column, Integer, Text, String, Enum, ForeignKey, Boolean #他使用するものすべて
+from sqlalchemy import Column, Integer, Text, String, Enum, ForeignKey, Boolean
 from database import Base
 from models.users import Users
 from sqlalchemy.dialects.mysql import TIMESTAMP as Timestamp
 from sqlalchemy.sql.functions import current_timestamp
-from sqlalchemy.orm import relationship
-
-#テーブル作成
 
 class boxes(Base):
     __tablename__ = 'boxes'
@@ -84,12 +81,11 @@ class play_records(Base):
     }
 
     played_id = Column('played_id',Integer, primary_key=True, index=True)
-    user_id = Column('user_id', Integer, ForeignKey(Users.user_id), nullable=False,) #インポートしてきたユーザークラスのユーザーIDを入れる
+    user_id = Column('user_id', String(36), ForeignKey(Users.user_id), nullable=False,) #インポートしてきたユーザークラスのユーザーIDを入れる
     number_of_question = Column('number_of_question', Integer, nullable=False)
     number_of_corrected = Column('number_of_corrected', Integer, nullable=False)
     played_at = Column('played_at', Timestamp, server_default=current_timestamp(), nullable=False) #TIMESTAMPを定義
     play_type = Column('play_type', String(255), nullable=False)
-
 
 
 class record_details(Base):
@@ -101,7 +97,7 @@ class record_details(Base):
     card_id = Column('card_id', Integer, ForeignKey(question_answer_cards.card_id), primary_key=True)
     played_id = Column('played_id', Integer, ForeignKey(play_records.played_id, ondelete="CASCADE"), primary_key=True)
     judgement = Column('judgement', Boolean, nullable=False)
-    user_id = Column('user_id', Integer, ForeignKey(Users.user_id))
+    user_id = Column('user_id', String(36), ForeignKey(Users.user_id))
 
 
 class play_type_boxes(Base):
@@ -111,4 +107,3 @@ class play_type_boxes(Base):
     }
     played_id = Column('played_id', Integer, ForeignKey(play_records.played_id), primary_key=True)
     box_id = Column('box_id', Integer, ForeignKey(boxes.box_id), nullable=False)
-

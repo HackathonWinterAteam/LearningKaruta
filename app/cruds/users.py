@@ -1,10 +1,10 @@
 from passlib.context import CryptContext
 import os
+import uuid
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
-from sqlalchemy import select
 from typing import Optional
 from datetime import datetime, timedelta
 
@@ -21,6 +21,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/signin")
 
+# UUID生成
+def generate_uuid() -> str:
+    return str(uuid.uuid4())
+
+
 # パスワードのハッシュ化
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
@@ -32,7 +37,9 @@ def verify_password(plain_password, hashed_password):
 
 # ユーザー新規登録
 def create_user(db: Session, user: users_schema.User):
+    user_id = generate_uuid()
     db_user = users_model.Users(
+        user_id=user_id,
         user_name=user.user_name,
         email=user.email,
         password=get_password_hash(user.password)
@@ -45,13 +52,13 @@ def create_user(db: Session, user: users_schema.User):
 
 
 # ユーザーデータをDBから取得() #usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
-def get_user(db, username: str):
+async def get_user(db, username: str):
     user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
     #user.refresh_token = ''
     #user.password = ''
     delattr(user,"refresh_token")
     delattr(user,"password")
-    return user
+    return await user
 
 
 def all_get_user(db, username: str):

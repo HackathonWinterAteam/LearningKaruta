@@ -1,14 +1,11 @@
 import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Optional
 
-# JSONで受け渡しするデータ型の定義を行う
-
-#レスポンススキーマ(クラス名称は要検討)仮記述のため後ほど要検討！
 
 class Boxes(BaseModel):
     box_id: int
-    box_name: str # = Field(None, example="Git”)
+    box_name: str 
     box_category: str
 
     class Config:
@@ -18,9 +15,9 @@ class Cards(BaseModel):
     card_id: str 
     question_id: str
     answer_id:str
-    question_text: str #(None, example="ブランチ確認”)
-    card_text: str # "ブランチ確認　 git branch"：これがほしい ★★
-    answer_text: str #(None, example="git branch”)
+    question_text: str
+    card_text: str 
+    answer_text: str 
     answer_file_pass: Optional[str]
 
     class Config:
@@ -29,7 +26,7 @@ class Cards(BaseModel):
 
 #リクエストスキーマ
 class Results(BaseModel):
-    user_id: int
+    user_id: str
     number_of_question: int
     number_of_corrected: int
     played_at: datetime.datetime

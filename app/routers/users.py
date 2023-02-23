@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,20 +9,15 @@ import schemas.users as users_schema
 import cruds.users as users_cruds
 from datetime import timedelta
 import os
-from typing import List
 
 router = APIRouter()
 
 
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/signin") # フロントがユーザー名とパスワードを送信するURI
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/signin") 
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS"))
 
-
-
-# Create
 
 #ユーザー登録
 @router.post("/users/register",response_model=users_schema.User)
@@ -40,11 +35,10 @@ def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
 
 
 # 認可、トークン発行
-@router.post("/users/signin")
+@router.post("/users/signin", response_model=users_schema.Token)
 def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = users_cruds.authenticate_user(db,form_data.username, form_data.password)
     if not user:
-        # メッセージ書き直す
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -67,18 +61,19 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
     refresh_token = users_cruds.create_refresh_token(
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
-    a_token = {"access_token": access_token}
-    r_token = {"refresh_token": refresh_token}
-    response_data = user_data | a_token | r_token
-    return response_data
+
+    response = Response()
+    response.set_cookie(key="access_token", value=access_token, httponly=True)
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
+    return user_data | {"access_token": access_token} | {"refresh_token": refresh_token}
 
 
-# カレントユーザーの検証
+# 認証
 @router.get("/users/me")
 async def current_user(current_user: users_schema.User = Depends(users_cruds.get_current_user)):
     return current_user
 
-# リフレッシュトークンでトークンを再取得
+# リフレッシュトークンでアクセストークンを再取得
 @router.get("/refresh_token")
 async def refresh_token(current_user: users_schema.User = Depends(users_cruds.get_current_user_with_refresh_token), db: AsyncSession = Depends(get_db)):
 
@@ -92,10 +87,10 @@ async def refresh_token(current_user: users_schema.User = Depends(users_cruds.ge
         "created_at": str(current_user.created_at)
     }
     user_id = current_user.user_id
-    access_token = users_cruds.create_access_token(
+    access_token = await users_cruds.create_access_token(
         user_data, expires_delta=access_token_expires
     )
-    refresh_token = users_cruds.create_refresh_token(
+    refresh_token = await users_cruds.create_refresh_token(
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
     a_token = {"access_token": access_token}

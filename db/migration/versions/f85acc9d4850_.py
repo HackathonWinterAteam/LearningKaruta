@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 506a0ca9fc1f
-Revises: a650c944b5aa
-Create Date: 2023-02-21 10:07:51.416644
+Revision ID: f85acc9d4850
+Revises: 
+Create Date: 2023-02-22 11:41:37.024826
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision = '506a0ca9fc1f'
-down_revision = 'a650c944b5aa'
+revision = 'f85acc9d4850'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -38,7 +38,7 @@ def upgrade() -> None:
     comment='読み札テーブル'
     )
     op.create_table('users',
-    sa.Column('user_id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('user_id', sa.CHAR(length=36), nullable=False),
     sa.Column('user_name', sa.String(length=255), nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('password', sa.String(length=255), nullable=False),
@@ -47,6 +47,7 @@ def upgrade() -> None:
     sa.Column('created_at', mysql.TIMESTAMP(), server_default=sa.text('current_timestamp'), nullable=False),
     sa.Column('updated_at', mysql.TIMESTAMP(), server_default=sa.text('current_timestamp on update current_timestamp'), nullable=True),
     sa.PrimaryKeyConstraint('user_id'),
+    sa.UniqueConstraint('user_id'),
     comment='ユーザーマスタ'
     )
     op.create_table('answer_images',
@@ -59,7 +60,7 @@ def upgrade() -> None:
     )
     op.create_table('play_records',
     sa.Column('played_id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.CHAR(length=36), nullable=False),
     sa.Column('number_of_question', sa.Integer(), nullable=False),
     sa.Column('number_of_corrected', sa.Integer(), nullable=False),
     sa.Column('played_at', mysql.TIMESTAMP(), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
@@ -99,16 +100,13 @@ def upgrade() -> None:
     sa.Column('card_id', sa.Integer(), nullable=False),
     sa.Column('played_id', sa.Integer(), nullable=False),
     sa.Column('judgement', sa.Boolean(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.CHAR(length=36), nullable=True),
     sa.ForeignKeyConstraint(['card_id'], ['question_answer_cards.card_id'], ),
     sa.ForeignKeyConstraint(['played_id'], ['play_records.played_id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.user_id'], ),
     sa.PrimaryKeyConstraint('card_id', 'played_id'),
     comment='プレイ記録詳細'
     )
-
-    
-
     # ### end Alembic commands ###
 
 

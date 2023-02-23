@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 from sqlalchemy.orm import Session
 from models import games as games_model
+from models import users as users_model
 from schemas import games as games_schema
 
 def read_boxes(db: Session):
@@ -17,27 +18,58 @@ def read_boxes(db: Session, skip: int = 0):
 
 # 札セット取得
 def read_playing_cards(db: Session, box_id: int) -> games_model.boxes_cards :
-    t = text('SELECT CAST(qac.card_id AS CHAR) AS card_id, CAST(qt.question_id AS CHAR) AS question_id, \
+    play_cards_select = f"SELECT CAST(qac.card_id AS CHAR) AS card_id, CAST(qt.question_id AS CHAR) AS question_id, \
             CAST(at.answer_id AS CHAR) AS answer_id, qt.question_text AS question_text, \
-            CONCAT(qt.question_text, "  ", at.answer_text) AS card_text,\
+            CONCAT(qt.question_text, '  ', at.answer_text) AS card_text,\
             at.answer_text AS answer_text, aimg.answer_file_pass AS answer_file_pass \
             FROM (box_card AS bc \
             INNER JOIN question_answer_cards AS qac \
-            ON bc.card_id = qac.card_id AND bc.box_id = box_id \
+            ON bc.card_id = qac.card_id AND bc.box_id = {box_id} \
             INNER JOIN question_texts AS qt \
             ON qac.question_id = qt.question_id) \
             INNER JOIN answer_texts AS at \
             ON qac.answer_id = at.answer_id \
             LEFT JOIN answer_images AS aimg \
             ON at.answer_id = aimg.answer_id \
-            ORDER BY RAND() LIMIT 10' \
-            ) #結合抽出処理
+            ORDER BY RAND() LIMIT 10 \
+            " #結合抽出処理
+    t = text(play_cards_select)
     PlayCardsList = db.execute(t).fetchall()
 
     return PlayCardsList
 
+# 苦手札セット取得
+def weak_point_cards(db: Session, user_id: str) -> users_model.Users :
+    t = f"SELECT card_id FROM answer_rate_view WHERE answer_rate <= 0.8 AND user_id = :user_id"
+    select_text = text(t)
+    cid = db.execute(select_text,{"user_id": user_id}).fetchall()
+    card_id_list = [item[0] for item in cid]
+    weak_card_id = ', '.join(map(str, card_id_list))
+    print(weak_card_id)
+    weak_cards_select = f"SELECT CAST(qac.card_id AS CHAR) AS card_id, CAST(qt.question_id AS CHAR) AS question_id, \
+            CAST(at.answer_id AS CHAR) AS answer_id, qt.question_text AS question_text, \
+            CONCAT(qt.question_text, '  ', at.answer_text) AS card_text,\
+            at.answer_text AS answer_text, aimg.answer_file_pass AS answer_file_pass \
+            FROM (box_card AS bc \
+            INNER JOIN question_answer_cards AS qac \
+            ON bc.card_id = qac.card_id AND qac.card_id IN({weak_card_id}) \
+            INNER JOIN question_texts AS qt \
+            ON qac.question_id = qt.question_id) \
+            INNER JOIN answer_texts AS at \
+            ON qac.answer_id = at.answer_id \
+            LEFT JOIN answer_images AS aimg \
+            ON at.answer_id = aimg.answer_id \
+            ORDER BY RAND() LIMIT 10 \
+            " #結合抽出処理
+    cards_set = text(weak_cards_select)
+    WeakCardsList = db.execute(cards_set).fetchall()
+
+    return WeakCardsList
+
+
+
 #　プレイ結果記録 非同期にする！！
-def play_records(db: Session, result: games_schema.Results):
+async def play_records(db: AsyncSession, result: games_schema.Results):
 
     #プレイ記録親テーブルに記録
     db_result = games_model.play_records(
@@ -83,7 +115,3 @@ def play_records(db: Session, result: games_schema.Results):
         db.refresh(db_detail)
 
     return {"message": "Good!"}
-
-# 苦手札の札IDを取得
-def weak_point_cards(db: Session):
-    weak_card = db.query()
