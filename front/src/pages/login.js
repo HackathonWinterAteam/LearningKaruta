@@ -5,13 +5,20 @@ import { useAuthContext } from "../context/AuthContext";
 import axios   from "../utils/axios";
 import qs from "qs";
 
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
+
+
+
 
 
 const FormData = () => {
   
 
-  const [accessToken, refreshToken, login_set] = useAuthContext();
+  // const login_set = () => {
+  // const { login_set } = useAuthContext();
+
+
+  // const [accessToken, refreshToken, login_set] = useAuthContext();
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -47,7 +54,7 @@ const FormData = () => {
       
       console.log(response.data);
       console.log(response.data.access_token);
-      login_set(response.data.access_token, response.data.refresh_token);
+      // login_set(response.data.access_token, response.data.refresh_token);
 
 
       if (response.data.access_token) {
