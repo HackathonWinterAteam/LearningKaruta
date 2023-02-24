@@ -15,14 +15,6 @@ export const AuthProvider = ({ children })  => {
   const [user, setUser] = useState();
   const navigate = useNavigate();
 
-//   const a_token = document.cookie
-//   .split('; ')
-//   .find(row => row.startsWith('access_token='))
-//   .split('=')[1];
-//   const r_token = document.cookie
-//   .split('; ')
-//   .find(row => row.startsWith('refresh_token='))
-//   .split('=')[1];
 
 const a_token_row = document.cookie
   .split('; ')
@@ -33,7 +25,6 @@ const r_token_row = document.cookie
   .split('; ')
   .find(row => row.startsWith('refresh_token='));
 const r_token = r_token_row ? r_token_row.split('=')[1] : '';
-
 
 
   const signup = async (data) => {

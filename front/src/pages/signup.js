@@ -21,7 +21,7 @@ function Signup() {
   };
 
   // スタイルの定義
-  const styleRoot = "Login container md:3/5 lg:w-3/6 xl:w-2/5 ";
+  const styleRoot = "Login container md:3/5 lg:w-3/6 xl:w-2/5 mx-auto";
   const styleHeader = "h-20 flex justify-center items-center text-3xl";
   const styleMain = "border border-emerald-400 p-5 rounded-md";
   const styleRow = "p-5 flex flow-root";
