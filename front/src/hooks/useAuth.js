@@ -41,7 +41,16 @@ const useAuth = () => {
       const user = response.data.user;
       setUser(user);
     } catch (error) {
-      console.log(error);
+      const errorMessage = error.message;
+      if (errorMessage.include("トークン有効期限切れ")){
+        const response_refresh = await axios.get("/refresh_token",{
+          headers: {
+            'Authorization': `Bearer ${r_token}`
+          }
+        });
+        const user = response.data.user;
+        setUser(user);
+      }
     }
   };
 
