@@ -10,13 +10,6 @@ import qs from "qs";
 axios.defaults.withCredentials = true;
 
 const FormData = () => {
-  
-
-  // const login_set = () => {
-  // const { login_set } = useAuthContext();
-
-
-  // const [accessToken, refreshToken, login_set] = useAuthContext();
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);

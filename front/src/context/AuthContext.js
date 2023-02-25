@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from 'react';
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
 
+
 const AuthContext = createContext();
 
 export const useAuthContext = ()  => {
@@ -15,16 +16,8 @@ export const AuthProvider = ({ children })  => {
   const [user, setUser] = useState();
   const navigate = useNavigate();
 
+  axios.defaults.withCredentials = true;
 
-const a_token_row = document.cookie
-  .split('; ')
-  .find(row => row.startsWith('access_token='));
-const a_token = a_token_row ? a_token_row.split('=')[1] : '';
-
-const r_token_row = document.cookie
-  .split('; ')
-  .find(row => row.startsWith('refresh_token='));
-const r_token = r_token_row ? r_token_row.split('=')[1] : '';
 
 
   const signup = async (data) => {
@@ -42,25 +35,17 @@ const r_token = r_token_row ? r_token_row.split('=')[1] : '';
   };
 
   const getUser = async () => {
+
     try {
-      const response = await axios.get("http://localhost:8000/users/me",{
-        headers: {
-          'Authorization': `Bearer ${a_token}`
-        }
-      });
-      const user_data = response.data.user;
-      setUser(user_data);
+      // バックエンドからユーザーのデータを取得する
+      const response = await axios.get("http://localhost:8000/users/me");
+      setUser(response.data.users);
     } catch (error) {
-      const errorMessage = error.message;
-      if (errorMessage.includes("トークン有効期限切れ")){
-        const response_refresh = await axios.get("/refresh_token",{
-          headers: {
-            'Authorization': `Bearer ${r_token}`
-          }
-        });
-        const user_data = response_refresh.data.user;
-        setUser(user_data);
-      }
+        const errorMessage = error.message;
+        if (errorMessage.includes("トークン有効期限切れ")){
+            const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
+            setUser(responce_refresh.data.users)
+        }
     }
     return user;
   };

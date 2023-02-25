@@ -50,7 +50,7 @@ function Root() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/karuta" element={<ProtectedRoute><Karuta /></ProtectedRoute>} />
+        <Route path="/karuta" element={<Karuta />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </div>

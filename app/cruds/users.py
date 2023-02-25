@@ -1,8 +1,8 @@
 from passlib.context import CryptContext
 import os
 import uuid
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, HTTPException, status, Request
+from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -20,6 +20,7 @@ ALGORITHM = os.environ.get("ALGORITHM")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/signin")
+
 
 # UUID生成
 def generate_uuid() -> str:
@@ -106,10 +107,16 @@ def create_refresh_token(db: Session, data: dict, user_id: str, expires_delta: O
 
     return refresh_jwt
 
+# Cookieからトークンを取得
+async def get_token_from_cookie(request: Request) -> HTTPAuthorizationCredentials:
+    a_token = request.cookies.get("access_token")
+    if a_token is None:
+        raise HTTPException(status_code=401, detail="Cookie not found")
+    return HTTPAuthorizationCredentials(scheme="Bearer", credentials=a_token)
 
 # アクセストークンからカレントユーザー取得
-async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession=Depends(get_db)):
-    return await get_current_user_from_token('access_token', token, db=db)
+async def get_current_user(token: HTTPAuthorizationCredentials=Depends(get_token_from_cookie), db: AsyncSession=Depends(get_db)):
+    return await get_current_user_from_token('access_token', token.credentials, db=db)
 
 # リフレッシュトークンからカレントユーザー取得
 async def get_current_user_with_refresh_token(token: str = Depends(oauth2_scheme), db: AsyncSession=Depends(get_db)):

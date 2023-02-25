@@ -1,29 +1,32 @@
 import axios from "../utils/axios";
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
+import { Cookies } from "react-cookie";
 
 function Home() {
-  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState([]);
+  const { getUsers } = useAuthContext();
 
   useEffect(() => {
-    const getUsers = async () => {
+    const getUser = async () => {
       try {
         // バックエンドからユーザーのデータを取得する
-        const response = await axios.get("/users");
-        setUsers(response.data.users);
+        const response = await axios.get("http://localhost:8000/users/me");
+        setUser(response.data.users);
       } catch (err) {
         console.log(err);
       }
     };
-    getUsers();
+    getUser();
   }, []);
 
   return (
     <>
       <h2>Homeだよ</h2>
       <ul>
-        {users &&
-          users.map((user) => (
+        {user &&
+          user.map((user) => (
             <li key={user._id}>
               Name:{user.name}/Email:{user.email}
             </li>

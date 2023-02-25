@@ -39,15 +39,6 @@ const useAuth = () => {
   };
 
 
-
-  // const getTokenFromCookie = () => {
-  //   const a_token = Cookies.get('access_token');
-  //   const r_token = Cookies.get('refresh_token');
-  //   return { a_token, r_token };
-  // };
-
-  // const { a_token, r_token } = getTokenFromCookie();
-
   // APIを叩いて取得したユーザーを状態に保存
   const getUser = async () => {
     try {
@@ -71,26 +62,6 @@ const useAuth = () => {
       }
     }
   };
-
-  // const [cookies, setCookie, removeCookie] = useCookies(["access_token", "refresh_token"]);
-  // const [accessToken, setAccessToken] = useState(cookies.access_token || null);
-  // const [refreshToken, setRefreshToken] = useState(cookies.access_token || null);
-
-  // const login_set = (accessToken,refreshToken) => {
-  //   setCookie("access_token", accessToken /*, { httpOnly: true }*/);
-  //   setAccessToken(accessToken);
-  //   setCookie("refresh_token", refreshToken /*, { httpOnly: true }*/);
-  //   setRefreshToken(refreshToken);
-  // };
-
-  // const logout = () => {
-  //   removeCookie("access_token", { path: "/" });
-  //   removeCookie("refresh_token", { path: "/" });
-  //   setAccessToken(null);
-  //   setRefreshToken(null);
-  // };
-
-
   return { user, signup };
 };
 
