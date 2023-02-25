@@ -3,7 +3,7 @@ import { useAuthContext } from '../context/AuthContext';
 import { useEffect } from 'react';
 
 
-
+// ログイン時のみアクセスを許可
 const ProtectedRoute = ({ children }) => {
   const { getUser } = useAuthContext();
 
@@ -22,19 +22,3 @@ const ProtectedRoute = ({ children }) => {
 
 export default ProtectedRoute;
 
-
-
-// import { Navigate } from 'react-router-dom';
-// import { useAuthContext } from '../context/AuthContext';
-
-// const ProtectedRoute = ({ children }) => {
-//   const { getUser } = useAuthContext();
-//   const user = getUser();
-//   if (user == undefined) {
-//     return <Navigate to="/login" />
-//   }
-//   console.log(user)
-//   return children;
-// };
-
-// export default ProtectedRoute;

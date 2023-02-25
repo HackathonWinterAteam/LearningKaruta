@@ -8,10 +8,10 @@ function Home() {
   const [user, setUser] = useState([]);
   const { getUsers } = useAuthContext();
 
+  // Contextは使っていない
   useEffect(() => {
     const getUser = async () => {
       try {
-        // バックエンドからユーザーのデータを取得する
         const response = await axios.get("http://localhost:8000/users/me");
         setUser(response.data.users);
       } catch (error) {

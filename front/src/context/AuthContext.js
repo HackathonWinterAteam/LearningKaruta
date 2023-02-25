@@ -1,11 +1,11 @@
 import { createContext, useContext, useState } from 'react';
-// import useAuth from '../hooks/useAuth'; 
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
 
-
+// AuthContextの作成
 const AuthContext = createContext();
 
+// useAuthContextの定義
 export const useAuthContext = ()  => {
   return useContext(AuthContext);
 }
@@ -16,10 +16,7 @@ export const AuthProvider = ({ children })  => {
   const [user, setUser] = useState();
   const navigate = useNavigate();
 
-  axios.defaults.withCredentials = true;
-
-
-
+// サインアップ関数
   const signup = async (data) => {
     try {
       const response = await axios.post(
@@ -34,10 +31,10 @@ export const AuthProvider = ({ children })  => {
     return "会員登録しました";
   };
 
+// ユーザー取得関数
   const getUser = async () => {
 
     try {
-      // バックエンドからユーザーのデータを取得する
       const response = await axios.get("http://localhost:8000/users/me");
       setUser(response.data.users);
     } catch (error) {
@@ -59,6 +56,5 @@ export const AuthProvider = ({ children })  => {
     {children}
     </AuthContext.Provider>);
 };
-
 
 export default AuthProvider;
