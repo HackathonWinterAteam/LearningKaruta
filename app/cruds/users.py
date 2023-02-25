@@ -108,19 +108,27 @@ def create_refresh_token(db: Session, data: dict, user_id: str, expires_delta: O
     return refresh_jwt
 
 # Cookieからトークンを取得
-async def get_token_from_cookie(request: Request) -> HTTPAuthorizationCredentials:
+async def get_a_token_from_cookie(request: Request) -> HTTPAuthorizationCredentials:
     a_token = request.cookies.get("access_token")
     if a_token is None:
         raise HTTPException(status_code=401, detail="Cookie not found")
     return HTTPAuthorizationCredentials(scheme="Bearer", credentials=a_token)
 
+
+async def get_r_token_from_cookie(request: Request) -> HTTPAuthorizationCredentials:
+    r_token = request.cookies.get("refresh_token")
+    if r_token is None:
+        raise HTTPException(status_code=401, detail="Cookie not found")
+    return HTTPAuthorizationCredentials(scheme="Bearer", credentials=r_token)
+
+
 # アクセストークンからカレントユーザー取得
-async def get_current_user(token: HTTPAuthorizationCredentials=Depends(get_token_from_cookie), db: AsyncSession=Depends(get_db)):
+async def get_current_user(token: HTTPAuthorizationCredentials=Depends(get_a_token_from_cookie), db: AsyncSession=Depends(get_db)):
     return await get_current_user_from_token('access_token', token.credentials, db=db)
 
 # リフレッシュトークンからカレントユーザー取得
-async def get_current_user_with_refresh_token(token: str = Depends(oauth2_scheme), db: AsyncSession=Depends(get_db)):
-    return await get_current_user_from_token('refresh_token', token, db=db)
+async def get_current_user_with_refresh_token(token: HTTPAuthorizationCredentials=Depends(get_r_token_from_cookie), db: AsyncSession=Depends(get_db)):
+    return await get_current_user_from_token('refresh_token', token.credentials, db=db)
 
 # カレントユーザー取得
 async def get_current_user_from_token(token_type: str, token: str, db:AsyncSession):

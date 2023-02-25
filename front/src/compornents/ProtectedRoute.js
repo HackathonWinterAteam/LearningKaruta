@@ -4,9 +4,6 @@ import { useEffect } from 'react';
 
 
 
-
-
-
 const ProtectedRoute = ({ children }) => {
   const { getUser } = useAuthContext();
 

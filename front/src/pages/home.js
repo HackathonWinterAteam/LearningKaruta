@@ -14,9 +14,14 @@ function Home() {
         // バックエンドからユーザーのデータを取得する
         const response = await axios.get("http://localhost:8000/users/me");
         setUser(response.data.users);
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+          const errorMessage = error.response.data;
+          if (errorMessage.detail === "トークン有効期限切れ"){
+              const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
+              setUser(responce_refresh.data.users)
+          }
       }
+      return user;
     };
     getUser();
   }, []);
