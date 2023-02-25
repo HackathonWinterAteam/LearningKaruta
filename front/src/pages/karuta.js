@@ -202,14 +202,14 @@ const MKaruta = () => {
               <ul className="w-[95%] h-3/5 absolute left-[3%] top-[16%] box-border grid grid-cols-5 grid-rows-2 gap-y-7">
                 {currentTurn < yomiLists.length &&
                   efudaLists.map((efuda) =>
-                    !isAnswered.includes(efuda.id) ? (
+                    !isAnswered.includes(efuda.card_id) ? (
                       <div key={efuda.card_id} className="flex justify-center">
                         <img
                           alt="画像"
                           className="object-contain w-4/5"
                           src={`${process.env.PUBLIC_URL}/imgs/${efuda.answer_file_pass}`}
                           onClick={(e) => efudaClick(e)}
-                          id={efuda.id}
+                          id={efuda.card_id}
                         />
                       </div>
                     ) : (
