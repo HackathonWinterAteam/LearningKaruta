@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
+from typing import Dict, Any
 from database import get_db
 import models.users as users_model
 import schemas.users as users_schema
@@ -35,7 +37,7 @@ def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
 
 
 # 認可、トークン発行
-@router.post("/users/signin", response_model=users_schema.Token)
+@router.post("/users/signin", response_model=Dict[str, Any])
 def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = users_cruds.authenticate_user(db,form_data.username, form_data.password)
     if not user:
@@ -46,7 +48,7 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
         )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_DAYS)
+    refresh_token_expires = timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
 
     user_data = {
         "user_id": user.user_id,
@@ -62,10 +64,16 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
 
-    response = Response()
+
+    response = JSONResponse(content=user_data | {"access_token": access_token} | {"refresh_token": refresh_token})
     response.set_cookie(key="access_token", value=access_token, httponly=True)
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
-    return user_data | {"access_token": access_token} | {"refresh_token": refresh_token}
+    return response
+
+    # response = Response()
+    # response.set_cookie(key="access_token", value=access_token, httponly=True)
+    # response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
+    # return user_data | {"access_token": access_token} | {"refresh_token": refresh_token}
 
 
 # 認証
@@ -74,7 +82,7 @@ async def current_user(current_user: users_schema.User = Depends(users_cruds.get
     return current_user
 
 # リフレッシュトークンでアクセストークンを再取得
-@router.get("/refresh_token")
+@router.get("/refresh_token", response_model=Dict[str, Any])
 async def refresh_token(current_user: users_schema.User = Depends(users_cruds.get_current_user_with_refresh_token), db: AsyncSession = Depends(get_db)):
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -87,13 +95,21 @@ async def refresh_token(current_user: users_schema.User = Depends(users_cruds.ge
         "created_at": str(current_user.created_at)
     }
     user_id = current_user.user_id
-    access_token = await users_cruds.create_access_token(
+    access_token = users_cruds.create_access_token(
         user_data, expires_delta=access_token_expires
     )
-    refresh_token = await users_cruds.create_refresh_token(
+    refresh_token = users_cruds.create_refresh_token(
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
-    a_token = {"access_token": access_token}
-    r_token = {"refresh_token": refresh_token}
-    response_data = user_data | a_token | r_token
-    return response_data
+
+
+    response = JSONResponse(content=user_data | {"access_token": access_token} | {"refresh_token": refresh_token})
+    response.set_cookie(key="access_token", value=access_token, httponly=True)
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
+    return response
+
+
+    # a_token = {"access_token": access_token}
+    # r_token = {"refresh_token": refresh_token}
+    # response_data = user_data | a_token | r_token
+    # return response_data

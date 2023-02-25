@@ -5,6 +5,7 @@ import NoMatch from "../pages/nomatch";
 import Signup from "../pages/signup";
 import Login from "../pages/login";
 import Karuta from "../pages/karuta";
+import ProtectedRoute from "../compornents/ProtectedRoute";
 import Victory from "../Victory";
 import Lose from "../Lose";
 import Drow from "../Drow";

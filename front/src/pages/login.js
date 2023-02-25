@@ -1,27 +1,15 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+// import useAuth from "../hooks/useAuth";
+import { useAuthContext } from "../context/AuthContext";
 import axios   from "../utils/axios";
 import qs from "qs";
 
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 
+axios.defaults.withCredentials = true;
 
 const FormData = () => {
-  // const [formValues, setFormValues] = useState({
-  //   username: "",
-  //   password: "",
-  // });
-
-  // const handleChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setFormValues({ ...formValues, [name]: value });
-  // };
-
-  // const Login = () => {
-  // const { login } = useAuth();
-
-  const [accessToken, refreshToken, login_set] = useAuth();
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -30,18 +18,6 @@ const FormData = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   login({
-  //     email: emailRef.current.value,
-  //     password: passwordRef.current.value,
-  //   });
-  // };
-    /*window.location.href = `http://localhost:8000/users/signin/grant_type=&username=${emailRef}&password=${passwordRef}&scope=&client_id=&client_secret='
-    `; */
-  //   console.log(emailRef.current.value, passwordRef.current.value)
-  
-  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -69,7 +45,7 @@ const FormData = () => {
       
       console.log(response.data);
       console.log(response.data.access_token);
-      login_set(response.data.access_token, response.data.refresh_token);
+      // login_set(response.data.access_token, response.data.refresh_token);
 
 
       if (response.data.access_token) {
@@ -82,11 +58,10 @@ const FormData = () => {
     }
   };
 
-
   
 
   // スタイルの定義
-  const styleRoot = "Login container md:3/5 lg:w-3/6 xl:w-2/5 ";
+  const styleRoot = "Login container md:3/5 lg:w-3/6 xl:w-2/5 mx-auto";
   const styleHeader = "h-20 flex justify-center items-center text-3xl";
   const styleMain = "border border-emerald-400 p-5 rounded-md";
   const styleRow = "p-5 flex flow-root";
@@ -159,35 +134,3 @@ const FormData = () => {
 };
 
 export default FormData;
-
-
-// export default function FormData() {
-//   const navigate = useNavigate();
-//   const smallBtn =
-//     "m-2 p-1 w-32 rounded-lg bg-emerald-400 hover:opacity-80 " +
-//     "text-teal-50 text-lg hover:border-emerald-500 hover:ring-2 font-black";
-
-//   const [formValues, setFormValues] = useState({
-//     name: "",
-//     email: "",
-//     message: "",
-//   });
-
-//   const handleChange = (event) => {
-//     const { name, value } = event.target;
-//     setFormValues({ ...formValues, [name]: value });
-//   };
-
-//   return (
-//     <main>
-//     <form>
-//       <input type="text" name="name" value={formValues.name} onChange={handleChange} />
-//       <input type="email" name="email" value={formValues.email} onChange={handleChange} />
-//     </form>
-    
-//     <button className={smallBtn} onClick={() => navigate("/")}>
-//      login
-//     </button>
-//     </main>
-//   );
-// }

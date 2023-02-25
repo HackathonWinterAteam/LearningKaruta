@@ -15,6 +15,10 @@ origins = [
     'http://localhost:3001',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001'
+    'http://www.cmd-karuta.xyz'
+    'https://www.cmd-karuta.xyz'
+    'http://www.cmd-karuta.xyz/api/'
+    'https://www.cmd-karuta.xyz/api/'
 ]
 
 app.add_middleware(
@@ -22,5 +26,18 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=['*'],
-    allow_headers=['*']
+    allow_headers=['*'],
+    expose_headers=["Authorization"],
+    max_age=1800,
 )
+
+# # users/meに対して別のCORS設定を追加
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["http://localhost:3000"],
+#     allow_credentials=True,
+#     allow_methods=["GET"],
+#     allow_headers=["*"],
+#     expose_headers=["Authorization"],
+#     max_age=1800,
+# )
