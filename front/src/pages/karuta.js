@@ -42,8 +42,7 @@ const MKaruta = () => {
     setIsStarted(true);
     setIsRunning(true);
   };
-  //ローディング画面
-  //ゲーム画面に移る
+
   //データ（カルタオブジェクト）の取得
   const initialURL = "http://localhost:8000/karuta/1";
   useEffect(() => {
@@ -62,19 +61,10 @@ const MKaruta = () => {
     setEfudaLists(result);
   };
 
-  //3秒待つ
-  // useEffect(() => {
-  //   if (!isStarted || currentTurn >= 9) return;
-  //   setTimeout(() => {
-  //     setIsKaruta(true);
-  //     setOneCharactorQuestion(yomiLists[currentTurn].question);
-  //     setIsRunning(true);
-  //   }, 1000);
-  //   // eslint-disable-next-line
-  // }, [isStarted, currentTurn]);
+  //n秒待つ
   useEffect(() => {
-    const delay = currentTurn === 0 ? 3000 : 500;
-    if (!isStarted || currentTurn >= 9) return;
+    const delay = currentTurn === 0 ? 1500 : 500;
+    if (!isStarted || currentTurn >= yomiLists.length) return;
     setTimeout(() => {
       setShowQuestion("");
       setOneCharactorQuestion(yomiLists[currentTurn].card_text);
@@ -112,6 +102,7 @@ const MKaruta = () => {
     }
     return arr;
   };
+
   //正誤判定
   const judge = (clickTarget) => {
     console.log(clickTarget);
@@ -121,7 +112,7 @@ const MKaruta = () => {
     const newIsAnswerd = isAnswered.slice();
     newIsAnswerd.push(efudaLists[index].card_id);
     setIsAnswered(newIsAnswerd);
-    if (clickTarget.card_id == yomiLists[currentTurn].card_id) {
+    if (clickTarget.id === yomiLists[currentTurn].card_id) {
       setUserScore(userScore + 1);
 
       const tempStorage = efudaLists[index].answer_file_pass;
@@ -151,15 +142,15 @@ const MKaruta = () => {
 
   //モーダルを閉じる
   const modalClose = () => {
-    if (currentTurn < 8) {
+    if (currentTurn < yomiLists.length) {
       setIsModalOpen(false);
-      setCurrentTurn((prev) => prev + 1);
-    } else if (currentTurn === 8) {
+      setCurrentTurn(currentTurn + 1);
+    } else if (currentTurn === yomiLists.length) {
       finishGame();
     }
   };
 
-  //勝敗とスコア、ホーム画面へ飛ぶボタンが表示してあるのモーダル表示
+  //勝敗とスコア、ホーム画面へ飛ぶボタンが表示してあるモーダルの表示
   const finishGame = () => {
     setCurrentTurn(currentTurn + 1);
     setIsModalOpen(true);
@@ -167,17 +158,6 @@ const MKaruta = () => {
 
   return (
     <div>
-      <ul>
-        <li className="flex justify-end">
-          <NavLink
-            style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-            to="/"
-          >
-            Home
-          </NavLink>
-        </li>
-      </ul>
-
       <div>
         {!isStarted && (
           <div className="start-screen">
@@ -193,36 +173,63 @@ const MKaruta = () => {
       <div>
         {isKaruta && (
           <div>
-            <div className="text-3xl text-center mb-3 bg-gray-300 ">
-              <p>{showQuestion}</p>
+            <div className="text-center bg-gray-100 h-[52px]">
+              <p className="text-3xl py-2">{showQuestion}</p>
             </div>
-            <div className="fixed left-0 top-0 w-20 h-20 rounded-lg bg-blue-500 text-yellow-300 text-5xl text-center leading-normal outline-none">
-              <p>{cpuScore}</p>
-              <p className="text-2xl mt-2">{cpuAcquiredCards}</p>
-            </div>
-            <ul className="flex flex-wrap mt-20 ml-32 ">
-              {currentTurn < 9 &&
-                efudaLists
-                  .filter((answeredElm) => !isAnswered.includes(answeredElm.card_id))
-                  .map((efuda) => (
-                    <div className=" mx-24 mb-10 w-40" key={efuda.card_id}>
-                      <img
-                        alt="画像"
-                        src={`${process.env.PUBLIC_URL}/imgs/${efuda.answer_file_pass}`}
-                        onClick={(e) => efudaClick(e)}
-                        id={efuda.id}
-                      />
-                    </div>
+            <div className="w-full h-[calc(100vh-100px)] text-center m-auto relative">
+              <div className="flex absolute left-0 top-0">
+                <div className="w-20 h-20 rounded-lg bg-blue-500 text-yellow text-5xl text-center leading-normal outline-none">
+                  {cpuScore}
+                </div>
+                <div className="flex gap-4 flex-grow">
+                  {cpuAcquiredCards.map((card) => (
+                    <img
+                      key={card.id}
+                      src={`${process.env.PUBLIC_URL}/imgs/${card}`}
+                      alt="画像"
+                      className="w-20 object-contain"
+                    />
                   ))}
-            </ul>
-            <div className="fixed right-0 bottom-0 w-20 h-20 rounded-lg bg-yellow-300 text-blue-500 text-5xl text-center leading-normal outline-none">
-              <p>{userScore}</p>
-              <p className="text-2xl">{userAcquiredCards}</p>
+                </div>
+              </div>
+              <ul className="w-[95%] h-3/5 absolute left-[3%] top-[16%] box-border grid grid-cols-5 grid-rows-2 gap-y-7">
+                {currentTurn < yomiLists.length &&
+                  efudaLists.map((efuda) =>
+                    !isAnswered.includes(efuda.card_id) ? (
+                      <div key={efuda.card_id} className="flex justify-center">
+                        <img
+                          alt="画像"
+                          className="object-contain w-4/5"
+                          src={`${process.env.PUBLIC_URL}/imgs/${efuda.answer_file_pass}`}
+                          onClick={(e) => efudaClick(e)}
+                          id={efuda.card_id}
+                        />
+                      </div>
+                    ) : (
+                      <div></div>
+                    )
+                  )}
+              </ul>
+              <div className="flex absolute right-0 bottom-0">
+                <div className="flex gap-4 flex-grow">
+                  {userAcquiredCards.map((card) => (
+                    <img
+                      key={card.id}
+                      src={`${process.env.PUBLIC_URL}/imgs/${card}`}
+                      alt="画像"
+                      className="w-20 object-contain"
+                    />
+                  ))}
+                </div>
+                <div className="w-20 h-20 rounded-lg bg-yellow text-blue-500 text-5xl text-center leading-normal outline-none">
+                  {userScore}
+                </div>
+              </div>
             </div>
           </div>
         )}
         {isModalOpen ? (
-          currentTurn < 9 ? (
+          currentTurn < yomiLists.length ? (
             <Modal modalClose={modalClose}>問題の解説</Modal>
           ) : (
             <Modal modalClose={initGame}>終わり</Modal>
@@ -232,7 +239,6 @@ const MKaruta = () => {
         )}
       </div>
     </div>
-  );
-};
+  );};
 
 export default MKaruta;
