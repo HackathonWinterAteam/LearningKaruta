@@ -93,13 +93,6 @@ const MKaruta = () => {
     },
     isRunning ? 100 : null
   );
-  // useInterval(
-  //   () => {
-  //     if (!isKaruta) return;
-  //     updateQuestion();
-  //   },
-  //   isRunning && currentTurn < 9 ? 100 : null
-  // );
 
   //シャッフル関数
   const shuffle = (arr) => {
@@ -119,7 +112,7 @@ const MKaruta = () => {
     const newIsAnswerd = isAnswered.slice();
     newIsAnswerd.push(efudaLists[index].card_id);
     setIsAnswered(newIsAnswerd);
-    if (clickTarget.card_id === yomiLists[currentTurn].card_id) {
+    if (clickTarget.id === yomiLists[currentTurn].card_id) {
       setUserScore(userScore + 1);
 
       const tempStorage = efudaLists[index].answer_file_pass;
@@ -213,7 +206,7 @@ const MKaruta = () => {
                         />
                       </div>
                     ) : (
-                      <div>{console.log("this")}</div>
+                      <div></div>
                     )
                   )}
               </ul>
