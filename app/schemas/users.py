@@ -15,12 +15,19 @@ class CreateUser(BaseModel):
 
 
 #レスポンス
-
 class User(CreateUser):
     user_id: str
     
     class Config:
         orm_mode = True
+
+class UserInfo(BaseModel):
+    user_name: str
+    user_intro: str
+    number_of_plays : int
+    win_rate: int
+    good_word: str
+    bad_word: str
 
 class Token(BaseModel):
     user_name: str
@@ -34,5 +41,10 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Union[str, None] = None
+
+
+class SessionData:
+    def __init__(self, refresh_token: str):
+        self.refresh_token = refresh_token
 
 

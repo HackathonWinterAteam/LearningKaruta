@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 import os
 import uuid
-from fastapi import Depends, HTTPException, status, Request
+from fastapi import Depends, HTTPException, status, Request, APIRouter
 from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
@@ -20,6 +20,7 @@ ALGORITHM = os.environ.get("ALGORITHM")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/signin")
+
 
 
 # UUID生成
@@ -51,7 +52,6 @@ def create_user(db: Session, user: users_schema.User):
     return db_user
 
 
-
 # ユーザーデータをDBから取得() #usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def get_user(db, username: str):
     user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
@@ -61,13 +61,11 @@ def get_user(db, username: str):
     delattr(user,"password")
     return user
 
-
 def all_get_user(db, username: str):
     user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
     return user
 
-
-# OAuth2による認可(DBにユーザーがいるかチェック、パスワードチェック)
+# OAuth2による認可
 # usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def authenticate_user(db: Session, username: str, password: str):
     user = all_get_user(db, username)
@@ -169,3 +167,7 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
     
 
     return user
+
+# マイページ表示データ取得
+def get_user_info(db: Session, user_id: str):
+    user_info = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()

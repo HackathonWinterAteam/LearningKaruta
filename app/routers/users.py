@@ -21,6 +21,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS"))
 
 
+
+
 #ユーザー登録
 @router.post("/users/register",response_model=users_schema.User)
 def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
@@ -38,7 +40,7 @@ def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
 
 # 認可、トークン発行
 @router.post("/users/signin", response_model=Dict[str, Any])
-def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = users_cruds.authenticate_user(db,form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -103,13 +105,19 @@ async def refresh_token(current_user: users_schema.User = Depends(users_cruds.ge
     )
 
 
+
     response = JSONResponse(content=user_data | {"access_token": access_token} | {"refresh_token": refresh_token})
     response.set_cookie(key="access_token", value=access_token, httponly=True)
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
     return response
 
 
-    # a_token = {"access_token": access_token}
-    # r_token = {"refresh_token": refresh_token}
-    # response_data = user_data | a_token | r_token
-    # return response_data
+# マイページ表示用データ
+@router.get("/mypage", response_model=users_schema.UserInfo)
+def mypage():
+    pass
+
+# ユーザー情報編集
+@router.put("/intro_update/{user_id}")
+def intro_update(user_id: str, db: Session = Depends(get_db)):
+    pass

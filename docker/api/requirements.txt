@@ -1,5 +1,6 @@
 alembic==1.9.3
 fastapi==0.90.1
+fastapi-sessions==0.3.2
 # gunicorn
 mysqlclient==2.1.1
 pytest==7.2.1
