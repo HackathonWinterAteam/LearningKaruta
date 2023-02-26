@@ -1,8 +1,8 @@
 import "./index.css";
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const Draw = () => {
+    const location = useLocation();
     return(
         <div className="content-start font-body font-bold">
             <div className="relative">
@@ -40,7 +40,7 @@ const Draw = () => {
                                 </div>
 
                                 <div className="px-20 py-4 w-1/2  bg-darkWhite">
-                                <span className="text-lightBlue">10<span>枚</span></span>
+                                <span className="text-lightBlue">{location.state.userScore}<span>枚</span></span>
                                 </div>
                             </div>
 
@@ -50,7 +50,7 @@ const Draw = () => {
                                 </div>
 
                                 <div className="px-20 py-4 w-1/2  bg-darkWhite">
-                                <span className="text-lightBlue">2 <span>枚</span></span>
+                                <span className="text-lightBlue">{location.state.cpuScore} <span>枚</span></span>
                                 </div>
                             </div>
 

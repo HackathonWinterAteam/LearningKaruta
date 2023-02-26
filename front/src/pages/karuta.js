@@ -158,11 +158,11 @@ const Karuta = () => {
   //勝敗とスコア、ホーム画面へ飛ぶボタンが表示してあるモーダルの表示
   const finishGame = () => {
     if (userScore > cpuScore){
-      navigate("/victory");
+      navigate("/victory",{state:{ userScore:userScore , cpuScore:cpuScore }});
     }else if(userScore < cpuScore){
-      navigate("/lose");
+      navigate("/lose",{state:{ userScore:userScore , cpuScore:cpuScore }});
     }else{
-      navigate("/draw");
+      navigate("/draw",{state:{ userScore:userScore , cpuScore:cpuScore }});
     }
   };
 
