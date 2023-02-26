@@ -1,6 +1,6 @@
 import uuid
 from database import Base
-from sqlalchemy import Column, String, Text, CHAR
+from sqlalchemy import Column, String, Text
 from .mixins import TimestampMixin
 
 
@@ -24,5 +24,5 @@ class Sessions(Base):
         'comment': 'セッション管理'
     }
 
-    session_id = Column('sesson_id', String(36), primary_key=True, default=str(uuid.uuid4()), unique=True)
+    session_id = Column('session_id', String(36), primary_key=True, default=str(uuid.uuid4()), unique=True)
     refresh_token = Column('refresh_token', String(65535), nullable=True)
