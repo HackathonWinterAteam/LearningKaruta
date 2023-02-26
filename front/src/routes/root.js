@@ -7,7 +7,7 @@ import Login from "../pages/login";
 import Karuta from "../pages/karuta";
 import Victory from "../Victory";
 import Lose from "../Lose";
-import Drow from "../Drow";
+import Draw from "../Draw";
 
 function Root() {
   return (
@@ -55,7 +55,7 @@ function Root() {
         <Route path="/karuta" element={<Karuta />} />
         <Route path="/victory" element={<Victory />} />
         <Route path="/lose" element={<Lose />} />
-        <Route path="/Drow" element={<Drow />} />
+        <Route path="/draw" element={<Draw />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </div>
