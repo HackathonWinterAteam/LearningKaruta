@@ -44,7 +44,4 @@ class TokenData(BaseModel):
 
 
 class SessionData:
-    def __init__(self, refresh_token: str):
-        self.refresh_token = refresh_token
-
-
+    refresh_token: str

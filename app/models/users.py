@@ -17,3 +17,12 @@ class Users(Base, TimestampMixin):
     password = Column('password', String(255), nullable=False)
     user_intro = Column('user_intro', Text, nullable=True)
     refresh_token = Column('refresh_token', String(65535), nullable=True)
+
+class Sessions(Base):
+    __tablename__ = 'sessions'
+    __table_args__ = {
+        'comment': 'セッション管理'
+    }
+
+    session_id = Column('sesson_id', String(36), primary_key=True, default=str(uuid.uuid4()), unique=True)
+    refresh_token = Column('refresh_token', String(65535), nullable=True)
