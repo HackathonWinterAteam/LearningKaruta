@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Modal } from "../compornents/Modal";
 import { useInterval } from "../compornents/useInterval";
 import { getAllKaruta } from "../compornents/getKaruta";
 
 import "../index.css";
 
-const MKaruta = () => {
+const Karuta = () => {
   //useState
   const [yomiLists, setYomiLists] = useState([]); //読み札管理
   const [efudaLists, setEfudaLists] = useState(yomiLists); //絵札管理
@@ -22,6 +22,9 @@ const MKaruta = () => {
   const [currentTurn, setCurrentTurn] = useState(0); //ターンカウント
   const [userAcquiredCards, setUserAcquiredCards] = useState([]); //ユーザーが取得した絵札の管理
   const [cpuAcquiredCards, setCpuAcquiredCards] = useState([]); //CPUが取得した絵札の管理
+  const [judgeFlag, setJudgeFlag] = useState(0);//正誤判定の結果管理
+  const navigate = useNavigate();
+
 
   //初期化
   const initGame = () => {
@@ -49,7 +52,6 @@ const MKaruta = () => {
     const fetchKarutaData = async () => {
       let res = await getAllKaruta(initialURL);
       setYomiLists(res);
-      console.log(res);
     };
     fetchKarutaData();
   },[])
@@ -105,7 +107,6 @@ const MKaruta = () => {
 
   //正誤判定
   const judge = (clickTarget) => {
-    console.log(clickTarget);
     const index = efudaLists.findIndex(
       (efuda) => efuda.card_id === yomiLists[currentTurn].card_id
     );
@@ -114,6 +115,8 @@ const MKaruta = () => {
     setIsAnswered(newIsAnswerd);
     if (clickTarget.id === yomiLists[currentTurn].card_id) {
       setUserScore(userScore + 1);
+      const flag = 1;
+      setJudgeFlag(flag);
 
       const tempStorage = efudaLists[index].answer_file_pass;
       const newAcquiredCard = [...userAcquiredCards];
@@ -121,6 +124,8 @@ const MKaruta = () => {
       setUserAcquiredCards(newAcquiredCard);
     } else {
       setCpuScore(cpuScore + 1);
+      const flag = 0;
+      setJudgeFlag(flag);
 
       const tempCpuStorage = efudaLists[index].answer_file_pass;
       const newCpuAcquiredCard = [...cpuAcquiredCards];
@@ -142,18 +147,23 @@ const MKaruta = () => {
 
   //モーダルを閉じる
   const modalClose = () => {
-    if (currentTurn < yomiLists.length) {
+    if (currentTurn < yomiLists.length - 1) {
       setIsModalOpen(false);
       setCurrentTurn(currentTurn + 1);
-    } else if (currentTurn === yomiLists.length) {
+    } else if (currentTurn === yomiLists.length - 1) {
       finishGame();
     }
   };
 
   //勝敗とスコア、ホーム画面へ飛ぶボタンが表示してあるモーダルの表示
   const finishGame = () => {
-    setCurrentTurn(currentTurn + 1);
-    setIsModalOpen(true);
+    if (userScore > cpuScore){
+      navigate("/victory",{state:{ userScore:userScore , cpuScore:cpuScore }});
+    }else if(userScore < cpuScore){
+      navigate("/lose",{state:{ userScore:userScore , cpuScore:cpuScore }});
+    }else{
+      navigate("/draw",{state:{ userScore:userScore , cpuScore:cpuScore }});
+    }
   };
 
   return (
@@ -229,10 +239,10 @@ const MKaruta = () => {
           </div>
         )}
         {isModalOpen ? (
-          currentTurn < yomiLists.length ? (
-            <Modal modalClose={modalClose}>問題の解説</Modal>
-          ) : (
-            <Modal modalClose={initGame}>終わり</Modal>
+          judgeFlag === 1 ? (
+            <Modal modalClose={modalClose} children={"取りました！"}></Modal>
+          ):(
+            <Modal modalClose={modalClose} children={"取られました..."}></Modal>
           )
         ) : (
           ""
@@ -241,4 +251,4 @@ const MKaruta = () => {
     </div>
   );};
 
-export default MKaruta;
+export default Karuta;
