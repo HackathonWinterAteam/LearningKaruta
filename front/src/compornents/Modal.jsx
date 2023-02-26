@@ -1,6 +1,7 @@
 import React from "react";
 
 export const Modal = ({ modalClose, children }) => {
+
   return (
     <>
       <section
@@ -10,7 +11,6 @@ export const Modal = ({ modalClose, children }) => {
         <div className="w-full h-full bg-transparent-black"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 max-w-lg py-[10px] px-[30px] bg-white">
           <div className="">
-            <h1>モーダル</h1>
             <p>{children}</p>
           </div>
           <div
