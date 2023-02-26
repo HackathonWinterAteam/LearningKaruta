@@ -23,7 +23,6 @@ const Karuta = () => {
   const [userAcquiredCards, setUserAcquiredCards] = useState([]); //ユーザーが取得した絵札の管理
   const [cpuAcquiredCards, setCpuAcquiredCards] = useState([]); //CPUが取得した絵札の管理
   const [judgeFlag, setJudgeFlag] = useState(0);//正誤判定の結果管理
-  const [result, setResult] = useState("drow");
   const navigate = useNavigate();
 
 
@@ -159,16 +158,10 @@ const Karuta = () => {
   //勝敗とスコア、ホーム画面へ飛ぶボタンが表示してあるモーダルの表示
   const finishGame = () => {
     if (userScore > cpuScore){
-      const gameResult = "win";
-      setResult(gameResult);
       navigate("/victory");
     }else if(userScore < cpuScore){
-      const gameResult = "lose";
-      setResult(gameResult);
       navigate("/lose");
     }else{
-      const gameResult = "draw";
-      setResult(gameResult);
       navigate("/draw");
     }
   };
