@@ -11,7 +11,6 @@ export const useAuthContext = ()  => {
 }
 
 export const AuthProvider = ({ children })  => {
-//   const { user, signup } = useAuth();
 
   const [user, setUser] = useState();
   const navigate = useNavigate();
@@ -26,22 +25,25 @@ export const AuthProvider = ({ children })  => {
       console.log(response.data);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      const errorMessage = error.response.data;
+      if (errorMessage.detail == "既に登録されているメールアドレスです"){
+       return "既に登録されているメールアドレスです" 
+      }
     }
     return "会員登録しました";
   };
 
-// ユーザー取得関数
+// 認証関数
   const getUser = async () => {
 
     try {
       const response = await axios.get("http://localhost:8000/users/me");
       setUser(response.data.users);
     } catch (error) {
-        const errorMessage = error.message;
-        if (errorMessage.includes("トークン有効期限切れ")){
-            const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
-            setUser(responce_refresh.data.users)
+        const errorMessage = error.response.data;
+          if (errorMessage.detail === "トークン有効期限切れ"){
+          const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
+          setUser(responce_refresh.data.users)
         }
     }
     return user;

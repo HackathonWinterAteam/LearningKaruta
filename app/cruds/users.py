@@ -116,14 +116,14 @@ def create_refresh_token(db: Session, data: dict, user_id: str, expires_delta: O
 
 # Cookieからアクセストークンを取得
 async def get_a_token_from_cookie(request: Request) -> HTTPAuthorizationCredentials:
-    a_token = request.cookies.get("access_token")
+    a_token = request.cookies.get("auth_a")
     if a_token is None:
         raise HTTPException(status_code=401, detail="Cookie not found")
     return HTTPAuthorizationCredentials(scheme="Bearer", credentials=a_token)
 
 # CookieからセッションIDを取得
 async def get_session_id_from_cookie(request: Request) -> str:
-    session_id = request.cookies.get("session_id")
+    session_id = request.cookies.get("auth_i")
     if session_id is None:
         raise HTTPException(status_code=401, detail="Session not found")
     return session_id

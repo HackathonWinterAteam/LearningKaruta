@@ -2,28 +2,30 @@ import axios from "../utils/axios";
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import { Cookies } from "react-cookie";
+
 
 function Home() {
   const [user, setUser] = useState([]);
-  const { getUsers } = useAuthContext();
+  const { getUser } = useAuthContext();
 
   // Contextは使っていない
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/users/me");
-        setUser(response.data.users);
-      } catch (error) {
-          const errorMessage = error.response.data;
-          if (errorMessage.detail === "トークン有効期限切れ"){
-              const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
-              setUser(responce_refresh.data.users)
-          }
-      }
+    const fetchUser = async () => {
+      const user = getUser();
+      // try {
+      //   const response = await axios.get("http://localhost:8000/users/me");
+      //   setUser(response.data.users);
+      // } catch (error) {
+      //     const errorMessage = error.response.data;
+      //     if (errorMessage.detail === "トークン有効期限切れ"){
+      //         const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
+      //         setUser(responce_refresh.data.users)
+      //     }
+      // }
       return user;
     };
-    getUser();
+    fetchUser();
+
   }, []);
 
   return (
