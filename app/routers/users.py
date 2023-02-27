@@ -9,7 +9,7 @@ from database import get_db
 import models.users as users_model
 import schemas.users as users_schema
 import cruds.users as users_cruds
-from datetime import timedelta
+from datetime import datetime, timedelta
 import os
 
 router = APIRouter()
@@ -69,7 +69,7 @@ async def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session =
 
     response = JSONResponse(content=user_data | {"auth_a": access_token} | {"auth_i": refresh_token_session_id})
     response.set_cookie(key="auth_a", value=access_token, httponly=True)
-    response.set_cookie(key="auth_i", value=refresh_token_session_id, httponly=True)
+    response.set_cookie(key="auth_i", value=refresh_token_session_id, httponly=True, expires=datetime.utcnow()+refresh_token_expires)
     return response
 
 
