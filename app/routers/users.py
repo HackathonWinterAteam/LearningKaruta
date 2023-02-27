@@ -67,9 +67,9 @@ async def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session =
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
 
-    response = JSONResponse(content=user_data | {"access_token": access_token} | {"session_id": refresh_token_session_id})
-    response.set_cookie(key="access_token", value=access_token, httponly=True)
-    response.set_cookie(key="session_id", value=refresh_token_session_id, httponly=True)
+    response = JSONResponse(content=user_data | {"auth_a": access_token} | {"auth_i": refresh_token_session_id})
+    response.set_cookie(key="auth_a", value=access_token, httponly=True)
+    response.set_cookie(key="auth_i", value=refresh_token_session_id, httponly=True)
     return response
 
 

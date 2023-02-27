@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 import os
 import uuid
-from fastapi import Depends, HTTPException, status, Request, APIRouter
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
