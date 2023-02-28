@@ -9,6 +9,12 @@
 .span_Shadow_2{
   @apply absolute inset-0 w-full h-full bg-darkWhite border-2 border-darkBlue group-hover:bg-darkBlue;
 }
+.GradationBluebtn{
+  @apply bg-gradient-to-r from-indigo-400 to-lightBlue text-center py-8 px-6 w-full h-auto text-darkWhite rounded-2xl tracking-wider
+}
+.GradationYellowbtn{
+  @apply bg-gradient-to-r from-amber-200 to-amber-300 py-4 px-16 text-paleBlack rounded-3xl tracking-wider
+}
 @tailwind utilities;
 
 @layer components {

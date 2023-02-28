@@ -9,14 +9,17 @@ module.exports = {
       colors: {
         lightBlue: "#3F4CE2",
         darkBlue: "#021997",
+        paleBlue:"#B5B9E6",
         yellow: "#F1D772",
         darkWhite: "#F5F4F5",
+        paleBlack:'#3D3D3D',
+
         transparent: {
           black: " rgba(30, 30, 30, 0.7)",
         },
       },
       dropShadow: {
-        btnShadow: "0 8px 8px rgba(2, 25, 151,30)",
+        Shadow: "0 4px 4px rgba(181, 185, 230,0.15)",
       },
     },
   },
