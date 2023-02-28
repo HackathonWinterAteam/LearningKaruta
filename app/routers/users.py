@@ -9,7 +9,7 @@ from database import get_db
 import models.users as users_model
 import schemas.users as users_schema
 import cruds.users as users_cruds
-from datetime import timedelta
+from datetime import datetime, timedelta
 import os
 
 router = APIRouter()
@@ -19,6 +19,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/signin")
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS"))
+
+
 
 
 #ユーザー登録
@@ -36,9 +38,9 @@ def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
         return create_user
 
 
-# 認可、トークン発行
+# 認可、トークン発行+セッションID発行
 @router.post("/users/signin", response_model=Dict[str, Any])
-def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = users_cruds.authenticate_user(db,form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -60,20 +62,15 @@ def signin(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
     access_token = users_cruds.create_access_token(
         user_data, expires_delta=access_token_expires
     )
-    refresh_token = users_cruds.create_refresh_token(
+    # リフレッシュトークンの生成→セッションIDをセットした Cookieを返す
+    refresh_token_session_id = users_cruds.create_refresh_token(
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
 
-
-    response = JSONResponse(content=user_data | {"access_token": access_token} | {"refresh_token": refresh_token})
-    response.set_cookie(key="access_token", value=access_token, httponly=True)
-    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
+    response = JSONResponse(content=user_data | {"auth_a": access_token} | {"auth_i": refresh_token_session_id})
+    response.set_cookie(key="auth_a", value=access_token, httponly=True)
+    response.set_cookie(key="auth_i", value=refresh_token_session_id, httponly=True, expires=datetime.utcnow()+refresh_token_expires)
     return response
-
-    # response = Response()
-    # response.set_cookie(key="access_token", value=access_token, httponly=True)
-    # response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
-    # return user_data | {"access_token": access_token} | {"refresh_token": refresh_token}
 
 
 # 認証
@@ -83,7 +80,7 @@ async def current_user(current_user: users_schema.User = Depends(users_cruds.get
 
 # リフレッシュトークンでアクセストークンを再取得
 @router.get("/refresh_token", response_model=Dict[str, Any])
-async def refresh_token(current_user: users_schema.User = Depends(users_cruds.get_current_user_with_refresh_token), db: AsyncSession = Depends(get_db)):
+async def refresh_token(current_user: users_schema.User = Depends(users_cruds.get_current_user_with_session_refresh), db: AsyncSession = Depends(get_db)):
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_DAYS)
@@ -98,18 +95,24 @@ async def refresh_token(current_user: users_schema.User = Depends(users_cruds.ge
     access_token = users_cruds.create_access_token(
         user_data, expires_delta=access_token_expires
     )
-    refresh_token = users_cruds.create_refresh_token(
+    # リフレッシュトークンの生成→セッションIDをセットした Cookieを返す
+    refresh_token_session_id = users_cruds.create_refresh_token(
         db, user_data, user_id=user_id, expires_delta=refresh_token_expires
     )
 
 
-    response = JSONResponse(content=user_data | {"access_token": access_token} | {"refresh_token": refresh_token})
+    response = JSONResponse(content=user_data | {"access_token": access_token} | {"session_id": refresh_token_session_id})
     response.set_cookie(key="access_token", value=access_token, httponly=True)
-    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True)
+    response.set_cookie(key="session_id", value=refresh_token_session_id, httponly=True)
     return response
 
 
-    # a_token = {"access_token": access_token}
-    # r_token = {"refresh_token": refresh_token}
-    # response_data = user_data | a_token | r_token
-    # return response_data
+# マイページ表示用データ
+@router.get("/mypage", response_model=users_schema.UserInfo)
+def mypage():
+    pass
+
+# ユーザー情報編集
+@router.put("/intro_update/{user_id}")
+def intro_update(user_id: str, db: Session = Depends(get_db)):
+    pass
