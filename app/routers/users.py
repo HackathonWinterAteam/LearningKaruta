@@ -102,8 +102,8 @@ async def refresh_token(current_user: users_schema.User = Depends(users_cruds.ge
 
 
     response = JSONResponse(content=user_data | {"auth_a": access_token} | {"auth_i": refresh_token_session_id})
-    response.set_cookie(key="access_token", value=access_token, httponly=True)
-    response.set_cookie(key="session_id", value=refresh_token_session_id, httponly=True)
+    response.set_cookie(key="auth_a", value=access_token, httponly=True)
+    response.set_cookie(key="auth_i", value=refresh_token_session_id, httponly=True)
     return response
 
 

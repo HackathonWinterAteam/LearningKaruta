@@ -1,7 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
-
 // AuthContextの作成
 const AuthContext = createContext();
 
@@ -12,7 +11,7 @@ export const useAuthContext = ()  => {
 
 export const AuthProvider = ({ children })  => {
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
 
 // サインアップ関数
@@ -34,24 +33,35 @@ export const AuthProvider = ({ children })  => {
   };
 
 // 認証関数
-  const getUser = async () => {
-
+  const  getUser = async () => {
     try {
       const response = await axios.get("http://localhost:8000/users/me");
-      setUser(response.data.users);
+      setUser(response.data)
+      console.log(response.data)
+      return user
     } catch (error) {
-        const errorMessage = error.response.data;
-          if (errorMessage.detail === "トークン有効期限切れ"){
-          const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
-          setUser(responce_refresh.data.users)
-        }
+      const errorMessage = error.response.data;
+      if (errorMessage.detail === "トークン有効期限切れ") {
+        const responseRefresh = await axios.get("http://localhost:8000/refresh_token");
+        setUser(responseRefresh.data);
+        return user
+      }
     }
-    return user;
   };
 
+// ログアウト関数
+  const logout = () => {
+    removeCookie("auth_a", { path: '/' }, { httpOnly: true });
+    removeCookie("auth_i", { path: '/' }, { httpOnly: true });
+  };
+
+
+
   const value = {
-    getUser,    
-    signup
+    user,
+    getUser,
+    signup,
+    logout
   };
 
   return (<AuthContext.Provider value={value}>

@@ -1,44 +1,36 @@
 import axios from "../utils/axios";
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { createRoutesFromChildren, NavLink } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 
 
-function Home() {
-  const [user, setUser] = useState([]);
-  const { getUser } = useAuthContext();
+const Home = () => {
+  const { user, getUser, logout } = useAuthContext();
 
-  // Contextは使っていない
   useEffect(() => {
-    const fetchUser = async () => {
-      const user = getUser();
-      // try {
-      //   const response = await axios.get("http://localhost:8000/users/me");
-      //   setUser(response.data.users);
-      // } catch (error) {
-      //     const errorMessage = error.response.data;
-      //     if (errorMessage.detail === "トークン有効期限切れ"){
-      //         const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
-      //         setUser(responce_refresh.data.users)
-      //     }
-      // }
-      return user;
-    };
-    fetchUser();
-
+      getUser();
   }, []);
+
 
   return (
     <>
       <h2>Homeだよ</h2>
-      <ul>
+      <div>{user === null ? (
+        <p>Loading...</p>
+      ) : user ? (
+        <p>Welcome, {user.user_name}!</p>
+      ) : (
+        <p>Failed to fetch user data</p>
+      )}
+  </div>
+      {/* <ul>
         {user &&
           user.map((user) => (
             <li key={user._id}>
-              Name:{user.name}/Email:{user.email}
+              Name:{user?.user_name}/Email:{user.email}
             </li>
           ))}
-      </ul>
+      </ul> */}
 
       <li>
         <NavLink
@@ -72,8 +64,14 @@ function Home() {
           Karuta
         </NavLink>
       </li>
+      <li>
+        <NavLink
+        to="/login" onClick={logout}>
+          Logout
+        </NavLink>
+      </li>
     </>
   );
-}
+};
 
 export default Home;
