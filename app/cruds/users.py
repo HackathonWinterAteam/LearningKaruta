@@ -1,6 +1,7 @@
 from passlib.context import CryptContext
 import os
 import uuid
+import time
 from fastapi import Depends, HTTPException, status, Request, Response
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
@@ -70,7 +71,7 @@ def all_get_user(db, username: str):
 def authenticate_user(db: Session, username: str, password: str):
     user = all_get_user(db, username)
     if not user:
-        return False
+        raise HTTPException(status_code=404, detail="このメールアドレスは登録されていません")
     if not verify_password(password, user.password):
         return False
     return user
@@ -200,6 +201,17 @@ async def logout(request: Request, response:Response, db: AsyncSession = Depends
     db.commit()
     response.delete_cookie(key="auth_a")
     response.delete_cookie(key="auth_i")
+    response = JSONResponse({"auth_a": None} | {"auth_i": None})
+    response.set_cookie(
+        key="auth_a",
+        value="",
+        expires=time.time()-3600
+    )
+    response.set_cookie(
+        key="auth_i",
+        value="",
+        expires=time.time()-3600
+    )
     return response 
 
 

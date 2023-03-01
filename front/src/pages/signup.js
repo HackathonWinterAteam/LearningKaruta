@@ -10,6 +10,7 @@ function Signup() {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const navigate = useNavigate();
+  const Message = signup();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,6 +80,9 @@ function Signup() {
               autoComplete="current-password"
               required
             />
+          </div>
+          <div>
+            {Message && <p>{Message}</p>}
           </div>
           <div className={styleRow}>
             <button type="submit" className={styleBtn}>

@@ -13,6 +13,7 @@ export const AuthProvider = ({ children })  => {
 
   const [user, setUser] = useState({});
   const navigate = useNavigate();
+  const [ErrorMessage, setErrorMessage] = useState("");
 
 // サインアップ関数
   const signup = async (data) => {
@@ -23,13 +24,14 @@ export const AuthProvider = ({ children })  => {
       );
       console.log(response.data);
       navigate("/");
+      return "会員登録しました"
     } catch (error) {
       const errorMessage = error.response.data;
       if (errorMessage.detail == "既に登録されているメールアドレスです"){
-       return "既に登録されているメールアドレスです" 
+       setErrorMessage(errorMessage.detail)
+       return ErrorMessage
       }
     }
-    return "会員登録しました";
   };
 
 // 認証関数
@@ -51,7 +53,7 @@ export const AuthProvider = ({ children })  => {
 
 // ログアウト関数
   const logout = () => {
-    const logout = axios.delete("http://localhost:8000/logout");
+    const logout = axios.put("http://localhost:8000/logout");
     logout();
   };
 
