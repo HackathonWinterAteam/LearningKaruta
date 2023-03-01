@@ -1,7 +1,9 @@
 from passlib.context import CryptContext
 import os
 import uuid
-from fastapi import Depends, HTTPException, status, Request
+import time
+from fastapi import Depends, HTTPException, status, Request, Response
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
@@ -69,7 +71,7 @@ def all_get_user(db, username: str):
 def authenticate_user(db: Session, username: str, password: str):
     user = all_get_user(db, username)
     if not user:
-        return False
+        raise HTTPException(status_code=404, detail="このメールアドレスは登録されていません")
     if not verify_password(password, user.password):
         return False
     return user
@@ -116,14 +118,14 @@ def create_refresh_token(db: Session, data: dict, user_id: str, expires_delta: O
 
 # Cookieからアクセストークンを取得
 async def get_a_token_from_cookie(request: Request) -> HTTPAuthorizationCredentials:
-    a_token = request.cookies.get("access_token")
+    a_token = request.cookies.get("auth_a")
     if a_token is None:
         raise HTTPException(status_code=401, detail="Cookie not found")
     return HTTPAuthorizationCredentials(scheme="Bearer", credentials=a_token)
 
 # CookieからセッションIDを取得
 async def get_session_id_from_cookie(request: Request) -> str:
-    session_id = request.cookies.get("session_id")
+    session_id = request.cookies.get("auth_i")
     if session_id is None:
         raise HTTPException(status_code=401, detail="Session not found")
     return session_id
@@ -182,6 +184,55 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
     
 
     return user
+
+# ログアウト
+async def logout(request: Request, db: AsyncSession = Depends(get_db)):
+    auth_id = request.cookies.get("auth_i")
+    auth_ac = request.cookies.get("auth_a")
+    if auth_id is None or  auth_ac is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    # リフレッシュトークンの削除
+    refresh_token = session_token.getRefreshBySession(session_id=auth_id, db=db)
+    db.query(users_model.Users).filter(users_model.Users.refresh_token == refresh_token).update({"refresh_token": None})
+    db.commit()
+
+    # セッションの削除
+    db_session = db.query(users_model.Sessions).filter(users_model.Sessions.session_id == auth_id).first()
+    if db_session is None:
+        raise HTTPException(status_code=401, detail="User not found")
+    db.delete(db_session)
+    db.commit()
+    
+    return {"message": "Sign Out!!"}
+
+
+    # Cookieの削除
+def delete_cookie(response:Response):
+    response.delete_cookie(key="auth_a")
+    response.delete_cookie(key="auth_i")
+    # response.set_cookie(
+    #     key="auth_a",
+    #     value="",
+    #     max_age=0,
+    #     expires=0,
+    #     path="/",
+    #     # domain="localhost"
+    # )
+    # response.set_cookie(
+    #     key="auth_i",
+    #     value="",
+    #     max_age=0,
+    #     expires=time.time()-3600,
+    #     path="/",
+    #     # domain="localhost"
+    # )
+    return response
+
+
+
+
+
 
 # マイページ表示データ取得
 def get_user_info(db: Session, user_id: str):
