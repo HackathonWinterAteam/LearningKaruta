@@ -40,13 +40,11 @@ export const AuthProvider = ({ children })  => {
       const response = await axios.get("http://localhost:8000/users/me");
       setUser(response.data)
       console.log(response.data)
-      return user
     } catch (error) {
       const errorMessage = error.response.data;
       if (errorMessage.detail === "トークン有効期限切れ") {
         const responseRefresh = await axios.get("http://localhost:8000/refresh_token");
         setUser(responseRefresh.data);
-        return user
       }
     }
   };
@@ -56,7 +54,6 @@ export const AuthProvider = ({ children })  => {
     const logout = axios.put("http://localhost:8000/signout");
     logout();
     setUser(null)
-    return user
   };
 
 
