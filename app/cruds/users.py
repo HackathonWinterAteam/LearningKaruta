@@ -186,33 +186,48 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
     return user
 
 # ログアウト
-async def logout(request: Request, response:Response, db: AsyncSession = Depends(get_db)):
-    auth_i = request.cookies.get("auth_i")
-    auth_a = request.cookies.get("auth_a")
-    if auth_i is None or  auth_a is None:
+async def logout(request: Request, db: AsyncSession = Depends(get_db)):
+    auth_id = request.cookies.get("auth_i")
+    auth_ac = request.cookies.get("auth_a")
+    if auth_id is None or  auth_ac is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    refresh_token = session_token.getRefreshBySession(session_id=auth_i, db=db)
+    
+    # リフレッシュトークンの削除
+    refresh_token = session_token.getRefreshBySession(session_id=auth_id, db=db)
     db.query(users_model.Users).filter(users_model.Users.refresh_token == refresh_token).update({"refresh_token": None})
     db.commit()
-    db_session = db.query(users_model.Sessions).filter(users_model.Sessions.session_id == auth_i).first()
+
+    # セッションの削除
+    db_session = db.query(users_model.Sessions).filter(users_model.Sessions.session_id == auth_id).first()
     if db_session is None:
         raise HTTPException(status_code=401, detail="User not found")
     db.delete(db_session)
     db.commit()
+    
+    return {"message": "Sign Out!!"}
+
+
+    # Cookieの削除
+def delete_cookie(response:Response):
     response.delete_cookie(key="auth_a")
     response.delete_cookie(key="auth_i")
-    response = JSONResponse({"auth_a": None} | {"auth_i": None})
-    response.set_cookie(
-        key="auth_a",
-        value="",
-        expires=time.time()-3600
-    )
-    response.set_cookie(
-        key="auth_i",
-        value="",
-        expires=time.time()-3600
-    )
-    return response 
+    # response.set_cookie(
+    #     key="auth_a",
+    #     value="",
+    #     max_age=0,
+    #     expires=0,
+    #     path="/",
+    #     # domain="localhost"
+    # )
+    # response.set_cookie(
+    #     key="auth_i",
+    #     value="",
+    #     max_age=0,
+    #     expires=time.time()-3600,
+    #     path="/",
+    #     # domain="localhost"
+    # )
+    return response
 
 
 

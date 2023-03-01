@@ -53,8 +53,10 @@ export const AuthProvider = ({ children })  => {
 
 // ログアウト関数
   const logout = () => {
-    const logout = axios.put("http://localhost:8000/logout");
+    const logout = axios.put("http://localhost:8000/signout");
     logout();
+    setUser(null)
+    return user
   };
 
 

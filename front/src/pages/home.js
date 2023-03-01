@@ -11,27 +11,29 @@ const Home = () => {
       getUser();
   }, []);
 
+  const LoggidIn = () => {
+    if (user.user_name !== undefined){
+      return  <p>Welcome, {user.user_name}!</p>;
+    } else {
+      return <p></p>;
+    }
+  }
+
+
+
+  console.log(user)
 
   return (
     <>
       <h2>Homeだよ</h2>
-      <div>{user === null ? (
-        <p>Loading...</p>
-      ) : user ? (
-        <p>Welcome, {user.user_name}!</p>
-      ) : (
-        <p>Failed to fetch user data</p>
-      )}
-  </div>
-      {/* <ul>
-        {user &&
-          user.map((user) => (
-            <li key={user._id}>
-              Name:{user?.user_name}/Email:{user.email}
-            </li>
-          ))}
-      </ul> */}
-
+        {LoggidIn()}
+        {user.user_name !== undefined ? (
+             <p> Name: {user.user_name} / Email: {user.email} </p>
+        ) : (
+          <p></p>
+        )
+          }
+      
       <li>
         <NavLink
           style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
@@ -48,6 +50,14 @@ const Home = () => {
           Signup
         </NavLink>
       </li>
+      { user.user_name !== undefined ? (
+        <li>
+        <NavLink
+        to="/login" onClick={logout}>
+          Logout
+        </NavLink>
+      </li>
+      ) : ( 
       <li>
         <NavLink
           style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
@@ -56,6 +66,8 @@ const Home = () => {
           Login
         </NavLink>
       </li>
+      )
+      }
       <li>
         <NavLink
           style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
@@ -64,12 +76,7 @@ const Home = () => {
           Karuta
         </NavLink>
       </li>
-      <li>
-        <NavLink
-        to="/login" onClick={logout}>
-          Logout
-        </NavLink>
-      </li>
+
     </>
   );
 };

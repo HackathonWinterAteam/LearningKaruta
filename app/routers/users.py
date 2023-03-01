@@ -103,9 +103,11 @@ async def refresh_token(current_user: users_schema.User = Depends(users_cruds.ge
     response.set_cookie(key="auth_i", value=refresh_token_session_id, httponly=True)
     return response
 
-@router.put("/logout")
+@router.put("/signout")
 async def logout(request: Request,response: Response, db: AsyncSession = Depends(get_db)):
-    return await users_cruds.logout(request=request,response=response, db=db)
+    users_cruds.logout(request=request, db=db)
+    users_cruds.delete_cookie(response=response)
+    return {"message": "Logged out successfully"}
 
 
 # マイページ表示用データ
