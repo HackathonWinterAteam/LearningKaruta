@@ -51,8 +51,8 @@ export const AuthProvider = ({ children })  => {
 
 // ログアウト関数
   const logout = () => {
-    removeCookie("auth_a", { path: '/' }, { httpOnly: true });
-    removeCookie("auth_i", { path: '/' }, { httpOnly: true });
+    const logout = axios.post("http://localhost:8000/logout");
+    logout();
   };
 
 

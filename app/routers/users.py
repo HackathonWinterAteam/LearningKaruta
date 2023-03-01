@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
@@ -104,6 +104,15 @@ async def refresh_token(current_user: users_schema.User = Depends(users_cruds.ge
     response = JSONResponse(content=user_data | {"auth_a": access_token} | {"auth_i": refresh_token_session_id})
     response.set_cookie(key="auth_a", value=access_token, httponly=True)
     response.set_cookie(key="auth_i", value=refresh_token_session_id, httponly=True)
+    return response
+
+@router.post("/logout")
+def logout(request: Request,response: Response, db: Session = Depends(get_db)):
+    users_cruds.logout(request=request, db=db)
+    # Cookieを削除
+    response.delete_cookie(key="auth_a")
+    response.delete_cookie(key="auth_i")
+    response = JSONResponse(content={"message": "ログアウト"})
     return response
 
 

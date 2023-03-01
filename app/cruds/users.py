@@ -1,7 +1,8 @@
 from passlib.context import CryptContext
 import os
 import uuid
-from fastapi import Depends, HTTPException, status, Request
+from fastapi import Depends, HTTPException, status, Request, Response
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
@@ -182,6 +183,19 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
     
 
     return user
+
+# ログアウト
+def logout(request: Request, db: Session = Depends(get_db)):
+    auth_i = request.cookies.get('auth_i')
+    auth_a = request.cookies.get('auth_a')
+    db.query(users_model.Sessions).filter(users_model.Sessions.session_id == auth_i).delete()
+    db.commit()
+
+
+
+
+
+
 
 # マイページ表示データ取得
 def get_user_info(db: Session, user_id: str):
