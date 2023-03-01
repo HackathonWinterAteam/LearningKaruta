@@ -9,16 +9,17 @@ export const Modal = ({ modalClose, children }) => {
         onClick={modalClose}
       >
         <div className="w-full h-full bg-transparent-black"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 max-w-lg py-[10px] px-[30px] bg-white">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 max-w-lg py-[50px] px-[50px] bg-white text-center">
           <div className="">
+          <FontAwesomeIcon icon="fa-sharp fa-solid fa-thumbs-up" />
             <p>{children}</p>
           </div>
-          <div
+          {/* <div
             className="absolute top-2 right-4 cursor-pointer"
             onClick={modalClose}
           >
             閉じる
-          </div>
+          </div> */}
         </div>
       </section>
     </>
