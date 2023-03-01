@@ -9,6 +9,7 @@ import ProtectedRoute from "../compornents/ProtectedRoute";
 import Victory from "../Victory";
 import Lose from "../Lose";
 import Draw from "../Draw";
+import Home_true from "../pages/home_true";
 
 function Root() {
   return (
@@ -57,6 +58,7 @@ function Root() {
         <Route path="/victory" element={<Victory />} />
         <Route path="/lose" element={<Lose />} />
         <Route path="/draw" element={<Draw />} />
+        <Route path="/home_true" element={<Home_true />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </div>
