@@ -115,7 +115,7 @@ const FormData = () => {
             />
           </div>
           <div className={styleRow}>
-            <button type="submit" className={styleBtn}>
+            <button type="submit" className={styleBtn} onClick={() => navigate("/")}>
               ログイン
             </button>
           </div>

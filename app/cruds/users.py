@@ -185,12 +185,22 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
     return user
 
 # ログアウト
-def logout(request: Request, db: Session = Depends(get_db)):
-    auth_i = request.cookies.get('auth_i')
-    auth_a = request.cookies.get('auth_a')
-    db.query(users_model.Sessions).filter(users_model.Sessions.session_id == auth_i).delete()
+async def logout(request: Request, response:Response, db: AsyncSession = Depends(get_db)):
+    auth_i = request.cookies.get("auth_i")
+    auth_a = request.cookies.get("auth_a")
+    if auth_i is None or  auth_a is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    refresh_token = session_token.getRefreshBySession(session_id=auth_i, db=db)
+    db.query(users_model.Users).filter(users_model.Users.refresh_token == refresh_token).update({"refresh_token": None})
     db.commit()
-
+    db_session = db.query(users_model.Sessions).filter(users_model.Sessions.session_id == auth_i).first()
+    if db_session is None:
+        raise HTTPException(status_code=401, detail="User not found")
+    db.delete(db_session)
+    db.commit()
+    response.delete_cookie(key="auth_a")
+    response.delete_cookie(key="auth_i")
+    return response 
 
 
 
