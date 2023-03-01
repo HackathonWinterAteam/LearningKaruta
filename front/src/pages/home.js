@@ -47,7 +47,7 @@ function Home() {
       </div>
     <div id="genre" className="space-y-2">
       <div className="flex space-x-2  ">
-      <NavLink className="GradationBluebtn text-3xl ">
+      <NavLink className="GradationBluebtn text-3xl hover:bg-yellow">
         Linux
       </NavLink>
 
