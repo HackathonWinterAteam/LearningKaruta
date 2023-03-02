@@ -60,27 +60,30 @@ const FormData = () => {
 
   
 
+
   // スタイルの定義
-  const styleRoot = "Login container md:3/5 lg:w-3/6 xl:w-2/5 mx-auto";
-  const styleHeader = "h-20 flex justify-center items-center text-3xl";
-  const styleMain = "border border-emerald-400 p-5 rounded-md";
-  const styleRow = "p-5 flex flow-root";
-  const styleInputLabel = "block pb-1 text-lg text-emerald-700";
+  const styleRoot = "Login container md:3/5 lg:w-1/5 xl:w-2/5 mx-auto font-body";
+  const styleHeader = "mt-12 mb-4 flex justify-center items-center";
+  const styleMain = "p-3 rounded-md";
+  const styleRow = "p-3 flex flow-root";
+  const styleInputLabel = "block pb-1 text-lg text-black";
   const styleInput =
-    "border rounded-md border-emerald-500 w-full p-2 text-lg text-emerald-900";
+    "border rounded-md border-yellow w-full p-2 text-lg text-black";
   const styleBtn =
-    "p-2 w-full rounded-lg bg-emerald-400 hover:opacity-80 " +
-    "text-teal-50 text-lg hover:border-emerald-500 hover:ring-2 font-black";
+    "p-2 w-full rounded-lg bg-yellow hover:opacity-80 " +
+    "text-teal-50 text-lg  font-black";
 
   const smallBtn =
-    "m-2 p-1 w-32 rounded-lg bg-emerald-400 hover:opacity-80 " +
-    "text-teal-50 text-lg hover:border-emerald-500 hover:ring-2 font-black";
+    "ml-5 py-2 px-5 w-40 rounded-lg bg-yellow hover:opacity-80 " +
+    "text-teal-50 text-lg font-black";
+  const h2Styel="mx-5 my-2"
 
   // JSX
   return (
     <div className={styleRoot}>
+      <div className=""></div>
       <header className={styleHeader}>
-        <h1 className="text-center">ログイン</h1>
+        <h1 className="text-center text-4xl">ログイン</h1>
       </header>
       <main className={styleMain}>
         <form onSubmit={handleSubmit}>
@@ -120,13 +123,13 @@ const FormData = () => {
             </button>
           </div>
         </form>
-      </main>
       <>
-        <h2>アカウントをお持ちでないですか？</h2>
+        <h2 className={h2Styel}>アカウントをお持ちでないですか？</h2>
         <button className={smallBtn} onClick={() => navigate("/signup")}>
           ユーザー登録
         </button>
       </>
+      </main>
     </div>
     
   );

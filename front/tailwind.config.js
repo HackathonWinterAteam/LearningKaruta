@@ -19,7 +19,7 @@ module.exports = {
         },
       },
       dropShadow: {
-        Shadow: "0 4px 4px rgba(181, 185, 230,0.15)",
+        Shadow: "0 4px 4px rgba(181, 185, 230,0.2)",
       },
     },
   },
