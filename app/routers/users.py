@@ -110,12 +110,9 @@ async def logout(request: Request,response: Response, db: AsyncSession = Depends
     return {"message": "Logged out successfully"}
 
 
-# マイページ表示用データ
-@router.get("/mypage", response_model=users_schema.UserInfo)
-def mypage():
-    pass
 
 # ユーザー情報編集
-@router.put("/intro_update/{user_id}")
-def intro_update(user_id: str, db: Session = Depends(get_db)):
-    pass
+@router.put("/user_update/{user_id}")
+async def user_update(user_id: str, update_user:users_schema.UpdateUser, db: AsyncSession = Depends(get_db)):
+    user = users_cruds.get_user_byId(db, user_id=user_id)
+    return await users_cruds.update_user(db=db, update_user=update_user, user=user)

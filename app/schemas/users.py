@@ -13,6 +13,13 @@ class CreateUser(BaseModel):
     class Config:
         orm_mode = True
 
+class UpdateUser(BaseModel):
+    user_name: str
+    user_intro: Union[str, None]
+
+    class Config:
+        orm_mode = True
+
 
 #レスポンス
 class User(BaseModel):
@@ -20,13 +27,14 @@ class User(BaseModel):
     user_name: str
     email: str
     user_intro:  Union[str, None]
-    count: int
+    count: Union[int, None]
     created_at: datetime.datetime
 
     class Config:
         orm_mode = True
 
 class User_all(User):
+    password: str
     refresh_token: str
 
     class Config:

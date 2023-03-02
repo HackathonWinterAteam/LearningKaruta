@@ -82,16 +82,21 @@ def all_get_user(db, username: str):
     user_id  = user_info.user_id
     print(user_id)
     user_record = db.query(games_model.play_records).filter(games_model.play_records.user_id == user_id).count()
-    user = users_schema.User(
+    user = users_schema.User_all(
         user_id=user_info.user_id,
         email=user_info.email,
         user_name=user_info.user_name,
         user_intro=user_info.user_intro,
         refresh_token=user_info.refresh_token,
         count=user_record,
+        password=user_info.password,
         created_at=user_info.created_at
     )
 
+    return user
+
+def get_user_byId(db, user_id: str):
+    user = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
     return user
 
 
@@ -245,10 +250,11 @@ def delete_cookie(response:Response):
 
 
 
-# # マイページ表示データ取得
-# def get_user_info(db: Session, user_id: str):
-#     user_info = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
-#     user_id  = user.user_id
-#     print(user_id)
-#     user_record = db.query(games_model.play_records).filter(games_model.play_records.user_id == user_id).count()
-    
+# ユーザー情報変更
+async def update_user(db: AsyncSession, update_user: users_schema.UpdateUser, user: users_model.Users):
+    user.user_name = update_user.user_name
+    user.user_intro = update_user.user_intro
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return {"message": "Update Done!!"}
