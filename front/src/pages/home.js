@@ -89,14 +89,14 @@ const Home = () => {
 
  
 
-      <ul>
+      {/* <ul>
         {user &&
           user.map((user) => (
             <li key={user._id}>
               Name:{user.name}/Email:{user.email}
             </li>
           ))}
-      </ul>
+      </ul> */}
       </body>
 
       {/* <li>

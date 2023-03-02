@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 
 function Signup() {
-  const { signup } = useAuthContext();
+  const { signup, ErrorMessage } = useAuthContext();
   // 認証用の記述
   const nameRef = useRef(null);
   const emailRef = useRef(null);
@@ -83,7 +83,7 @@ function Signup() {
             />
           </div>
           <div>
-            {Message && <p>{Message}</p>}
+            {ErrorMessage && <p>{ErrorMessage}</p>}
           </div>
           <div className={styleRow}>
             <button type="submit" className={styleBtn}>
