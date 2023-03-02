@@ -5,26 +5,13 @@ import { useAuthContext } from "../context/AuthContext";
 // import { Cookies } from "react-cookie";
 
 function Home() {
-  const [user, setUser] = useState([]);
-  const { getUsers } = useAuthContext();
+  const { user, getUser, logout } = useAuthContext();
 
-  // Contextは使っていない
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/users/me");
-        setUser(response.data.users);
-      } catch (error) {
-          const errorMessage = error.response.data;
-          if (errorMessage.detail === "トークン有効期限切れ"){
-              const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
-              setUser(responce_refresh.data.users)
-          }
-      }
-      return user;
-    };
-    getUser();
-  }, []);
+  // useEffect(() => {
+  //     getUser();
+  // }, []);
+
+
 
   return (
     <>
@@ -83,8 +70,8 @@ function Home() {
               <img src={`${process.env.PUBLIC_URL}/imgs/icon_prof.jpg`} className="object-contain w-1/2 h-1/2"></img>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <p className="text-base text-paleBlack">USER NAME</p>
-                  <p className="text-base text-paleBlack">USER COMENT</p>
+                  <p className="text-base text-paleBlack">{user.user_name}</p>
+                  <p className="text-base text-paleBlack">{user.user_intro}</p>
                 </div>
                 <button className="text-sm rounded-2xl py-1 px-4 text-paleBlue outline outline-1 outline-paleBlue space-x-4">編集</button>
               </div>
@@ -141,14 +128,14 @@ function Home() {
 
  
 
-      <ul>
+      {/* <ul>
         {user &&
           user.map((user) => (
             <li key={user._id}>
               Name:{user.name}/Email:{user.email}
             </li>
           ))}
-      </ul>
+      </ul> */}
       </body>
 
       {/* <li>
