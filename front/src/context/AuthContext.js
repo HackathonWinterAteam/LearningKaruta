@@ -28,8 +28,7 @@ export const AuthProvider = ({ children })  => {
     } catch (error) {
       const errorMessage = error.response.data;
       if (errorMessage.detail == "既に登録されているメールアドレスです"){
-       setErrorMessage(errorMessage.detail)
-       return ErrorMessage
+      setErrorMessage(errorMessage.detail)
       }
     }
   };
@@ -62,6 +61,7 @@ export const AuthProvider = ({ children })  => {
     user,
     getUser,
     signup,
+    ErrorMessage,
     logout
   };
 
