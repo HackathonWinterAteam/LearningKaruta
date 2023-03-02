@@ -82,7 +82,7 @@ function Home() {
               <div className="justify-start w-1/3 h-full py-6 pl-6 space-y-2 bg-white rounded-lg">
                 <p className="text-base ">プレイ回数</p>
                 <div className="flex space-x-2 ">
-                <p id="" className="text-4xl leading-none">100</p><p className="text-base leading-none">回</p>
+                <p id="" className="text-4xl leading-none">{user.count}</p><p className="text-base leading-none">回</p>
                 </div>
               </div>
 

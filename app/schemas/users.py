@@ -15,11 +15,23 @@ class CreateUser(BaseModel):
 
 
 #レスポンス
-class User(CreateUser):
+class User(BaseModel):
     user_id: str
-    
+    user_name: str
+    email: str
+    user_intro:  Union[str, None]
+    count: int
+    created_at: datetime.datetime
+
     class Config:
         orm_mode = True
+
+class User_all(User):
+    refresh_token: str
+
+    class Config:
+        orm_mode = True
+
 
 class UserInfo(BaseModel):
     user_name: str
