@@ -22,20 +22,21 @@ function Signup() {
   };
 
   // スタイルの定義
-  const styleRoot = "Login container md:3/5 lg:w-3/6 xl:w-2/5 mx-auto";
+  const styleRoot = "Login container md:3/5 lg:w-1/5 xl:w-2/5 mx-auto";
   const styleHeader = "h-20 flex justify-center items-center text-3xl";
-  const styleMain = "border border-emerald-400 p-5 rounded-md";
-  const styleRow = "p-5 flex flow-root";
-  const styleInputLabel = "block pb-1 text-lg text-emerald-700";
+  const styleMain = "p-3 rounded-md";
+  const styleRow = "p-3 flex flow-root";
+  const styleInputLabel = "block pb-1 text-lg text-black";
   const styleInput =
-    "border rounded-md border-emerald-500 w-full p-2 text-lg text-emerald-900";
+    "border rounded-md b w-full p-2 text-lg text-black";
   const styleBtn =
-    "p-2 w-full rounded-lg bg-emerald-400 hover:opacity-80 " +
-    "text-teal-50 text-lg hover:border-emerald-500 hover:ring-2 font-black";
+    "p-2 w-full rounded-lg bg-lightBlue hover:opacity-80 " +
+    "text-teal-50 text-lg  font-black";
 
   const smallBtn =
-    "m-2 p-1 w-32 rounded-lg bg-emerald-400 hover:opacity-80 " +
-    "text-teal-50 text-lg hover:border-emerald-500 hover:ring-2 font-black";
+    "ml-5 py-2 px-5 w-40 rounded-lg bg-lightBlue hover:opacity-80 " +
+    "text-teal-50 text-lg font-black";
+  const h2styel="mx-5 my-2"
 
   // JSX
   return (
@@ -92,9 +93,11 @@ function Signup() {
         </form>
       </main>
       <>
-        <h2>アカウントをお持ちですか？</h2>
+        <h2 className={h2styel}>アカウントをお持ちですか？</h2>
         <button className={smallBtn} onClick={() => navigate("/login")}>
           ログイン
+
+          
         </button>
       </>
     </div>
