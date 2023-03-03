@@ -265,11 +265,11 @@ async def update_user(db: AsyncSession, update_user: users_schema.UpdateUser):
 # マイページ表示データの取得
 async def mypage(db: AsyncSession, user_id: str):
     # 得意ワード５つ取得
-    g = f"SELECT card_id FROM `answer_rate_view` WHERE user_id = :user_id ORDER BY answer_rate ASC LIMIT 5"
+    g = f"SELECT  FROM `answer_rate_view` WHERE user_id = :user_id ORDER BY answer_rate ASC LIMIT 5"
     my_text = text(g)
     good_cards = db.execute(my_text,{"user_id": user_id}).fetchall()
     # 苦手ワード５つ取得
-    b = f"SELECT card_id FROM `answer_rate_view` WHERE user_id = :user_id ORDER BY answer_rate DESC LIMIT 5"
+    b = f"SELECT * FROM `answer_rate_view` WHERE user_id = :user_id ORDER BY answer_rate DESC LIMIT 5"
     my_text = text(b)
     bad_cards = db.execute(my_text,{"user_id": user_id}).fetchall()
     data = {
