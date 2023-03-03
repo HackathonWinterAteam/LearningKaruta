@@ -14,6 +14,7 @@ class CreateUser(BaseModel):
         orm_mode = True
 
 class UpdateUser(BaseModel):
+    user_id: str
     user_name: str
     user_intro: Union[str, None]
 

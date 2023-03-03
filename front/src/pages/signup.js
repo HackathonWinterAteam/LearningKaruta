@@ -56,6 +56,7 @@ function Signup() {
         <form onSubmit={handleSubmit}>
           <div className={styleRow}>
             <label htmlFor="name" className={styleInputLabel}></label>
+
             <input
               id="name"
               name="user_name"

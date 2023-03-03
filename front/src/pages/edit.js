@@ -14,32 +14,33 @@ useEffect(() => {
     getUser();
     }, []);
 
-    // const edit = async (data) => {
-
-    //     const url = "http://localhost:8000/user_update/{user.user_id}";
-    //     const response = await axios.put(url,
-    //       data
-    //     );
-    //     console.log(response.data);
-    //     navigate("/home_true");
-    //     return "会員情報を編集しました"
+    const edit = async (data) => {
+        const url = "http://localhost:8000/user_update/";
+        const response = await axios.put(url,
+          data
+        );
+        console.log(response.data);
+        navigate("/home_true");
+        return "会員情報を編集しました"
     
-    // };
+    };
 
     const navigate = useNavigate();
 
 
     const nameRef = useRef(null);
     const introRef = useRef(null);
+    const userIdRef = useRef(null);
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     edit({
-    //       user_name: nameRef.current.value,
-    //       user_intro: introRef.current.value,
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        edit({
+          user_id: userIdRef.current.value,
+          user_name: nameRef.current.value,
+          user_intro: introRef.current.value,
 
-    //     });
-    //   };
+        });
+      };
     
 
     return(
@@ -47,7 +48,7 @@ useEffect(() => {
             <header className="py-4 flex justify-between">
                 <NavLink
                 style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-                to="/home_true">
+                to="/">
                     Karuta Game
                 </NavLink>
                 <button className="bg-gradient-to-r from-indigo-400 to-darkBlue py-2 px-12 text-darkWhite rounded-3xl tracking-wider">
@@ -61,9 +62,10 @@ useEffect(() => {
             <div>
                 <p>プロフィールを編集する</p>
                 
-                <form>
+                <form onSubmit={handleSubmit}>
                 <div className="">
                     <label htmlFor="name" className=""></label>
+                    <input type="hidden" name="user_id" ref={userIdRef} value={user.user_id} />
                     <input
                     id="name"
                     name="user_name"
@@ -77,7 +79,7 @@ useEffect(() => {
                 <label htmlFor="name" className="block text-lg text-paleBlack"></label>
                     <input
                     id="name"
-                    name="user_phrase"
+                    name="user_intro"
                     ref={introRef}
                     className="border rounded-md b w-full p-2 text-lg text-paleBlack "
                     placeholder="一言"

@@ -113,10 +113,10 @@ async def logout(request: Request, response: Response, db: AsyncSession = Depend
 
 
 # ユーザー情報編集
-@router.put("/user_update/{user_id}")
-async def user_update(user_id: UUID, update_user:users_schema.UpdateUser, db: AsyncSession = Depends(get_db)):
-    user = users_cruds.get_user_byId(db, user_id=user_id)
-    return await users_cruds.update_user(db=db, update_user=update_user, user=user)
+@router.put("/user_update/")
+async def user_update(update_user:users_schema.UpdateUser, db: AsyncSession = Depends(get_db)):
+    # user = users_cruds.get_user_byId(db)
+    return await users_cruds.update_user(db=db, update_user=update_user)
 
 
 # マイページ表示

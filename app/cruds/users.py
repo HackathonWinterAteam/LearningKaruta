@@ -252,7 +252,8 @@ def delete_cookie(response:Response):
 
 
 # ユーザー情報変更
-async def update_user(db: AsyncSession, update_user: users_schema.UpdateUser, user: users_model.Users):
+async def update_user(db: AsyncSession, update_user: users_schema.UpdateUser):
+    user = db.query(users_model.Users).filter(users_model.Users.user_id == update_user.user_id).first()
     user.user_name = update_user.user_name
     user.user_intro = update_user.user_intro
     db.add(user)
