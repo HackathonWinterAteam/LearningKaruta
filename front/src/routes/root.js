@@ -60,7 +60,9 @@ function Root() {
         <Route path="/lose" element={<Lose />} />
         <Route path="/draw" element={<Draw />} />
         <Route path="/home_true" element={<Home_true />} />
+        Updated upstream
         {/* <Route path="/edit" element={<Edit />} /> */}
+
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </div>
