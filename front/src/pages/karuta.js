@@ -240,9 +240,9 @@ const Karuta = () => {
         )}
         {isModalOpen ? (
           judgeFlag === 1 ? (
-            <Modal modalClose={modalClose} children={"取りました！"}></Modal>
+            <Modal modalClose={modalClose} correctFlag={1}></Modal>
           ):(
-            <Modal modalClose={modalClose} children={"取られました..."}></Modal>
+            <Modal modalClose={modalClose} correctFlag={0}></Modal>
           )
         ) : (
           ""

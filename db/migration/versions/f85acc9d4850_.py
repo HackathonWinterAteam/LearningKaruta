@@ -107,6 +107,8 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('card_id', 'played_id'),
     comment='プレイ記録詳細'
     )
+
+
     # ### end Alembic commands ###
 
 

@@ -1,30 +1,27 @@
 import axios from "../utils/axios";
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { createRoutesFromChildren, NavLink } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 // import { Cookies } from "react-cookie";
 
-function Home() {
-  const [user, setUser] = useState([]);
-  const { getUsers } = useAuthContext();
+const Home = () => {
+  const { user, getUser, logout } = useAuthContext();
 
-  // Contextは使っていない
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/users/me");
-        setUser(response.data.users);
-      } catch (error) {
-          const errorMessage = error.response.data;
-          if (errorMessage.detail === "トークン有効期限切れ"){
-              const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
-              setUser(responce_refresh.data.users)
-          }
-      }
-      return user;
-    };
-    getUser();
+      getUser();
   }, []);
+
+  const LoggidIn = () => {
+    if (user.user_name !== undefined){
+      return  <p>Welcome, {user.user_name}!</p>;
+    } else {
+      return <p></p>;
+    }
+  }
+
+
+
+  console.log(user)
 
   return (
     <>
@@ -92,14 +89,14 @@ function Home() {
 
  
 
-      <ul>
+      {/* <ul>
         {user &&
           user.map((user) => (
             <li key={user._id}>
               Name:{user.name}/Email:{user.email}
             </li>
           ))}
-      </ul>
+      </ul> */}
       </body>
 
       {/* <li>
@@ -128,6 +125,6 @@ function Home() {
       </li> */}
     </>
   );
-}
+};
 
 export default Home;

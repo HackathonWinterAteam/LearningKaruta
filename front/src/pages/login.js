@@ -17,7 +17,7 @@ const FormData = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const [ErrorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -41,22 +41,26 @@ const FormData = () => {
         qs.stringify(data),
         config
       );
-      
-      
+
       console.log(response.data);
-      console.log(response.data.access_token);
-      // login_set(response.data.access_token, response.data.refresh_token);
 
-
-      if (response.data.access_token) {
-        return console.log('ログイン済み')
-        ;
+      if (response.data.user_name) {
+        console.log('ログイン済み');
+        navigate("/");
       }
-    
     } catch (error) {
-      console.error(error);
-    }
+      const errorMessage = error.response.data;
+      if (errorMessage.detail === "Could not validate credentials") {
+
+        setErrorMessage("メールアドレスまたはパスワードが違います");
+        return ErrorMessage
+      }
+      else if (errorMessage.detail === "このメールアドレスは登録されていません") {
+        setErrorMessage("このメールアドレスは登録されていません")
+        return ErrorMessage
+      }
   };
+};
 
   
 
@@ -94,7 +98,6 @@ const FormData = () => {
               id="email"
               name="email"
               ref={emailRef}
-              // value={formValues.username}
               onChange={(event) => setUsername(event.target.value)}
               placeholder="メールアドレス"
               className={styleInput}
@@ -121,6 +124,9 @@ const FormData = () => {
             <button type="submit" className={styleBtn}>
               ログイン
             </button>
+          </div>
+          <div>
+            { ErrorMessage && <p>{ErrorMessage}</p>}
           </div>
         </form>
       <>

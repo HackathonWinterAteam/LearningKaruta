@@ -1,7 +1,9 @@
 from passlib.context import CryptContext
 import os
 import uuid
-from fastapi import Depends, HTTPException, status, Request
+import time
+from fastapi import Depends, HTTPException, status, Request, Response
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
@@ -13,6 +15,7 @@ from jose import JWTError, jwt, ExpiredSignatureError
 from database import get_db
 from models import users as users_model
 from schemas import users as users_schema
+from session import session_token
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
@@ -20,6 +23,7 @@ ALGORITHM = os.environ.get("ALGORITHM")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/signin")
+
 
 
 # UUID生成
@@ -51,28 +55,23 @@ def create_user(db: Session, user: users_schema.User):
     return db_user
 
 
-
 # ユーザーデータをDBから取得() #usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def get_user(db, username: str):
     user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
-    #user.refresh_token = ''
-    #user.password = ''
     delattr(user,"refresh_token")
     delattr(user,"password")
     return user
-
 
 def all_get_user(db, username: str):
     user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
     return user
 
-
-# OAuth2による認可(DBにユーザーがいるかチェック、パスワードチェック)
+# OAuth2による認可
 # usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def authenticate_user(db: Session, username: str, password: str):
     user = all_get_user(db, username)
     if not user:
-        return False
+        raise HTTPException(status_code=404, detail="このメールアドレスは登録されていません")
     if not verify_password(password, user.password):
         return False
     return user
@@ -89,7 +88,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     access_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return access_jwt
 
-# JWTの作成（リフレッシュトークン発行）
+# JWTの作成（リフレッシュトークン発行）：セッションIDを返す
 def create_refresh_token(db: Session, data: dict, user_id: str, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -100,35 +99,51 @@ def create_refresh_token(db: Session, data: dict, user_id: str, expires_delta: O
     to_encode.update({"token_type": "refresh_token"})
     refresh_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
+    session_id = generate_uuid()
+
     db_refresh = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
     db_refresh.refresh_token = refresh_jwt
     db.commit()
     db.refresh(db_refresh)
 
-    return refresh_jwt
+    db_session = users_model.Sessions(
+        session_id=session_id,
+        refresh_token=refresh_jwt
+    )
+    db.add(db_session)
+    db.commit()
+    db.refresh(db_session)
 
-# Cookieからトークンを取得
+    return session_id
+
+# Cookieからアクセストークンを取得
 async def get_a_token_from_cookie(request: Request) -> HTTPAuthorizationCredentials:
-    a_token = request.cookies.get("access_token")
+    a_token = request.cookies.get("auth_a")
     if a_token is None:
         raise HTTPException(status_code=401, detail="Cookie not found")
     return HTTPAuthorizationCredentials(scheme="Bearer", credentials=a_token)
 
-
-async def get_r_token_from_cookie(request: Request) -> HTTPAuthorizationCredentials:
-    r_token = request.cookies.get("refresh_token")
-    if r_token is None:
-        raise HTTPException(status_code=401, detail="Cookie not found")
-    return HTTPAuthorizationCredentials(scheme="Bearer", credentials=r_token)
+# CookieからセッションIDを取得
+async def get_session_id_from_cookie(request: Request) -> str:
+    session_id = request.cookies.get("auth_i")
+    if session_id is None:
+        raise HTTPException(status_code=401, detail="Session not found")
+    return session_id
 
 
 # アクセストークンからカレントユーザー取得
 async def get_current_user(token: HTTPAuthorizationCredentials=Depends(get_a_token_from_cookie), db: AsyncSession=Depends(get_db)):
     return await get_current_user_from_token('access_token', token.credentials, db=db)
 
-# リフレッシュトークンからカレントユーザー取得
-async def get_current_user_with_refresh_token(token: HTTPAuthorizationCredentials=Depends(get_r_token_from_cookie), db: AsyncSession=Depends(get_db)):
-    return await get_current_user_from_token('refresh_token', token.credentials, db=db)
+
+# セッションIDからリフレッシュトークンを取得★
+async def get_current_user_with_session_refresh(session_id: str=Depends(get_session_id_from_cookie), db: AsyncSession=Depends(get_db)) -> str:
+    refresh_token = session_token.getRefreshBySession(session_id=session_id, db=db)
+    if refresh_token is None:
+        raise HTTPException(status_code=401, detail="Refresh token not found")
+
+    return await get_current_user_from_token('refresh_token', token=refresh_token, db=db)
+
 
 # カレントユーザー取得
 async def get_current_user_from_token(token_type: str, token: str, db:AsyncSession):
@@ -169,3 +184,56 @@ async def get_current_user_from_token(token_type: str, token: str, db:AsyncSessi
     
 
     return user
+
+# ログアウト
+async def logout(request: Request, db: AsyncSession = Depends(get_db)):
+    auth_id = request.cookies.get("auth_i")
+    auth_ac = request.cookies.get("auth_a")
+    if auth_id is None or  auth_ac is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    # リフレッシュトークンの削除
+    refresh_token = session_token.getRefreshBySession(session_id=auth_id, db=db)
+    db.query(users_model.Users).filter(users_model.Users.refresh_token == refresh_token).update({"refresh_token": None})
+    db.commit()
+
+    # セッションの削除
+    db_session = db.query(users_model.Sessions).filter(users_model.Sessions.session_id == auth_id).first()
+    if db_session is None:
+        raise HTTPException(status_code=401, detail="User not found")
+    db.delete(db_session)
+    db.commit()
+    
+    return {"message": "Sign Out!!"}
+
+
+    # Cookieの削除
+def delete_cookie(response:Response):
+    response.delete_cookie(key="auth_a")
+    response.delete_cookie(key="auth_i")
+    # response.set_cookie(
+    #     key="auth_a",
+    #     value="",
+    #     max_age=0,
+    #     expires=0,
+    #     path="/",
+    #     # domain="localhost"
+    # )
+    # response.set_cookie(
+    #     key="auth_i",
+    #     value="",
+    #     max_age=0,
+    #     expires=time.time()-3600,
+    #     path="/",
+    #     # domain="localhost"
+    # )
+    return response
+
+
+
+
+
+
+# マイページ表示データ取得
+def get_user_info(db: Session, user_id: str):
+    user_info = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()

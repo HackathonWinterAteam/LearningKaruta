@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 
 function Signup() {
-  const { signup } = useAuthContext();
+  const { signup, ErrorMessage } = useAuthContext();
   // 認証用の記述
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const navigate = useNavigate();
+  const Message = signup();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,6 +81,9 @@ function Signup() {
               autoComplete="current-password"
               required
             />
+          </div>
+          <div>
+            {ErrorMessage && <p>{ErrorMessage}</p>}
           </div>
           <div className={styleRow}>
             <button type="submit" className={styleBtn}>

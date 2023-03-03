@@ -7,5 +7,6 @@ COPY ./front/package-lock.json ./
 COPY ./front/tailwind.config.js ./
 
 RUN npm install
+RUN npm install react-icons --save
 
 ENTRYPOINT [ "npm", "start" ]
