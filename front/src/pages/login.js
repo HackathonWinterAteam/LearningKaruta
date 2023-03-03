@@ -46,7 +46,7 @@ const FormData = () => {
 
       if (response.data.user_name) {
         console.log('ログイン済み');
-        navigate("/");
+        navigate("/home_true");
       }
     } catch (error) {
       const errorMessage = error.response.data;
