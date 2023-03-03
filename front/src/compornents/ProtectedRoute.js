@@ -5,17 +5,13 @@ import { useEffect } from 'react';
 
 // ログイン時のみアクセスを許可
 const ProtectedRoute = ({ children }) => {
-  const { getUser } = useAuthContext();
+  const { user, getUser } = useAuthContext();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const user = await getUser();
-      if (!user) {
-        return <Navigate to="/login" />
-      }
-    };
-    fetchData();
-  }, [getUser]);
+    getUser();
+}, []);
+
+
 
   return children;
 };

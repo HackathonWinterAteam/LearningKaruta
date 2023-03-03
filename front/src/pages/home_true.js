@@ -5,30 +5,17 @@ import { useAuthContext } from "../context/AuthContext";
 // import { Cookies } from "react-cookie";
 
 function Home() {
-  const [user, setUser] = useState([]);
-  const { getUsers } = useAuthContext();
+  const { user, getUser, logout } = useAuthContext();
 
-  // Contextは使っていない
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/users/me");
-        setUser(response.data.users);
-      } catch (error) {
-          const errorMessage = error.response.data;
-          if (errorMessage.detail === "トークン有効期限切れ"){
-              const responce_refresh = await axios.get("http://localhost:8000/refresh_token");
-              setUser(responce_refresh.data.users)
-          }
-      }
-      return user;
-    };
-    getUser();
-  }, []);
+  // useEffect(() => {
+  //     getUser();
+  // }, []);
+
+
 
   return (
     <body className="px-32 font-body font-bold bg-darkWhite pb-16">
-    
+
     <header className="py-4 flex justify-between">
     <NavLink
        style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
@@ -40,7 +27,7 @@ function Home() {
       ログアウト
     </NavLink>
     </button>
- 
+
     </header>
 
     <div id="gameSelect" className="w-full h-auto  mt-14 p-12 bg-white flex justify-center mb-6 rounded-lg drop-shadow-Shadow">
@@ -59,18 +46,18 @@ function Home() {
         Git
       </NavLink>
       {/* </div> */}
-  
+
       {/* <div className=""> */}
       <NavLink to="" className="GradationBluebtn text-xl">
         カラーコード
       </NavLink>
-      
+
       <NavLink className="GradationBluebtn text-xl">
         Docker
       </NavLink>
       {/* </div> */}
-  
-      
+
+
       {/* <NavLink>
         ショートカット
       </NavLink> */}
@@ -87,8 +74,8 @@ function Home() {
               <img src={`${process.env.PUBLIC_URL}/imgs/icon_prof.jpg`} className="object-contain"></img>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <p className="text-base text-paleBlack">USER NAME</p>
-                  <p className="text-base text-paleBlack">USER COMENT</p>
+                  <p className="text-base text-paleBlack">{user.user_name}</p>
+                  <p className="text-base text-paleBlack">{user.user_intro}</p>
                 </div>
                 <button className="text-sm rounded-2xl py-1 px-4 text-paleBlue outline outline-1 outline-paleBlue space-x-4">編集</button>
               </div>
@@ -99,7 +86,8 @@ function Home() {
               <div className="justify-start w-1/3 h-full py-6 pl-6 space-y-4 bg-white rounded-lg">
                 <p className="text-base ">プレイ回数</p>
                 <div className="flex space-x-2 ">
-                <p id="" className="text-4xl leading-none">100</p><p className="text-4xl leading-none">回</p>
+                <p id="" className="text-4xl leading-none">{user.count}</p><p className="text-base leading-none">回</p>
+
                 </div>
               </div>
 
@@ -161,25 +149,24 @@ function Home() {
             </div>
 
           </div>
-  
+
 
         </div>
 
- 
 
-      <ul>
+
+      {/* <ul>
         {user &&
           user.map((user) => (
             <li key={user._id}>
               Name:{user.name}/Email:{user.email}
             </li>
           ))}
-      </ul>
 
-
+      </ul> */}
       </body>
 
- 
+
 
   );
 }
