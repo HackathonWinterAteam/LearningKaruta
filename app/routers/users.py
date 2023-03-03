@@ -11,6 +11,7 @@ import schemas.users as users_schema
 import cruds.users as users_cruds
 from datetime import datetime, timedelta
 import os
+from uuid import UUID
 
 router = APIRouter()
 
@@ -104,7 +105,7 @@ async def refresh_token(current_user: users_schema.User = Depends(users_cruds.ge
     return response
 
 @router.put("/signout")
-async def logout(request: Request,response: Response, db: AsyncSession = Depends(get_db)):
+async def logout(request: Request, response: Response, db: AsyncSession = Depends(get_db)):
     users_cruds.logout(request=request, db=db)
     users_cruds.delete_cookie(response=response)
     return {"message": "Logged out successfully"}
@@ -113,6 +114,12 @@ async def logout(request: Request,response: Response, db: AsyncSession = Depends
 
 # ユーザー情報編集
 @router.put("/user_update/{user_id}")
-async def user_update(user_id: str, update_user:users_schema.UpdateUser, db: AsyncSession = Depends(get_db)):
+async def user_update(user_id: UUID, update_user:users_schema.UpdateUser, db: AsyncSession = Depends(get_db)):
     user = users_cruds.get_user_byId(db, user_id=user_id)
     return await users_cruds.update_user(db=db, update_user=update_user, user=user)
+
+
+# マイページ表示
+@router.get("/mypage/{user_id}", response_model=users_schema.UserInfo)
+async def mypage(user_id: str, db: AsyncSession = Depends(get_db)):
+    return users_cruds.mypage(db=db, user_id=user_id)

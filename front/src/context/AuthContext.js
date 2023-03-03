@@ -53,8 +53,22 @@ export const AuthProvider = ({ children })  => {
     const logout = axios.put("http://localhost:8000/signout");
     logout();
     setUser(null)
+    return user
   };
 
+// 編集
+const edit = async (data) => {
+
+    const user_id = user.user_id;
+    const response = await axios.put(
+      "http://localhost:8000/user_update/{user_id}",
+      data
+    );
+    console.log(response.data);
+    navigate("/home_true");
+    return "会員情報を編集しました"
+
+};
 
 
   const value = {
@@ -62,6 +76,7 @@ export const AuthProvider = ({ children })  => {
     getUser,
     signup,
     ErrorMessage,
+    edit,
     logout
   };
 

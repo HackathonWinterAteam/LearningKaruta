@@ -31,13 +31,4 @@ app.add_middleware(
     max_age=1800,
 )
 
-# # users/meに対して別のCORS設定を追加
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["http://localhost:3000"],
-#     allow_credentials=True,
-#     allow_methods=["GET"],
-#     allow_headers=["*"],
-#     expose_headers=["Authorization"],
-#     max_age=1800,
-# )
+

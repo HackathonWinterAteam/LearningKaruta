@@ -7,6 +7,7 @@ import { useAuthContext } from "../context/AuthContext";
 function Home() {
   const { user, getUser, logout } = useAuthContext();
 
+  // ProtectedRouteがあるのでコメントアウト
   // useEffect(() => {
   //     getUser();
   // }, []);
@@ -22,7 +23,7 @@ function Home() {
         Karuta Game
     </NavLink>
     <button className="bg-gradient-to-r from-indigo-400 to-darkBlue py-2 px-12 text-darkWhite rounded-3xl tracking-wider">
-    <NavLink>
+    <NavLink to="/" onClick={logout}>
       ログアウト
     </NavLink>
     </button>
@@ -75,7 +76,7 @@ function Home() {
                   <p className="text-base text-paleBlack">{user.user_name}</p>
                   <p className="text-base text-paleBlack">{user.user_intro}</p>
                 </div>
-                <button className="text-sm rounded-2xl py-1 px-4 text-paleBlue outline outline-1 outline-paleBlue space-x-4">編集</button>
+                <NavLink to="/edit" className="text-sm rounded-2xl py-1 px-4 text-paleBlue outline outline-1 outline-paleBlue space-x-4">編集</NavLink>
               </div>
             </div>
 

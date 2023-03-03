@@ -40,14 +40,17 @@ class User_all(User):
     class Config:
         orm_mode = True
 
+class Card(BaseModel):
+    card_id: int
+
 
 class UserInfo(BaseModel):
     user_name: str
     user_intro: str
     number_of_plays : int
     win_rate: int
-    good_word: str
-    bad_word: str
+    good_cards: list[Card]
+    bad_cards: list[Card]
 
 class Token(BaseModel):
     user_name: str

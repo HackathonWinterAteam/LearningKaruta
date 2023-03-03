@@ -7,9 +7,9 @@ import { useAuthContext } from "../context/AuthContext";
 const Home = () => {
   const { user, getUser, logout } = useAuthContext();
 
-  useEffect(() => {
-      getUser();
-  }, []);
+  // useEffect(() => {
+  //     getUser();
+  // }, []);
 
 
   console.log(user)
