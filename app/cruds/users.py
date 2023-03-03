@@ -78,6 +78,8 @@ def get_user(db, username: str):
 
 def l_get_user(db, username: str):
     user_info = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    if not user_info:
+        raise HTTPException(status_code=404, detail="このメールアドレスは登録されていません")
     # delattr(user,"refresh_token")
     # delattr(user,"password")
     user_id  = user_info.user_id
