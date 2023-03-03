@@ -15,7 +15,6 @@ function Home() {
 
   return (
     <body className="px-32 font-body font-bold bg-darkWhite pb-16">
-
     <header className="py-4 flex justify-between">
     <NavLink
        style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
@@ -27,7 +26,6 @@ function Home() {
       ログアウト
     </NavLink>
     </button>
-
     </header>
 
     <div id="gameSelect" className="w-full h-auto  mt-14 p-12 bg-white flex justify-center mb-6 rounded-lg drop-shadow-Shadow">
@@ -115,6 +113,8 @@ function Home() {
                 <ul className="list-outside list-disc space-x-1">
                 <li>git</li>
                 <li>git</li>
+
+                <li>git</li>
                 <li>git</li>
                 <li>git</li>
                 <li>git</li>
@@ -127,6 +127,8 @@ function Home() {
                 <p className="mb-1">苦手なワード</p>
                 <ul className="list-outside list-disc space-x-1">
                 <li>git</li>
+                <li>git</li>
+
                 <li>git</li>
                 <li>git</li>
                 <li>git</li>
@@ -149,6 +151,7 @@ function Home() {
             </div>
 
           </div>
+  
 
 
         </div>
@@ -165,8 +168,6 @@ function Home() {
 
       </ul> */}
       </body>
-
-
 
   );
 }
