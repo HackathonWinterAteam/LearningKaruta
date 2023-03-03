@@ -36,7 +36,7 @@ class User(BaseModel):
 
 class User_all(User):
     password: str
-    refresh_token: str
+    refresh_token: Union[str, None]
 
     class Config:
         orm_mode = True
