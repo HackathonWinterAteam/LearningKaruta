@@ -47,7 +47,7 @@ useEffect(() => {
             <header className="py-4 flex justify-between">
                 <NavLink
                 style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-                to="/">
+                to="/home_true">
                     Karuta Game
                 </NavLink>
                 <button className="bg-gradient-to-r from-indigo-400 to-darkBlue py-2 px-12 text-darkWhite rounded-3xl tracking-wider">
