@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 // import useAuth from "../hooks/useAuth";
 import { useAuthContext } from "../context/AuthContext";
 import axios   from "../utils/axios";
@@ -64,23 +65,21 @@ const FormData = () => {
 
   
 
-
-  // スタイルの定義
-  const styleRoot = "Login container md:3/5 lg:w-1/5 xl:w-2/5 mx-auto font-body";
-  const styleHeader = "mt-12 mb-4 flex justify-center items-center";
-  const styleMain = "p-3 rounded-md";
-  const styleRow = "p-3 flex flow-root";
-  const styleInputLabel = "block pb-1 text-lg text-black";
+  const styleRoot = "Login container :3/5 lg:w-1/5 xl:w-2/5 mx-auto mt-16 text-paleBlack";
+  const styleHeader = "h-20 justify-center items-center text-3xl";
+  // const styleMain = "rounded-md";
+  const styleRow = "flex flow-root";
+  const styleInputLabel = "block text-lg text-black";
   const styleInput =
-    "border rounded-md border-yellow w-full p-2 text-lg text-black";
+    "border rounded-md b w-full p-2 text-lg text-black";
   const styleBtn =
-    "p-2 w-full rounded-lg bg-yellow hover:opacity-80 " +
+    "p-2 w-full mt-8 rounded-lg bg-lightBlue hover:opacity-80 " +
     "text-teal-50 text-lg  font-black";
 
   const smallBtn =
-    "ml-5 py-2 px-5 w-40 rounded-lg bg-yellow hover:opacity-80 " +
-    "text-teal-50 text-lg font-black";
-  const h2Styel="mx-5 my-2"
+    "ml-5 w-40" +
+    "text-teal-50 text-lg text-darkBlue ";
+  const h2styel="mx-5 my-2"
 
   // JSX
   return (
@@ -89,7 +88,13 @@ const FormData = () => {
       <header className={styleHeader}>
         <h1 className="text-center text-4xl">ログイン</h1>
       </header>
-      <main className={styleMain}>
+      <main className="">
+        <div className="flex justify-center w-full h-auto mb-10">
+        <p className="text-base">アカウントをお持ちでないですか？</p>
+        <button className={smallBtn} onClick={() => navigate("/signup")}>
+          ユーザー登録
+        </button>
+        </div>
         <form onSubmit={handleSubmit}>
           <div className={styleRow}>
             <label htmlFor="email" className={styleInputLabel}></label>
@@ -129,12 +134,12 @@ const FormData = () => {
             { ErrorMessage && <p>{ErrorMessage}</p>}
           </div>
         </form>
-      <>
-        <h2 className={h2Styel}>アカウントをお持ちでないですか？</h2>
-        <button className={smallBtn} onClick={() => navigate("/signup")}>
-          ユーザー登録
-        </button>
-      </>
+
+        <div className="flex justify-center w-full h-auto mt-8">
+      <NavLink to="/" className="GradationYellowbtn font-body font-bold ">
+              ホームに戻る
+        </NavLink>
+      </div>
       </main>
     </div>
     

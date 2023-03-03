@@ -14,16 +14,20 @@ function Home() {
 
 
   return (
-    <>
     <body className="px-32 font-body font-bold bg-darkWhite pb-16">
     
-    <header className="py-4">
+    <header className="py-4 flex justify-between">
     <NavLink
-          style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-          to="/"
-        >
-          Karuta Game
-        </NavLink>
+       style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
+       to="/">
+        Karuta Game
+    </NavLink>
+    <button className="bg-gradient-to-r from-indigo-400 to-darkBlue py-2 px-12 text-darkWhite rounded-3xl tracking-wider">
+    <NavLink>
+      ログアウト
+    </NavLink>
+    </button>
+ 
     </header>
 
     <div id="gameSelect" className="w-full h-auto  mt-14 p-12 bg-white flex justify-center mb-6 rounded-lg drop-shadow-Shadow">
@@ -67,7 +71,7 @@ function Home() {
         {/* ユーザープロフィール */}
           <div id="user" className="w-full h-36 flex space-x-2">
             <div id="prof" className="flex w-1/2 h-full space-x-9 py-6 pl-8 bg-white drop-shadow-Shadow rounded-lg">
-              <img src={`${process.env.PUBLIC_URL}/imgs/icon_prof.jpg`} className="object-contain w-1/2 h-1/2"></img>
+              <img src={`${process.env.PUBLIC_URL}/imgs/icon_prof.jpg`} className="object-contain"></img>
               <div className="space-y-4">
                 <div className="space-y-2">
                   <p className="text-base text-paleBlack">{user.user_name}</p>
@@ -79,50 +83,73 @@ function Home() {
 
             {/* プレイ記録 */}
             <div id="playData" className="space-x-4 flex w-1/2 text-paleBlack place-items-start rounded-lg drop-shadow-Shadow">
-              <div className="justify-start w-1/3 h-full py-6 pl-6 space-y-2 bg-white rounded-lg">
+              <div className="justify-start w-1/3 h-full py-6 pl-6 space-y-4 bg-white rounded-lg">
                 <p className="text-base ">プレイ回数</p>
                 <div className="flex space-x-2 ">
                 <p id="" className="text-4xl leading-none">{user.count}</p><p className="text-base leading-none">回</p>
+
                 </div>
               </div>
 
-              <div className="justify-start w-1/3 h-full py-6 pl-6 space-y-2 bg-white rounded-lg">
+              <div className="justify-start w-1/3 h-full py-6 pl-6 space-y-4 bg-white rounded-lg">
                 <p className="text-base ">最速プレイ時間</p>
                 <div className="flex space-x-2 ">
-                <p id="" className="text-4xl leading-none">100</p><p className="text-base leading-none">秒</p>
+                <p id="" className="text-4xl leading-none">100</p><p className="text-4xl leading-none">秒</p>
                 </div>
               </div>
 
-              <div className="justify-start w-1/3 h-full py-6 pl-6 space-y-2 bg-white rounded-lg">
+              <div className="justify-start w-1/3 h-full py-6 pl-6 space-y-4 bg-white rounded-lg">
                 <p className="text-base ">勝率</p>
-                <div className="flex space-x-2 ">
-                <p id="" className="text-4xl leading-none">100</p><p className="text-base leading-none">%</p>
+                <div className="flex space-x-2 tex-center">
+                <p id="" className="text-4xl leading-none">100</p><p className="text-4xl leading-none ">%</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div id="ranking" className="w-full">
+          <div id="ranking" className="w-full flex mt-2 space-x-2">
             {/* 苦手、得意ワード */}
-            <div className="w-1/2 h-auto flex ">
-              <div className="p-8 ">
-                <p>得意なワード</p>
+            <div className="w-1/2 h-auto flex">
+              <div className="w-1/2 h-60 py-8 px-12 bg-white drop-shadow-Shadow rounded-lg">
+                <p className="mb-1">得意なワード</p>
+                <ul className="list-outside list-disc space-x-1">
                 <li>git</li>
                 <li>git</li>
                 <li>git</li>
                 <li>git</li>
+                <li>git</li>
+                <li>git</li>
+                </ul>
+
               </div>
 
-              <div className="p-8">
-                <p>苦手なワード</p>
+              <div className="py-8 px-12 w-1/2 h-60 bg-white drop-shadow-Shadow rounded-lg">
+                <p className="mb-1">苦手なワード</p>
+                <ul className="list-outside list-disc space-x-1">
                 <li>git</li>
                 <li>git</li>
                 <li>git</li>
                 <li>git</li>
+                <li>git</li>
+                <li>git</li>
+                </ul>
               </div>
-
             </div>
+
+              {/* ランキング */}
+              <div className="py-8 px-12 w-1/2 h-60 bg-white drop-shadow-Shadow rounded-lg">
+              <p className="text-lightBlue mb-1">累計正解枚数 Ranking</p>
+              <ol className="list-outside list-decimal space-x-1 ">
+                <li>はなこ</li>
+                <li>たろう</li>
+                <li>いちこ</li>
+                <li>ふたば</li>
+                <li>じろう</li>
+              </ol>
+            </div>
+
           </div>
+  
 
         </div>
 
@@ -135,34 +162,12 @@ function Home() {
               Name:{user.name}/Email:{user.email}
             </li>
           ))}
+
       </ul> */}
       </body>
 
-      {/* <li>
-        <NavLink
-          style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-          to="/signup"
-        >
-          Signup
-        </NavLink>
-      </li> */}
-      {/* <li>
-        <NavLink
-          style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-          to="/login"
-        >
-          Login
-        </NavLink>
-      </li> */}
-      {/* <li>
-        <NavLink
-          style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-          to="/karuta"
-        >
-          Karuta
-        </NavLink>
-      </li> */}
-    </>
+ 
+
   );
 }
 
