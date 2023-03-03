@@ -15,42 +15,6 @@ import Edit from "../pages/edit";
 function Root() {
   return (
     <div className="App">
-      {/* <h1>コマンドカルタ</h1> */}
-      {/* <ul className="flex flex-row justify-center ">
-        <li>
-          <NavLink
-            style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-            to="/"
-          >
-            Home
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-            to="/signup"
-          >
-            Signup
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-            to="/login"
-          >
-            Login
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
-            to="/karuta"
-          >
-            Karuta
-          </NavLink>
-        </li>
-      </ul> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
@@ -59,10 +23,9 @@ function Root() {
         <Route path="/victory" element={<Victory />} />
         <Route path="/lose" element={<Lose />} />
         <Route path="/draw" element={<Draw />} />
-        <Route path="/home_true" element={<Home_true />} />
-        Updated upstream
-        {/* <Route path="/edit" element={<Edit />} /> */}
 
+        <Route path="/home_true" element={<ProtectedRoute><Home_true /></ProtectedRoute>} />
+        <Route path="/edit" element={<Edit />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </div>

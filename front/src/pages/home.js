@@ -11,15 +11,6 @@ const Home = () => {
       getUser();
   }, []);
 
-  const LoggidIn = () => {
-    if (user.user_name !== undefined){
-      return  <p>Welcome, {user.user_name}!</p>;
-    } else {
-      return <p></p>;
-    }
-  }
-
-
 
   console.log(user)
 
