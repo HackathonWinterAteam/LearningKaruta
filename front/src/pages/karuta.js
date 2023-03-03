@@ -170,13 +170,16 @@ const Karuta = () => {
     <div>
       <div>
         {!isStarted && (
-          <div className="start-screen">
+          <div className="h-screen w-full flex justify-center items-center">
+            <div className="">
             <button
-              className="bg-gray-300 text-3xl"
+              className="bg-yellow text-3xl font-bold font-body text-lightBlue py-2 px-10"
               onClick={() => startGame()}
             >
-              ゲーム開始
+              Karuta START!
             </button>
+            <p className="font-bold font-body text-base text-paleBlack text-center mt-2">クリックするとゲームがはじまります</p>
+          </div>
           </div>
         )}
       </div>

@@ -27,7 +27,7 @@ function Home() {
   }, []);
 
   return (
-    <body className="px-32 font-body font-bold bg-darkWhite pb-16">
+    <body className="px-32 w-screen h-screen font-body font-bold bg-darkWhite pb-16">
     
     <header className="py-4 flex justify-between">
     <NavLink
