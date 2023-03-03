@@ -4,7 +4,6 @@ from models.users import Users
 from sqlalchemy.dialects.mysql import TIMESTAMP as Timestamp
 from sqlalchemy.sql.functions import current_timestamp
 
-metadata = Base.metadata
 
 class boxes(Base):
     __tablename__ = 'boxes'
