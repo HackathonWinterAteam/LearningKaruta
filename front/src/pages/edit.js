@@ -65,6 +65,7 @@ useEffect(() => {
 
                 <form onSubmit={handleSubmit}>
                 <div>
+                    <input type="hidden" name="user_id" ref={userIdRef} value={user.user_id} />
                     <label htmlFor="name" className="block text-lg  text-paleBlack"></label>
                     <input
                     id="name"
@@ -89,7 +90,7 @@ useEffect(() => {
 
                 
                 <div className="max-auto container flex justify-center items-center mt-12 space-x-6 ">
-                <NavLink to="home_true" className="GradationYellowbtn">
+                <NavLink to="/home_true" className="GradationYellowbtn">
                         戻る
                     </NavLink>
                 <button type="submit" className="GradationYellowbtn ">
