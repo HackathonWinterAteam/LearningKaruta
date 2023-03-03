@@ -141,11 +141,6 @@ const FormData = () => {
         </NavLink>
       </div>
       </main>
-      <div className="flex justify-center w-full h-auto mt-8">
-      <NavLink to="/" className="GradationYellowbtn font-body font-bold ">
-              ホームに戻る
-        </NavLink>
-      </div>
     </div>
     
   );

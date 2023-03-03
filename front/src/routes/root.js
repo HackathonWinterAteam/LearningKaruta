@@ -10,7 +10,7 @@ import Victory from "../Victory";
 import Lose from "../Lose";
 import Draw from "../Draw";
 import Home_true from "../pages/home_true";
-// import Edit from "../pages/edit";
+import Edit from "../pages/edit";
 
 function Root() {
   return (
