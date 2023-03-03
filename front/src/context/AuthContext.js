@@ -23,7 +23,7 @@ export const AuthProvider = ({ children })  => {
         data
       );
       console.log(response.data);
-      navigate("/");
+      navigate("/login");
       return "会員登録しました"
     } catch (error) {
       const errorMessage = error.response.data;
