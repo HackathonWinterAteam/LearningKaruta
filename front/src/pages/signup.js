@@ -93,13 +93,11 @@ function Signup() {
         </form>
       </main>
       <>
-        <h2 className={h2styel}>アカウントをお持ちですか？</h2>
-        <button className={smallBtn} onClick={() => navigate("/login")}>
-          ログイン
-
-          
+      <div className="flex justify-center w-full h-auto mt-8">
+      <button to="/" className="GradationYellowbtn font-body font-bold ">
+              ホームに戻る
         </button>
-      </>
+      </div>
     </div>
   );
 }
