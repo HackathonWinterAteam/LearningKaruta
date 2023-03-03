@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 import os
 import uuid
-import time
+import json
 from fastapi import Depends, HTTPException, status, Request, Response
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
@@ -14,6 +14,7 @@ from jose import JWTError, jwt, ExpiredSignatureError
 
 from database import get_db
 from models import users as users_model
+from models import games as games_model
 from schemas import users as users_schema
 from session import session_token
 
@@ -57,14 +58,47 @@ def create_user(db: Session, user: users_schema.User):
 
 # ユーザーデータをDBから取得() #usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def get_user(db, username: str):
-    user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
-    delattr(user,"refresh_token")
-    delattr(user,"password")
+    user_info = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    # delattr(user,"refresh_token")
+    # delattr(user,"password")
+    user_id  = user_info.user_id
+    print(user_id)
+    user_record = db.query(games_model.play_records).filter(games_model.play_records.user_id == user_id).count()
+    user = users_schema.User(
+        user_id=user_info.user_id,
+        email=user_info.email,
+        user_name=user_info.user_name,
+        user_intro=user_info.user_intro,
+        count=user_record,
+        created_at=user_info.created_at
+    )
+
     return user
 
+
+
 def all_get_user(db, username: str):
-    user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    user_info = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    user_id  = user_info.user_id
+    print(user_id)
+    user_record = db.query(games_model.play_records).filter(games_model.play_records.user_id == user_id).count()
+    user = users_schema.User_all(
+        user_id=user_info.user_id,
+        email=user_info.email,
+        user_name=user_info.user_name,
+        user_intro=user_info.user_intro,
+        refresh_token=user_info.refresh_token,
+        count=user_record,
+        password=user_info.password,
+        created_at=user_info.created_at
+    )
+
     return user
+
+def get_user_byId(db, user_id: str):
+    user = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
+    return user
+
 
 # OAuth2による認可
 # usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
@@ -211,29 +245,16 @@ async def logout(request: Request, db: AsyncSession = Depends(get_db)):
 def delete_cookie(response:Response):
     response.delete_cookie(key="auth_a")
     response.delete_cookie(key="auth_i")
-    # response.set_cookie(
-    #     key="auth_a",
-    #     value="",
-    #     max_age=0,
-    #     expires=0,
-    #     path="/",
-    #     # domain="localhost"
-    # )
-    # response.set_cookie(
-    #     key="auth_i",
-    #     value="",
-    #     max_age=0,
-    #     expires=time.time()-3600,
-    #     path="/",
-    #     # domain="localhost"
-    # )
+
     return response
 
 
 
-
-
-
-# マイページ表示データ取得
-def get_user_info(db: Session, user_id: str):
-    user_info = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
+# ユーザー情報変更
+async def update_user(db: AsyncSession, update_user: users_schema.UpdateUser, user: users_model.Users):
+    user.user_name = update_user.user_name
+    user.user_intro = update_user.user_intro
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return {"message": "Update Done!!"}

@@ -59,7 +59,7 @@ function Root() {
         <Route path="/victory" element={<Victory />} />
         <Route path="/lose" element={<Lose />} />
         <Route path="/draw" element={<Draw />} />
-        <Route path="/home_true" element={<Home_true />} />
+        <Route path="/home_true" element={<ProtectedRoute><Home_true /></ProtectedRoute>} />
         <Route path="/edit" element={<Edit />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
