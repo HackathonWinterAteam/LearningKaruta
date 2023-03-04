@@ -16,6 +16,6 @@
 15,git stash
 16,git show
 17,git config
-18,git commit
+18,git commit -m
 19,git checkout -b
 20,git pull origin main
