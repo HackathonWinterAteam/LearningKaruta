@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import text
 from typing import Optional
 from datetime import datetime, timedelta
 
@@ -75,6 +76,27 @@ def get_user(db, username: str):
 
     return user
 
+def l_get_user(db, username: str):
+    user_info = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    if not user_info:
+        raise HTTPException(status_code=404, detail="このメールアドレスは登録されていません")
+    # delattr(user,"refresh_token")
+    # delattr(user,"password")
+    user_id  = user_info.user_id
+    print(user_id)
+    user_record = db.query(games_model.play_records).filter(games_model.play_records.user_id == user_id).count()
+    user = users_schema.User_all(
+        user_id=user_info.user_id,
+        email=user_info.email,
+        user_name=user_info.user_name,
+        user_intro=user_info.user_intro,
+        password=user_info.password,
+        count=user_record,
+        created_at=user_info.created_at
+    )
+
+    return user
+
 
 
 def all_get_user(db, username: str):
@@ -103,7 +125,7 @@ def get_user_byId(db, user_id: str):
 # OAuth2による認可
 # usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def authenticate_user(db: Session, username: str, password: str):
-    user = all_get_user(db, username)
+    user = l_get_user(db, username)
     if not user:
         raise HTTPException(status_code=404, detail="このメールアドレスは登録されていません")
     if not verify_password(password, user.password):
@@ -251,10 +273,28 @@ def delete_cookie(response:Response):
 
 
 # ユーザー情報変更
-async def update_user(db: AsyncSession, update_user: users_schema.UpdateUser, user: users_model.Users):
+async def update_user(db: AsyncSession, update_user: users_schema.UpdateUser):
+    user = db.query(users_model.Users).filter(users_model.Users.user_id == update_user.user_id).first()
     user.user_name = update_user.user_name
     user.user_intro = update_user.user_intro
     db.add(user)
     db.commit()
     db.refresh(user)
     return {"message": "Update Done!!"}
+
+
+# # マイページ表示データの取得
+# async def mypage(db: AsyncSession, user_id: str):
+#     # 得意ワード５つ取得
+#     g = f"SELECT  FROM `answer_rate_view` WHERE user_id = :user_id ORDER BY answer_rate ASC LIMIT 5"
+#     my_text = text(g)
+#     good_cards = db.execute(my_text,{"user_id": user_id}).fetchall()
+#     # 苦手ワード５つ取得
+#     b = f"SELECT * FROM `answer_rate_view` WHERE user_id = :user_id ORDER BY answer_rate DESC LIMIT 5"
+#     my_text = text(b)
+#     bad_cards = db.execute(my_text,{"user_id": user_id}).fetchall()
+#     data = {
+#         "good_cards": good_cards,
+#         "bad_cards": bad_cards
+#     }
+#     return users_schema.UserInfo(**data)

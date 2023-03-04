@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, Text, String, Enum, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, Text, String, Enum, ForeignKey, Boolean, Float, Table
 from database import Base
 from models.users import Users
 from sqlalchemy.dialects.mysql import TIMESTAMP as Timestamp
 from sqlalchemy.sql.functions import current_timestamp
+
 
 class boxes(Base):
     __tablename__ = 'boxes'
@@ -107,3 +108,5 @@ class play_type_boxes(Base):
     }
     played_id = Column('played_id', Integer, ForeignKey(play_records.played_id), primary_key=True)
     box_id = Column('box_id', Integer, ForeignKey(boxes.box_id), nullable=False)
+
+

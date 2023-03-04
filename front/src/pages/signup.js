@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 
 function Signup() {
-  const { signup } = useAuthContext();
+  const { signup, ErrorMessage } = useAuthContext();
   // 認証用の記述
   const nameRef = useRef(null);
   const emailRef = useRef(null);
@@ -56,6 +56,7 @@ function Signup() {
         <form onSubmit={handleSubmit}>
           <div className={styleRow}>
             <label htmlFor="name" className={styleInputLabel}></label>
+
             <input
               id="name"
               name="user_name"
@@ -89,6 +90,9 @@ function Signup() {
               autoComplete="current-password"
               required
             />
+          </div>
+          <div>
+            {ErrorMessage && <p>{ErrorMessage}</p>}
           </div>
           <div className="">
             <button type="submit" className={styleBtn}>

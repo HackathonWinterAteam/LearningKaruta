@@ -8,13 +8,21 @@ const ProtectedRoute = ({ children }) => {
   const { user, getUser } = useAuthContext();
 
   useEffect(() => {
-    getUser();
-}, []);
-
-
+    const fetchUser = async () => {
+      await getUser();
+    };
+    fetchUser();
+  }, []);
+  
+  if (!user) {
+    return <Navigate to="/" />;
+  }
+  
 
   return children;
 };
+
+
 
 export default ProtectedRoute;
 

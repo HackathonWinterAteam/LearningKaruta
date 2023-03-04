@@ -14,6 +14,7 @@ class CreateUser(BaseModel):
         orm_mode = True
 
 class UpdateUser(BaseModel):
+    user_id: str
     user_name: str
     user_intro: Union[str, None]
 
@@ -35,10 +36,13 @@ class User(BaseModel):
 
 class User_all(User):
     password: str
-    refresh_token: str
+    refresh_token: Union[str, None]
 
     class Config:
         orm_mode = True
+
+class Card(BaseModel):
+    card_id: int
 
 
 class UserInfo(BaseModel):
@@ -46,8 +50,8 @@ class UserInfo(BaseModel):
     user_intro: str
     number_of_plays : int
     win_rate: int
-    good_word: str
-    bad_word: str
+    good_cards: list[Card]
+    bad_cards: list[Card]
 
 class Token(BaseModel):
     user_name: str

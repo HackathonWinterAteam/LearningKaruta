@@ -40,6 +40,7 @@ def read_playing_cards(db: Session, box_id: int) -> games_model.boxes_cards :
 
 # 苦手札セット取得
 def weak_point_cards(db: Session, user_id: str) -> users_model.Users :
+    
     t = f"SELECT card_id FROM answer_rate_view WHERE answer_rate <= 0.8 AND user_id = :user_id"
     select_text = text(t)
     cid = db.execute(select_text,{"user_id": user_id}).fetchall()
@@ -70,7 +71,6 @@ def weak_point_cards(db: Session, user_id: str) -> users_model.Users :
 
 #　プレイ結果記録 非同期にする！！
 async def play_records(db: AsyncSession, result: games_schema.Results):
-
     #プレイ記録親テーブルに記録
     db_result = games_model.play_records(
         user_id = result.user_id,
