@@ -17,7 +17,7 @@ const Home = () => {
   return (
     <>
     <body className="px-32 w-screen h-screen font-body font-bold bg-darkWhite pb-16">
-    
+
     <header className="py-4">
     <NavLink
           style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
@@ -35,26 +35,29 @@ const Home = () => {
       </div>
     <div id="genre" className="space-y-2">
       <div className="flex space-x-2  ">
-      <NavLink className="GradationBluebtn text-3xl hover:bg-yellow">
-        Linux
+      <NavLink className="GradationBluebtn text-3xl hover:bg-yellow flex-col">
+        <p>Linux</p>
+        <p className="text-xs">comming soon...</p>
       </NavLink>
 
-      <NavLink to="/karuta" className="GradationBluebtn text-3xl ">
+      <NavLink to="/karuta" className="GradationBluebtn text-3xl flex-col">
         Git
       </NavLink>
       </div>
-  
+
       <div className="flex space-x-2">
-      <NavLink to="" className="GradationBluebtn text-3xl">
+      <NavLink to="" className="GradationBluebtn text-3xl flex-col">
         カラーコード
+        <p className="text-xs">comming soon...</p>
       </NavLink>
-      
-      <NavLink className="GradationBluebtn text-3xl">
+
+      <NavLink className="GradationBluebtn text-3xl flex-col">
         Docker
+        <p className="text-xs">comming soon...</p>
       </NavLink>
       </div>
-  
-      
+
+
       {/* <NavLink>
         ショートカット
       </NavLink> */}
@@ -78,7 +81,7 @@ const Home = () => {
         </div>
     </div>
 
- 
+
 
       {/* <ul>
         {user &&

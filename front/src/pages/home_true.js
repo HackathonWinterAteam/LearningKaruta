@@ -16,7 +16,7 @@ function Home() {
 
   return (
     <body className="px-32 w-screen h-screen font-body font-bold bg-darkWhite pb-16">
-   
+
     <header className="py-4 flex justify-between">
     <NavLink
        style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
@@ -38,22 +38,25 @@ function Home() {
       </div>
     <div id="genre" className="flex space-x-2">
       {/* <div className=""> */}
-      <NavLink className="GradationBluebtn text-xl hover:bg-yellow">
-        Linux
+      <NavLink className="GradationBluebtn text-xl hover:bg-yellow flex-col">
+        <p>Linux</p>
+        <p className="text-xs">comming soon...</p>
       </NavLink>
 
-      <NavLink to="/karuta" className="GradationBluebtn text-xl ">
-        Git
+      <NavLink to="/karuta" className="GradationBluebtn text-xl flex-col">
+        <p>Git</p>
       </NavLink>
       {/* </div> */}
 
       {/* <div className=""> */}
-      <NavLink to="" className="GradationBluebtn text-xl">
-        カラーコード
+      <NavLink to="" className="GradationBluebtn text-xl flex-col">
+        <p>カラーコード</p>
+        <p className="text-xs">comming soon...</p>
       </NavLink>
 
-      <NavLink className="GradationBluebtn text-xl">
-        Docker
+      <NavLink className="GradationBluebtn text-xl flex-col">
+        <p>Docker</p>
+        <p className="text-xs">comming soon...</p>
       </NavLink>
       {/* </div> */}
 
@@ -153,7 +156,7 @@ function Home() {
             </div>
 
           </div>
-  
+
 
 
         </div>
