@@ -2,10 +2,23 @@ import axios from "../utils/axios";
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import TutorialModal from "../compornents/TutorialModal";
 // import { Cookies } from "react-cookie";
 
 function Home() {
   const { user, getUser, logout } = useAuthContext();
+  const [isTutorialModalOpen, setIsTutorialModalOpen] = useState(false); //チュートリアルモーダル管理
+
+  const modalOpen = () => {
+    setIsTutorialModalOpen(true);
+  };
+
+  //モーダルを閉じる
+  const modalClose = () => {
+    setIsTutorialModalOpen(false);
+  };
+
+
 
   // ProtectedRouteがあるのでコメントアウト
   // useEffect(() => {
@@ -16,7 +29,7 @@ function Home() {
 
   return (
     <body className="px-32 w-screen h-screen font-body font-bold bg-darkWhite pb-16">
-   
+
     <header className="py-4 flex justify-between">
     <NavLink
        style={({ isActive }) => (isActive ? { color: "blue" } : undefined)}
@@ -34,26 +47,29 @@ function Home() {
       <div className="w-2/3 h-auto">
       <div id="info" className="flex justify-between pb-6">
         <p className="text-3xl text-paleBlack ">かるたをはじめる</p>
-        <button className=" bg-white text-base rounded-2xl text-darkBlue  outline outline-1 outline-paleBlue py-2 px-6 drop-shadow-Shadow ">ゲームの遊び方</button>
+        <button onClick={modalOpen} className=" bg-white text-base rounded-2xl text-darkBlue  outline outline-1 outline-paleBlue py-2 px-6 drop-shadow-Shadow ">ゲームの遊び方</button>
       </div>
     <div id="genre" className="flex space-x-2">
       {/* <div className=""> */}
-      <NavLink className="GradationBluebtn text-xl hover:bg-yellow">
-        Linux
+      <NavLink className="GradationBluebtn text-xl hover:bg-yellow flex-col">
+        <p>Linux</p>
+        <p className="text-xs">comming soon...</p>
       </NavLink>
 
-      <NavLink to="/karuta" className="GradationBluebtn text-xl ">
-        Git
+      <NavLink to="/karuta" className="GradationBluebtn text-xl flex-col">
+        <p>Git</p>
       </NavLink>
       {/* </div> */}
 
       {/* <div className=""> */}
-      <NavLink to="" className="GradationBluebtn text-xl">
-        カラーコード
+      <NavLink to="" className="GradationBluebtn text-xl flex-col">
+        <p>カラーコード</p>
+        <p className="text-xs">comming soon...</p>
       </NavLink>
 
-      <NavLink className="GradationBluebtn text-xl">
-        Docker
+      <NavLink className="GradationBluebtn text-xl flex-col">
+        <p>Docker</p>
+        <p className="text-xs">comming soon...</p>
       </NavLink>
       {/* </div> */}
 
@@ -65,6 +81,11 @@ function Home() {
     {/* <span>もっと見る</span> */}
     </div>
       </div>
+      {isTutorialModalOpen ? (
+        <TutorialModal modalClose={modalClose}></TutorialModal>
+      ):(
+        ""
+      )}
 
       <div id="userLog" className="w-full h-auto  mb-12 p-6 bg-white justify-center rounded-lg drop-shadow-Shadow" >
 
@@ -153,7 +174,7 @@ function Home() {
             </div>
 
           </div>
-  
+
 
 
         </div>
