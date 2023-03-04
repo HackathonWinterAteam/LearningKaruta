@@ -55,16 +55,16 @@ const Victory = () => {
                             </div>
 
                             <div>
-                                        <NavLink className="relative inline-block px-14 py-4 text-2xl mr-14 mt-4 group">
+                                        <NavLink to="/karuta" className="relative inline-block px-14 py-4 text-2xl mr-14 mt-4 group">
                                         <span className="span_Shadow"></span>
                                         <span className="span_Shadow_2"></span>
-                                        <span className="relative text-darkBlue group-hover:text-darkWhite ">次のゲームへ</span>
+                                        <span className="relative text-darkBlue group-hover:text-darkWhite ">もう一度プレイ</span>
                                         </NavLink>
 
-                                      <NavLink className="relative inline-block px-14 py-4 text-2xl group">
+                                      <NavLink to="/" className="relative inline-block px-14 py-4 text-2xl group">
                                       <span className="span_Shadow"></span>
                                         <span className="span_Shadow_2"></span>
-                                        <span className="relative text-darkBlue group-hover:text-darkWhite ">マイページへ</span>
+                                        <span className="relative text-darkBlue group-hover:text-darkWhite ">ホーム画面へ</span>
                                       </NavLink>
                                 </div>
                         </div>
