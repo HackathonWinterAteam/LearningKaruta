@@ -100,8 +100,8 @@ async def refresh_token(current_user: users_schema.User = Depends(users_cruds.ge
 
 
     response = JSONResponse(content=user_data | {"auth_a": access_token} | {"auth_i": refresh_token_session_id})
-    response.set_cookie(key="auth_a", value=access_token, httponly=True)
-    response.set_cookie(key="auth_i", value=refresh_token_session_id, httponly=True)
+    response.set_cookie(key="auth_a", value=access_token, httponly=True, domain="cmd-karuta.xyz", secure=True, path="/")
+    response.set_cookie(key="auth_i", value=refresh_token_session_id, httponly=True,domain="cmd-karuta.xyz", secure=True, path="/")
     return response
 
 @router.put("/signout")

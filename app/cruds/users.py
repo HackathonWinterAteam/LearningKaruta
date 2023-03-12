@@ -59,63 +59,21 @@ def create_user(db: Session, user: users_schema.User):
 
 # ユーザーデータをDBから取得() #usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def get_user(db, username: str):
-    user_info = db.query(users_model.Users).filter(users_model.Users.email == username).first()
-    # delattr(user,"refresh_token")
-    # delattr(user,"password")
-    user_id  = user_info.user_id
-    print(user_id)
-    user_record = db.query(games_model.play_records).filter(games_model.play_records.user_id == user_id).count()
-    user = users_schema.User(
-        user_id=user_info.user_id,
-        email=user_info.email,
-        user_name=user_info.user_name,
-        user_intro=user_info.user_intro,
-        count=user_record,
-        created_at=user_info.created_at
-    )
-
+    user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    delattr(user,"refresh_token")
+    delattr(user,"password")
     return user
 
-def l_get_user(db, username: str):
-    user_info = db.query(users_model.Users).filter(users_model.Users.email == username).first()
-    if not user_info:
+def all_get_user(db, username: str):
+    user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
+    if not user:
         raise HTTPException(status_code=404, detail="このメールアドレスは登録されていません")
     # delattr(user,"refresh_token")
     # delattr(user,"password")
-    user_id  = user_info.user_id
-    print(user_id)
-    user_record = db.query(games_model.play_records).filter(games_model.play_records.user_id == user_id).count()
-    user = users_schema.User_all(
-        user_id=user_info.user_id,
-        email=user_info.email,
-        user_name=user_info.user_name,
-        user_intro=user_info.user_intro,
-        password=user_info.password,
-        count=user_record,
-        created_at=user_info.created_at
-    )
+    
 
     return user
 
-
-
-def all_get_user(db, username: str):
-    user_info = db.query(users_model.Users).filter(users_model.Users.email == username).first()
-    user_id  = user_info.user_id
-    print(user_id)
-    user_record = db.query(games_model.play_records).filter(games_model.play_records.user_id == user_id).count()
-    user = users_schema.User_all(
-        user_id=user_info.user_id,
-        email=user_info.email,
-        user_name=user_info.user_name,
-        user_intro=user_info.user_intro,
-        refresh_token=user_info.refresh_token,
-        count=user_record,
-        password=user_info.password,
-        created_at=user_info.created_at
-    )
-
-    return user
 
 def get_user_byId(db, user_id: str):
     user = db.query(users_model.Users).filter(users_model.Users.user_id == user_id).first()
@@ -125,7 +83,7 @@ def get_user_byId(db, user_id: str):
 # OAuth2による認可
 # usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def authenticate_user(db: Session, username: str, password: str):
-    user = l_get_user(db, username)
+    user = all_get_user(db, username)
     if not user:
         raise HTTPException(status_code=404, detail="このメールアドレスは登録されていません")
     if not verify_password(password, user.password):
