@@ -27,7 +27,6 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/signin")
 
 
-
 # UUID生成
 def generate_uuid() -> str:
     return str(uuid.uuid4())
@@ -42,7 +41,7 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-# ユーザー新規登録
+# ユーザー新規登録 checked!!
 def create_user(db: Session, user: users_schema.User):
     user_id = generate_uuid()
     db_user = users_model.Users(

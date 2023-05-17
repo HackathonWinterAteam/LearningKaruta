@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
@@ -10,22 +11,21 @@ import models.users as users_model
 import schemas.users as users_schema
 import cruds.users as users_cruds
 from datetime import datetime, timedelta
-import os
 from uuid import UUID
 
 router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/signin") 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/signin")
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS"))
 
 
-#ユーザー登録
+#ユーザ登録 checked!!
 @router.post("/users/register",response_model=users_schema.User)
 def user_register(user:users_schema.CreateUser, db: Session = Depends(get_db)):
-    get_email = user.email
-    get_user_email = db.query(users_model.Users.email).filter(users_model.Users.email == get_email).first()
+    register_user_email = user.email
+    get_user_email = db.query(users_model.Users.email).filter(users_model.Users.email == register_user_email).first()
     if get_user_email != None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
