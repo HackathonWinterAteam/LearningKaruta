@@ -56,7 +56,8 @@ def create_user(db: Session, user: users_schema.User):
     return db_user
 
 
-# ユーザーデータをDBから取得() #usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
+# ユーザーデータをDBから取得
+#usernameはOAuth2PasswordRequestFormの変数、実際はemailを入力
 def get_user(db, username: str):
     user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
     delattr(user,"refresh_token")
@@ -67,9 +68,6 @@ def all_get_user(db, username: str):
     user = db.query(users_model.Users).filter(users_model.Users.email == username).first()
     if not user:
         raise HTTPException(status_code=404, detail="このメールアドレスは登録されていません")
-    # delattr(user,"refresh_token")
-    # delattr(user,"password")
-    
 
     return user
 
