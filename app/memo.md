@@ -14,25 +14,24 @@
 
 ### 関数の洗い出し
 #### cruds/user
-- UUID生成
-- PWハッシュ化
-- PW検証
-- ユーザー新規登録（→generate_uuid,get_password_hash）
-- get_user（PW,token以外）
-- all_get_user（全データ）
-- get_user_byId
-- authenticate_user（→all_get_user）
-- create_access_token（→generate_uuid）
-- create_refresh_token（→generate_uuid）
-- get_a_token_from_cookie
-- get_session_id_from_cookie
-- get_current_user（→get_a_token_from_cookie, get_current_user_from_token）
-- get_current_user_with_session_refresh（→get_session_id_from_cookie, get_current_user_from_token）
-- get_current_user_from_token（→get_user,all_get_user）
+- UUID生成:utils
+- PWハッシュ化:utils
+- PW検証:utils
+- ユーザー新規登録（→generate_uuid,get_password_hash）:db
+- get_user（PW,token以外）:db
+- all_get_user（全データ）:db
+- get_user_byId:db
+- authenticate_user（→all_get_user）:auth
+- create_access_token（→generate_uuid）:util
+- create_refresh_token（→generate_uuid）:↑と同じことをしている⚠️ 
+- get_a_token_from_cookie:client
+- get_session_id_from_cookie:client
+- get_current_user（→get_a_token_from_cookie, get_current_user_from_token）: access_tokenからであると明示していない
+- get_current_user_with_session_refresh（→get_session_id_from_cookie, get_current_user_from_token）:with?, commentが不適切
+- get_current_user_from_token（→get_user,all_get_user）:↑の２つの戻り値となる関数/db
 - logout（→getRefreshBySession）
+- getRefreshBySession: 命名が不適切, 同じことをしている関数がある
 
-#### session/session_token.py
-- getRefreshBySession
 
 ### エンドポイント
 - /users/register
@@ -47,14 +46,24 @@
 crudの中で呼び出しあっている。
 ハッシュかやUUID生成はユーティリティ関数？
 cookieから取得：アクセストークン、セッションID
-セッションID使うならアクセストークンいる？でもこの重なりがセキュリティ強化
-crudはなるべくDB接続だけにしたい
+session_idから取得：
 get_current_userは無印、セッション（r_token）から、tokenからの3パターンあるが関数名がよく分からない
-get_userも2種類ある
-getRefreshBySessionってなんだっけ
-何から何を取得するか、を整理すべき
+リフレッシュトークンからログイン中のユーザーデータを返すときに全データを返している（仕方ない？）
 
 ### 改善案
 router/auth.py
 utilディレクトリに生成、検証の関数を入れる
+DB操作をしているかどうか考える
+「メールアドレスまたはパスワードが違います」に変える
+フローチャート
 
+### 必要な処理
+- util: UUID生成/ハッシュ化/pw検証
+- get_user: フロントに返すuser,all_data / by_id /
+- トークン生成（expireが異なる）
+- cookieからアクセストークンを取得
+- cookieからセッションIDを取得
+- セッションIDからリフレッシュトークンを取得
+- 認可
+- トークンからログイン中のユーザーを取得
+- アクセストークンからの場合、リフレッシュトークンからの場合:引数を変える
